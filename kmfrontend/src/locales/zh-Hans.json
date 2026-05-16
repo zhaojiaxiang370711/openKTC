@@ -103,6 +103,7 @@
 	"NO": "否",
 	"AND": "和",
 	"SUBMIT": "保存",
+	"CONFIRM": "确认",
 	"CANCEL": "取消",
 	"WARNING": "警告！",
 	"SHOW-HIDE": "显示/隐藏",
@@ -122,6 +123,36 @@
 	},
 	"DURATION_REMAINING": "剩余时长",
 	"VERSION": "版本",
+	"REMOTE_URL": "远程访问地址",
+	"REMOTE_STATUS": {
+		"LABEL": "连接状态",
+		"DISCONNECTED": "未连接",
+		"OUTDATED": "服务器不兼容",
+		"OUTDATED_CLIENT": "应用不兼容（请更新）",
+		"CONNECTED": "已连接"
+	},
+	"WELCOME_PAGE": {
+		"CONTACT": "联系我们",
+		"GETSTARTED": "开始教程",
+		"KARAMANAGER": "点歌管理台",
+		"ADMINISTRATION": "系统面板",
+		"HELP": "在线帮助",
+		"SITE": "网站",
+		"PUBLIC": "点歌入口",
+		"REPOSITORY": "歌库仓库",
+		"STATS": "状态",
+		"STATS_KARAS": "歌曲",
+		"STATS_TAGS": "标签",
+		"STATS_USAGETIME": "使用时长",
+		"STATS_PLAYTIME": "播放时长",
+		"BASE_UPDATE": "数据库更新",
+		"MASTODON_UPDATE": "Karaoke Mugen 新闻",
+		"APP_UPDATE": "新版本",
+		"ACTIVE_SESSION": "当前场次：",
+		"EDIT_SESSION": "编辑场次",
+		"COLLECTIONS": "收藏集",
+		"NEWS": "新闻"
+	},
 	"HOME_BUTTON": "主页",
 	"OPTIONS": "选项",
 	"PASSWORD": "密码（至少需要8个字符）",
@@ -144,6 +175,174 @@
 		"CURRENT_PLAYLIST": "当前播放列表",
 		"QUIZ_RANKING": "测验排名"
 	},
+	"MENU": {
+		"HOME": "仪表盘",
+		"SYSTEM": "系统",
+		"LOGS": "日志",
+		"CONFIGURATION": "高级配置",
+		"ADVANCED_OPTIONS": "系统设置",
+		"SESSIONS": "场次",
+		"REPOSITORIES": "收藏集和仓库",
+		"KARAS": "歌曲",
+		"MEDIAS": "媒体",
+		"STATS": "统计",
+		"LIST": "列表",
+		"NEW": "新建",
+		"DOWNLOAD_QUEUE": "队列",
+		"DOWNLOAD": "下载",
+		"HISTORY": "历史",
+		"RANKING": "点播排行",
+		"VIEWCOUNTS": "播放排行",
+		"KARAIMPORT": "导入歌曲",
+		"TAGS": "标签",
+		"DATABASE": "数据库",
+		"GIT": "Git",
+		"USERS": "用户",
+		"UNUSED_FILES": "未使用文件",
+		"DUPLICATE": "重复项",
+		"BATCH_EDIT": "批量编辑",
+		"STORAGE": "存储管理",
+		"BACKGROUNDS": "背景",
+		"INBOX": "收件箱",
+		"MAINTAINER": "维护者"
+	},
+	"HEADERS": {
+		"HOME": {
+			"TITLE": "系统面板仪表盘",
+			"DESCRIPTION": "从这里开始，选择你要执行的操作。"
+		},
+		"LOGS": {
+			"TITLE": "日志",
+			"DESCRIPTION": "查看 Karaoke Mugen 的运行记录和诊断信息。"
+		},
+		"SYSTEM_PREFERENCES": {
+			"TITLE": "系统偏好设置",
+			"TITLEMAC": "系统设置",
+			"DESCRIPTION": "仅包含应用相关设置"
+		},
+		"CONFIGURATION": {
+			"TITLE": "高级配置",
+			"DESCRIPTION": "面向高级用户的完整 Karaoke Mugen 设置，请谨慎修改。"
+		},
+		"SESSIONS": {
+			"TITLE": "场次管理",
+			"DESCRIPTION": "添加、删除或查看已举办的 Karaoke 场次数据。"
+		},
+		"SESSIONS_NEW": {
+			"TITLE": "添加 Karaoke 场次",
+			"DESCRIPTION": "创建 Karaoke 场次的表单。"
+		},
+		"SESSIONS_EDIT": {
+			"TITLE": "编辑 Karaoke 场次",
+			"DESCRIPTION": "修改 Karaoke 场次的表单。"
+		},
+		"REPOSITORIES": {
+			"TITLE": "收藏集和仓库管理",
+			"DESCRIPTION_COLLECTION": "歌曲收藏集面向不同受众。请选择要显示在歌曲库中的收藏集。",
+			"DESCRIPTION": "仓库是歌曲来源。你可以在这里添加、启用或移除仓库。"
+		},
+		"BACKGROUNDS": {
+			"TITLE": "背景管理",
+			"DESCRIPTION": "用于轻量定制播放器画面。"
+		},
+		"REPOSITORIES_NEW": {
+			"TITLE": "添加仓库",
+			"DESCRIPTION": "创建仓库的表单。"
+		},
+		"REPOSITORIES_EDIT": {
+			"TITLE": "编辑仓库",
+			"DESCRIPTION": "修改仓库的表单。"
+		},
+		"UNUSED_FILES": {
+			"TITLE": "未使用文件",
+			"DESCRIPTION": "列出仓库中没有被任何歌曲使用的多余文件。"
+		},
+		"DATABASE": {
+			"TITLE": "数据库",
+			"DESCRIPTION": "数据库管理工具。"
+		},
+		"GIT": {
+			"TITLE": "Git 集成",
+			"DESCRIPTION": "管理 Git 仓库、推送和合并冲突。"
+		},
+		"KARAOKE_LIST": {
+			"TITLE": "歌曲列表",
+			"DESCRIPTION": "在这里编辑、添加或删除歌曲，通常供歌曲仓库维护者使用。"
+		},
+		"KARAOKE_NEW": {
+			"TITLE": "添加歌曲",
+			"DESCRIPTION": "把已有歌曲添加到你的某个仓库中。"
+		},
+		"KARAOKE_EDIT": {
+			"TITLE": "编辑歌曲",
+			"DESCRIPTION": "修改歌曲信息的表单。"
+		},
+		"KARAOKE_IMPORT": {
+			"TITLE": "导入歌曲",
+			"DESCRIPTION": "从文件夹导入歌曲到 Karaoke Mugen。"
+		},
+		"DOWNLOAD_QUEUE": {
+			"TITLE": "媒体下载队列",
+			"DESCRIPTION": "查看当前和等待中的下载任务。"
+		},
+		"DOWNLOAD": {
+			"TITLE": "媒体下载管理器",
+			"DESCRIPTION": "查找并获取仓库中歌曲关联的媒体文件。"
+		},
+		"HISTORY": {
+			"TITLE": "播放历史",
+			"DESCRIPTION": "按时间倒序列出本应用播放过的所有歌曲。"
+		},
+		"MOST_REQUESTED": {
+			"TITLE": "点播最多的歌曲",
+			"DESCRIPTION": "列出本应用中点播最多的歌曲，仅统计公开界面添加的歌曲。",
+			"DESCRIPTION_ONLINE": "当前显示的是在线点播排行。关闭“从在线仓库获取点播排行”设置后，只显示本实例数据。"
+		},
+		"MOST_PLAYED": {
+			"TITLE": "播放最多的歌曲",
+			"DESCRIPTION": "列出本应用中播放次数最多的歌曲。"
+		},
+		"KARATAG_BATCH_EDIT": {
+			"TITLE": "批量编辑歌曲",
+			"DESCRIPTION": "仅维护者使用：这个页面可以同时为多首歌曲添加或移除标签。"
+		},
+		"TAG_LIST": {
+			"TITLE": "标签列表",
+			"DESCRIPTION": "仅维护者使用：列出可用于定义歌曲元数据的标签。"
+		},
+		"TAG_NEW": {
+			"TITLE": "创建标签",
+			"DESCRIPTION": "创建标签的表单。请至少添加英文翻译。"
+		},
+		"TAG_EDIT": {
+			"TITLE": "修改标签",
+			"DESCRIPTION": "修改标签的表单。只有原始名称变化会导致文件名变化。"
+		},
+		"TAG_DUPLICATES": {
+			"TITLE": "重复标签列表",
+			"DESCRIPTION": "查看名称相同但分类不同的标签，必要时可以合并。"
+		},
+		"USER_LIST": {
+			"TITLE": "用户管理",
+			"DESCRIPTION": "创建、删除、修改用户，也可以重置密码或调整权限。"
+		},
+		"USER_NEW": {
+			"TITLE": "创建用户",
+			"DESCRIPTION": "本地用户创建表单"
+		},
+		"USER_EDIT": {
+			"TITLE": "修改用户",
+			"DESCRIPTION": "用户修改表单"
+		},
+		"STORAGE": {
+			"TITLE": "磁盘存储管理",
+			"DESCRIPTION": "管理媒体文件占用的磁盘空间。"
+		},
+		"INBOX": {
+			"TITLE": "待整合歌曲收件箱",
+			"DESCRIPTION": "作为歌曲库维护者，你的目标是把这里清空。"
+		}
+	},
 	"FLAGS": {
 		"PUBLIC": "公开",
 		"CURRENT_PUBLIC": "当前和公开",
@@ -152,6 +351,7 @@
 	"OR": "或",
 	"UNKNOWN": "未知",
 	"SEARCH": "搜索",
+	"LOGOUT": "退出登录",
 	"SHUTDOWN_POPUP": "与Karaoke Mugen的连接断了",
 	"PUBLIC_HOMEPAGE": {
 		"QUIZ": {
@@ -174,6 +374,7 @@
 		},
 		"OPEN_POLL": "投票选出下一首歌",
 		"CURRENT": "显示当前播放列表",
+		"MY_INCOMING_SONGS": "我的待播歌曲",
 		"PUBLIC_SUGGESTIONS": "公开建议",
 		"PUBLIC_SUGGESTIONS_SHORT": "建议",
 		"FAVORITES": "收藏夹",
@@ -184,6 +385,8 @@
 		"GET_LUCKY": "获得好运",
 		"REQUESTED_KARAOKES": "点播次数最多的歌曲",
 		"RESTRICTED_DESCRIPTION": "卡拉OK限制模式开启，无法添加歌曲。",
+		"QUOTA_KARA_DESCRIPTION_one": "您只能推荐 {{count}} 首歌曲。主持人接受或拒绝您的建议，或屏幕上播放您的歌曲后，您将可以再次推荐。",
+		"QUOTA_TIME_DESCRIPTION": "您只能推荐 {{time}} 的歌曲时长。主持人接受或拒绝您的建议，或屏幕上播放您的歌曲后，您将可以再次推荐。",
 		"QUOTA_KARA_DESCRIPTION_other": "您只能推荐 {{count}} 首歌曲。主持人添加（或未添加）您的建议或屏幕上播放您的歌曲后，您将可以再次推荐。"
 	},
 	"CL_EMPTY_LIST": "空列表？",
@@ -268,17 +471,26 @@
 	"FAVORITES_EXPORT": "导出收藏夹",
 	"PROFILE_PASSWORDCONF": "确认",
 	"PLAYERS_CONTROLS": {
+		"STOP_AFTER": "当前歌曲后停止",
+		"STOP_AFTER_SHORT": "稍后停止",
+		"STOP_NOW": "立即停止（危险）",
+		"STOP_NOW_SHORT": "立即停止",
+		"REWIND": "回到开头",
+		"PREVIOUS_SONG": "上一首",
+		"PREVIOUS_SONG_SHORT": "上一首",
 		"PAUSE": "暂停",
 		"NEXT_SONG": "下一首",
 		"PLAY": "播放",
 		"NEXT_SONG_SHORT": "下一步",
 		"MUTE_UNMUTE": "静音/取消静音",
 		"VOLUME_LEVEL": "设置音量",
+		"MESSAGE": "向观众发送消息",
 		"SUBS": {
 			"SHOW": "显示歌词",
 			"HIDE": "隐藏歌词"
 		},
 		"SPEED": {
+			"TITLE": "调整速度",
 			"UP": "增加速度",
 			"RESET": "重置速度",
 			"DOWN": "降低速度"
@@ -288,9 +500,75 @@
 			"UNBLUR": "取消模糊"
 		},
 		"PITCH": {
+			"TITLE": "调整音调",
 			"UP": "升调",
 			"RESET": "重置音高",
 			"DOWN": "降调"
+		}
+	},
+	"QUIZ": {
+		"NO_QUIZ": "当前没有进行中的测验！",
+		"START": "开始测验",
+		"STOP": "停止测验",
+		"CONTINUE": "公布答案后继续播放歌曲",
+		"TITLE": "测验模式",
+		"TAGLINE": "这是什么歌？",
+		"POINTS_one": "{{count}} 分",
+		"POINTS_other": "{{count}} 分",
+		"BONUS_POINTS_one": "{{count}} 奖励分",
+		"BONUS_POINTS_other": "{{count}} 奖励分",
+		"STATES": {
+			"WAITING": "等待下一首歌…",
+			"NEXT_SONG_one": "已结束，{{count}} 秒后下一首。",
+			"NEXT_SONG_other": "已结束，{{count}} 秒后下一首。",
+			"GUESSING_one": "只剩 {{count}} 秒！",
+			"GUESSING_other": "只剩 {{count}} 秒！",
+			"QUICK_GUESSING_one": "{{count}} 秒内回答可获得更多分数！",
+			"QUICK_GUESSING_other": "{{count}} 秒内回答可获得更多分数！",
+			"REGISTERED": "已记录答案“{{answer}}”。",
+			"TOO_LATE": "太晚了！最后记录的答案是“{{answer}}”。",
+			"NO_ANSWER": "没有记录到答案。",
+			"NICE_ONE": "回答正确！你获得 $t(QUIZ.POINTS, {\"count\": {{points}} })。",
+			"NICE_ONE_QUICK": "回答正确！你获得 $t(QUIZ.POINTS, {\"count\": {{points}} })（快速回答奖励）",
+			"SORRY": "“{{answer}}”不是正确答案。"
+		},
+		"PLACEHOLDER": "我知道！",
+		"END": "测验结束！",
+		"QUIT": "退出测验",
+		"RULES": {
+			"TITLE": "规则",
+			"SECONDS_one": "{{count}} 秒",
+			"SECONDS_other": "{{count}} 秒",
+			"GUESS_TIME": "你有 <1>$t(QUIZ.RULES.SECONDS, {\"count\": {{seconds}} })</1> 来猜屏幕上的歌曲。",
+			"QUICK_ANSWER": "如果在 <1>$t(QUIZ.RULES.SECONDS, {\"count\": {{seconds}} })</1> 内答对，可获得 <1>$t(QUIZ.BONUS_POINTS, {\"count\": {{points}} })</1>。",
+			"ACCEPTED_ANSWERS": "接受以下答案：",
+			"ACCEPTED_ANSWERS_POINTS": "($t(QUIZ.POINTS, {\"count\": {{points}} }))",
+			"END_GAME": "游戏结束条件",
+			"MAX_SCORE": "有玩家达到 <1>$t(QUIZ.POINTS, {\"count\": {{points}} })</1>",
+			"MAX_SONGS_one": "播放 <1>{{count}} 首歌</1> 后",
+			"MAX_SONGS_other": "播放 <1>{{count}} 首歌</1> 后",
+			"DURATION_one": "游玩 <1>{{count}} 分钟</1> 后",
+			"DURATION_other": "游玩 <1>{{count}} 分钟</1> 后",
+			"END_OF_PLAYLIST": "播放列表结束时"
+		},
+		"PREVIOUS_KARAOKES": "之前的歌曲"
+	},
+	"MODAL": {
+		"STOP_QUIZ": {
+			"TITLE": "停止测验？",
+			"DESCRIPTION": "游戏会立即停止，可以之后通过“开始测验”菜单继续。"
+		},
+		"TUTORIAL": {
+			"TITLE": "教程",
+			"NEXT": "下一步",
+			"BACK": "返回",
+			"END": "完成"
+		},
+		"STATS_MODAL": {
+			"TITLE": "允许使用我的收藏和点歌记录做统计",
+			"DESC": "服务器会使用你的收藏和场次中点过的歌曲生成使用统计。",
+			"REFUSE_DESC": "如果拒绝，你的数据会被忽略且不会由 Karaoke Mugen 应用发送。",
+			"CHANGE": "你可以随时在个人资料中修改。是否允许使用你的歌曲历史做统计？"
 		}
 	},
 	"TOOLTIP_CLOSEPARENT": "关闭",
@@ -338,20 +616,55 @@
 			"ONLINE_DISCORD_DISPLAYACTIVITY": "在 Discord 个人资料中显示 Karaoke Mugen 状态"
 		}
 	},
-	"HEADERS": {
-		"SYSTEM_PREFERENCES": {
-			"TITLE": "系统偏好设置",
-			"TITLEMAC": "系统偏好设置",
-			"DESCRIPTION": "调整常用应用设置。"
-		},
-		"CONFIGURATION": {
-			"TITLE": "配置",
-			"DESCRIPTION": "查看和编辑完整配置。"
-		}
-	},
 	"SETTINGS": {
+		"INTERFACE": {
+			"LABEL": "界面",
+			"ALLOW_GUEST_LOGIN": "允许访客",
+			"ALLOW_GUEST_LOGIN_TOOLTIP": "关闭后，必须使用本地或在线账户登录。",
+			"ALLOW_USER_CREATION": "允许创建用户",
+			"ALLOW_USER_CREATION_TOOLTIP": "关闭后，用户无法创建新的本地账户，也无法登录尚未注册的在线账户。",
+			"REQUIRE_USER_CREATION_CODE": "创建用户需要验证码",
+			"REQUIRE_USER_CREATION_CODE_TOOLTIP": "用户创建账户时需要操作员可见并告知的验证码。",
+			"ALLOW_CUSTOM_TEMPORARY_GUESTS": "允许自定义访客账户",
+			"ALLOW_CUSTOM_TEMPORARY_GUESTS_TOOLTIP": "允许访客选择自己的昵称，而不是随机分配名称。",
+			"WEBAPPMODE": "公开界面模式",
+			"WEBAPPMODE_SHORT": "界面模式",
+			"WEBAPPMODE_TOOLTIP": "观众登录后能看到和使用的界面范围。",
+			"WEBAPPMODE_CLOSED_SHORT": "关闭",
+			"WEBAPPMODE_LIMITED_SHORT": "限制",
+			"WEBAPPMODE_OPEN_SHORT": "开放",
+			"WEBAPPMODE_CLOSED": "关闭：显示“暂未开放”消息",
+			"WEBAPPMODE_LIMITED": "限制：只读模式",
+			"WEBAPPMODE_OPEN": "开放（默认）：用户可以添加歌曲",
+			"SHOW_AVATARS_ON_PLAYLIST": "播放列表显示头像",
+			"SHOW_AVATARS_ON_PLAYLIST_TOOLTIP": "方便一眼看到是谁添加的歌曲。",
+			"PUBLIC_PLAYER_CONTROLS": "允许公开端控制播放器",
+			"PUBLIC_PLAYER_CONTROLS_TOOLTIP": "公开端会显示播放/暂停、停止、上一首、下一首控制。只建议小范围聚会使用。",
+			"DISPLAY_WELCOME_MESSAGE": "显示欢迎消息",
+			"DISPLAY_WELCOME_MESSAGE_TOOLTIP": "这段消息会显示在 KTV 场次登录页。",
+			"KARA_LINE_SORT": "歌曲库排序方式…",
+			"KARA_LINE_SORT_TOOLTIP": "定义歌曲列表排序使用哪些歌曲字段。",
+			"KARA_LINE_DISPLAY": "歌曲字段显示",
+			"KARA_LINE_DISPLAY_TOOLTIP": "定义歌曲列表中显示哪些歌曲字段（仅操作员）。",
+			"SET": "设置…",
+			"SWITCH_TO_RESTRICTED_AT_TIME": "到点切换为限制模式",
+			"SWITCH_TO_RESTRICTED_AT_TIME_TOOLTIP": "当播放列表长度足以持续到指定时间后，自动切换为限制模式，不再接受新增歌曲。"
+		},
+		"KARAOKE": {
+			"ADDED_SONG_VISIBILITY_ADMIN": "操作员添加歌曲的可见性",
+			"ADDED_SONG_VISIBILITY_ADMIN_SHORT": "加歌可见性",
+			"ADDED_SONG_VISIBILITY_PUBLIC": "观众点歌可见性",
+			"ADDED_SONG_VISIBILITY_ADMIN_TOOLTIP": "操作员添加的歌曲是否对观众可见，或作为神秘歌曲处理？",
+			"ADDED_SONG_VISIBILITY_PUBLIC_TOOLTIP": "观众添加的歌曲是否对观众可见，或作为神秘歌曲处理？",
+			"ADDED_SONG_VISIBILITY_ADMIN_ON": "歌曲会作为神秘歌曲加入。",
+			"ADDED_SONG_VISIBILITY_ADMIN_OFF": "歌曲会正常加入并对观众可见。",
+			"ADDED_SONG_VISIBILITY_NORMAL_OPTION": "正常",
+			"ADDED_SONG_VISIBILITY_MYSTERY_OPTION": "神秘歌曲"
+		},
 		"PLAYER": {
-			"PLAYER_LANGUAGE": "消息和播放器语言"
+			"PLAYER_LANGUAGE": "消息和播放器语言",
+			"LIVE_COMMENTS": "实时评论",
+			"LIVE_COMMENTS_TOOLTIP": "将 Twitch 聊天消息显示到播放器画面上。"
 		}
 	}
 }
