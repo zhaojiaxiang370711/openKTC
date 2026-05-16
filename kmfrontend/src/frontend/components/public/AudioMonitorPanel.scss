@@ -1,0 +1,130 @@
+@use '../../styles/neo-tokens';
+
+.audio-monitor-panel {
+	@include neo-tokens.neo-raised($size: 'sm');
+	display: grid;
+	gap: 0.85rem;
+	margin: 1rem 0;
+	padding: 0.9rem;
+
+	&.enabled {
+		border-color: rgba(76, 175, 80, 0.35);
+	}
+
+	button {
+		@include neo-tokens.neo-interactive;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.45rem;
+		min-height: 2.65rem;
+		padding: 0.55rem 0.85rem;
+		border: neo-tokens.$neo-border;
+		border-radius: neo-tokens.$neo-radius-sm;
+		background: neo-tokens.$neo-surface;
+		color: neo-tokens.$neo-text-primary;
+		font-weight: 800;
+		font-family: inherit;
+
+		&:hover,
+		&:focus-visible {
+			@include neo-tokens.neo-hover-lift;
+		}
+
+		&:active {
+			@include neo-tokens.neo-active-press;
+		}
+
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.45;
+		}
+	}
+
+	.monitor-toggle.on {
+		background: linear-gradient(145deg, #3b8a47, #24682d);
+		color: white;
+	}
+
+	button.muted {
+		color: white;
+		background: linear-gradient(145deg, #b34b43, #79312c);
+	}
+}
+
+.audio-monitor-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+
+	> div {
+		display: grid;
+		gap: 0.2rem;
+		min-width: 0;
+	}
+
+	strong {
+		color: neo-tokens.$neo-text-primary;
+		font-size: 1.05rem;
+	}
+
+	span {
+		color: neo-tokens.$neo-text-secondary;
+		font-size: 0.9rem;
+	}
+
+	@media screen and (max-width: 640px) {
+		align-items: stretch;
+		flex-direction: column;
+	}
+}
+
+.audio-monitor-warning {
+	@include neo-tokens.neo-pressed;
+	display: flex;
+	align-items: center;
+	gap: 0.55rem;
+	padding: 0.75rem;
+	color: neo-tokens.$neo-warning;
+	font-weight: 800;
+}
+
+.audio-monitor-controls {
+	display: grid;
+	gap: 0.75rem;
+}
+
+.audio-slider {
+	display: grid;
+	gap: 0.45rem;
+
+	label {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 0.5rem;
+		color: neo-tokens.$neo-text-primary;
+		font-weight: 800;
+
+		span {
+			color: neo-tokens.$neo-accent;
+			font-variant-numeric: tabular-nums;
+		}
+	}
+
+	input[type='range'] {
+		accent-color: neo-tokens.$neo-accent;
+		width: 100%;
+	}
+}
+
+.audio-monitor-buttons {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.65rem;
+
+	@media screen and (max-width: 640px) {
+		grid-template-columns: 1fr;
+	}
+}
