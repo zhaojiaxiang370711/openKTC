@@ -24,12 +24,13 @@ Dependency install note: `register-scheme` reports a Yarn build warning in this 
 - Pure playback runtime state machine for future mpv crash recovery and runtime supervision.
 - `/health` endpoint for systemd/appliance probes.
 - Rust `tools/devctl` helper for deployment diagnostics, local PostgreSQL setup, builds, tests, health checks, and dev startup.
+- Rust `tools/devctl` detached startup falls back to local X11 display sockets like `:0` when the shell has no `DISPLAY`, matching the living-room appliance use case.
 - Chinese appliance default: `App.Language` now defaults to `zh-Hans`, the system preferences page exposes an application language selector, and the frontend registers the existing Simplified Chinese locale.
 - Rust diagnostic helpers for appliance snapshots and latest-log inspection.
 - Local project name is `openktv`; the compatibility layer still preserves upstream Karaoke Mugen WebSocket/API behavior.
 - NAS media plan: mount `smb://192.168.0.109/nas_hdd/` to a local filesystem path and point repository media folders at that mount, so downloads and playback both use the NAS-backed files.
 - Rust `openktv-runtime` JSONL process skeleton for Phase 3 playback runtime extraction. It can start, ack playback commands, maintain a small runtime snapshot, and gives the TypeScript compatibility layer a stable IPC bridge before real mpv ownership moves over.
-- Rust runtime `loadPlan` is smoke-tested with a generated local WAV file through real mpv IPC. A disabled-by-default `OPENKTV_RUST_PLAYBACK_SHADOW=1` path mirrors safe legacy player commands and the actual resolved `PlayPlan` from `setCurrentPlayPlan()` to the Rust runtime for future gray testing.
+- Rust runtime `loadPlan` is smoke-tested with a generated local WAV file through real mpv IPC. It reads mpv IPC until the matching `request_id` response, detects mpv exit, emits `runtimeCrashed`, rebuilds the mpv supervisor, emits `runtimeRecovered`, and accepts the next command after recovery. A disabled-by-default `OPENKTV_RUST_PLAYBACK_SHADOW=1` path mirrors safe legacy player commands and the actual resolved `PlayPlan` from `setCurrentPlayPlan()` to the Rust runtime for future gray testing.
 
 ## Developer CLI
 
@@ -42,6 +43,7 @@ yarn dev:runtime
 yarn dev:runtime-check
 yarn dev:runtime-mpv-check
 yarn dev:runtime-mpv-loadplan-check
+yarn dev:runtime-mpv-recover-check
 yarn dev:health
 yarn dev:snapshot
 yarn dev:logs
@@ -54,7 +56,7 @@ yarn dev:frontend
 
 `yarn dev:snapshot` prints branch/revision, key tool versions, PostgreSQL cluster state, relevant local processes, `/health`, and the newest app log path. `yarn dev:logs [lines]` tails the newest file in `app/logs`.
 
-`yarn dev:runtime` starts the Rust playback runtime JSONL process on stdio. `yarn dev:runtime-check` compiles it and performs a `runtimeReady` + `ping` smoke test. `yarn dev:runtime-mpv-check` starts the runtime in mpv backend mode with null audio/video output and verifies a real mpv IPC command acknowledgement. `yarn dev:runtime-mpv-loadplan-check` generates a tiny local WAV, submits it as a `PlayPlan`, then verifies `loadPlan/play/pause/stop` through real mpv IPC.
+`yarn dev:runtime` starts the Rust playback runtime JSONL process on stdio. `yarn dev:runtime-check` compiles it and performs a `runtimeReady` + `ping` smoke test. `yarn dev:runtime-mpv-check` starts the runtime in mpv backend mode with null audio/video output and verifies a real mpv IPC command acknowledgement. `yarn dev:runtime-mpv-loadplan-check` generates a tiny local WAV, submits it as a `PlayPlan`, then verifies `loadPlan/play/pause/stop` through real mpv IPC. `yarn dev:runtime-mpv-recover-check` kills the test mpv process and verifies `runtimeCrashed -> runtimeRecovered -> commandAck`.
 
 `yarn dev:nas` checks the Feiniu NAS media convention (`smb://192.168.0.109/nas_hdd/` mounted at `app/media/nas_hdd`) and prints whether the local mount path is actually mounted and writable.
 
@@ -65,5 +67,5 @@ See `docs/appliance-todo.md` for the living TODO list with completed and pending
 1. Move PlayPlan creation earlier, before playback, so the current song and next song can be precomputed from the queue.
 2. Replace direct `Players` calls in player services with the `RustPlaybackRuntimeClient` behind a feature flag after shadow mode records enough successful command and PlayPlan mirrors.
 3. Split `playerEnding()` into a pure decision function and side-effect subscribers.
-4. Add fake mpv integration tests for ack timeout, crash, recover, and media-ended behavior.
+4. Add fake mpv integration tests for ack timeout and media-ended behavior; real mpv crash/recover has a devctl smoke test.
 5. Add Ubuntu appliance service files and a local diagnostics page once the runtime adapter owns mpv lifecycle.

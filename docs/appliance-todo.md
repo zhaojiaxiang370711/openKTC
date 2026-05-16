@@ -37,12 +37,16 @@
   - `dev:stop`
   - `dev:restart`
   - `dev:status`
+  - 没有 `DISPLAY` 的 shell 中自动探测 `/tmp/.X11-unix/X0` / `X1`，用于本机 appliance detached 启动。
 - 新增 Rust `tools/runtime`：
   - `openktv-runtime` JSONL 进程骨架
   - `runtimeReady / stateChanged / commandAck / commandFailed` 事件输出
   - `ping / play / pause / stop / seek / setVolume / setPitch / setSpeed / setSubs / toggleFullscreen / restart` 命令确认
   - 可选 `--mpv` backend：启动真实 mpv idle 进程、创建 IPC socket、发送基础 mpv IPC 命令、检测 mpv 退出并上报 `runtimeCrashed`
   - `dev:runtime-mpv-loadplan-check`：生成本地 WAV，提交 `PlayPlan`，并通过真实 mpv IPC 验证 `loadPlan/play/pause/stop`
+  - `dev:runtime-mpv-recover-check`：杀掉测试 mpv 后验证 `runtimeCrashed -> recovering -> runtimeRecovered`，并确认恢复后仍能 ack 控制命令
+  - mpv 退出后 Rust runtime 进入 `Recovering`，自动重建 mpv supervisor，并发出 `runtimeRecovered`
+  - mpv IPC 现在按 `request_id` 读取对应响应，避免把 mpv 异步事件误判成命令失败。
   - TypeScript `RustPlaybackRuntimeClient` IPC adapter 和单元测试
 - 新增默认关闭的 Rust playback shadow 接入点：设置 `OPENKTV_RUST_PLAYBACK_SHADOW=1` 时，旧播放器仍为真相源，安全的 legacy 控制命令和真实已解析 `PlayPlan` 会镜像到 Rust runtime。
 - 新增 `LegacyPlaybackRuntimeAdapter`，把旧播放器服务调用和 command bus 包装从 WebSocket controller 中抽出，为 Phase 3 的真实 `PlaybackRuntime` 替换预留边界。
@@ -70,7 +74,7 @@
   - 从 `mpv.ts`、`mpvIPC.ts`、`player.ts`、`karaEngine.ts` 中抽出真实 mpv runtime adapter。
   - 将真实队列 `PlayPlan` 通过 feature flag 接入旧 WebSocket 播放控制路径。
   - 所有 mpv 命令统一 requestId、ack、timeout、错误码、结构化日志。
-  - mpv 崩溃后进入 `Recovering`，自动重建并向 UI 上报。
+  - 将 Rust runtime 的 `runtimeCrashed/runtimeRecovered` 投影到现有 UI 和 `/health` 诊断。
 - Phase 4: PlayPlan 预计算
   - 当前歌和下一首歌提前解析媒体路径、字幕路径、音轨、起点、显示信息。
   - 播放热路径只提交本地 ready 的 `PlayPlan`。
@@ -89,7 +93,7 @@
   - 固定显示器、固定音频设备、mpv 常驻 profile。
   - 开机恢复。
 - 测试补齐
-  - fake mpv runtime 集成测试。
+  - fake mpv runtime 集成测试，重点覆盖 ack timeout 和 media-ended；真实 mpv crash/recover 已有 devctl 烟测。
   - Socket.IO 兼容测试。
   - `PlayPlanBuilder` 缺文件/字幕/quiz modifier 覆盖。
   - command bus priority/timeout/dedup 覆盖继续扩大。

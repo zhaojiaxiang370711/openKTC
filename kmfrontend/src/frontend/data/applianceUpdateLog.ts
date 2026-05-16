@@ -21,6 +21,41 @@ type ApplianceUpdateEntry = {
 
 const entries: ApplianceUpdateEntry[] = [
 	{
+		date: '2026-05-16T15:05:00+08:00',
+		version: 'appliance-0.11',
+		type: 'appliance',
+		title: {
+			'zh-Hans': 'Rust runtime 支持 mpv 自动恢复',
+			en: 'Rust runtime mpv auto-recovery',
+		},
+		changes: {
+			fixed: [
+				{
+					'zh-Hans': 'Rust mpv IPC 现在会等到匹配 request_id 的响应，避免把 mpv 异步事件误判成命令失败。',
+					en: 'Rust mpv IPC now waits for the matching request_id response, avoiding false command failures from asynchronous mpv events.',
+				},
+				{
+					'zh-Hans': 'devctl 启动前检查不再因为 dist 构建产物暂时不存在而阻止 dev:run/dev:restart，构建步骤会重新生成它们。',
+					en: 'devctl preflight no longer blocks dev:run/dev:restart when dist artifacts are temporarily missing; the build step regenerates them.',
+				},
+				{
+					'zh-Hans': 'devctl detached 启动现在会在没有 DISPLAY 时自动使用本机 X11 显示器，例如 :0。',
+					en: 'devctl detached startup now falls back to a local X11 display such as :0 when DISPLAY is missing.',
+				},
+			],
+			improved: [
+				{
+					'zh-Hans': 'Rust 播放 runtime 现在会在测试 mpv 退出后进入 Recovering，自动重建 mpv supervisor，并发出 runtimeRecovered。',
+					en: 'The Rust playback runtime now enters Recovering after the test mpv exits, rebuilds the mpv supervisor, and emits runtimeRecovered.',
+				},
+				{
+					'zh-Hans': '新增 dev:runtime-mpv-recover-check，可以杀掉测试 mpv 并验证恢复后命令仍然能 ack。',
+					en: 'Added dev:runtime-mpv-recover-check to kill the test mpv and verify that commands still acknowledge after recovery.',
+				},
+			],
+		},
+	},
+	{
 		date: '2026-05-16T14:55:00+08:00',
 		version: 'appliance-0.10',
 		type: 'appliance',

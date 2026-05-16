@@ -25,6 +25,7 @@
     "dev:runtime-check": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- runtime-check",
     "dev:runtime-mpv-check": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- runtime-mpv-check",
     "dev:runtime-mpv-loadplan-check": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- runtime-mpv-loadplan-check",
+    "dev:runtime-mpv-recover-check": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- runtime-mpv-recover-check",
     "dev:health": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- health",
     "dev:snapshot": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- snapshot",
     "dev:logs": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- logs",

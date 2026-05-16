@@ -225,29 +225,12 @@ impl Runtime {
         payload: &Value,
     ) -> std::result::Result<Option<Value>, String> {
         if kind == "restart" {
-            let socket_path = self
-                .mpv
-                .as_ref()
-                .map(|mpv| mpv.socket_path.clone())
-                .unwrap_or_else(|| {
-                    env::temp_dir().join(format!("openktv-runtime-{}.sock", std::process::id()))
-                });
-            self.state.status = RuntimeStatus::Recovering;
-            self.mpv = Some(MpvSupervisor::start(socket_path)?);
-            self.state.mpv_alive = true;
+            self.restart_mpv("manual restart", true)?;
             return Ok(None);
         }
 
+        self.ensure_mpv_available()?;
         let mpv = self.mpv.as_mut().ok_or("mpv supervisor is not running")?;
-        if let Some(exit) = mpv.try_wait().map_err(|err| err.to_string())? {
-            self.state.status = RuntimeStatus::Recovering;
-            self.state.mpv_alive = false;
-            emit(RuntimeEvent::runtime_crashed(&format!(
-                "mpv exited with status {exit}"
-            )))
-            .map_err(|err| err.to_string())?;
-            return Err(format!("mpv exited with status {exit}"));
-        }
 
         let mut response = None;
         match kind {
@@ -385,20 +368,94 @@ impl Runtime {
     }
 
     fn observe_mpv_exit(&mut self) -> Result<()> {
-        let Some(mpv) = self.mpv.as_mut() else {
+        if self.state.backend != RuntimeBackend::Mpv {
             return Ok(());
         };
 
-        if let Some(exit) = mpv.try_wait()? {
-            self.state.status = RuntimeStatus::Recovering;
-            self.state.mpv_alive = false;
-            emit(RuntimeEvent::runtime_crashed(&format!(
-                "mpv exited with status {exit}"
-            )))?;
-            emit(RuntimeEvent::state_changed(self.state.snapshot()))?;
+        if let Some(reason) = self.detect_mpv_exit()? {
+            self.recover_mpv(&reason).map_err(io::Error::other)?;
         }
 
         Ok(())
+    }
+
+    fn ensure_mpv_available(&mut self) -> std::result::Result<(), String> {
+        if self.state.backend != RuntimeBackend::Mpv {
+            return Ok(());
+        }
+
+        if let Some(reason) = self.detect_mpv_exit().map_err(|err| err.to_string())? {
+            self.recover_mpv(&reason)?;
+        }
+
+        Ok(())
+    }
+
+    fn detect_mpv_exit(&mut self) -> io::Result<Option<String>> {
+        let Some(mpv) = self.mpv.as_mut() else {
+            return Ok(Some("mpv supervisor is not running".to_string()));
+        };
+
+        Ok(mpv
+            .try_wait()?
+            .map(|exit| format!("mpv exited with status {exit}")))
+    }
+
+    fn recover_mpv(&mut self, reason: &str) -> std::result::Result<(), String> {
+        emit(RuntimeEvent::runtime_crashed(reason)).map_err(|err| err.to_string())?;
+        self.restart_mpv(reason, false)
+    }
+
+    fn restart_mpv(
+        &mut self,
+        reason: &str,
+        shutdown_existing: bool,
+    ) -> std::result::Result<(), String> {
+        let socket_path = self.current_mpv_socket_path();
+        let old_mpv = self.mpv.take();
+        if shutdown_existing {
+            if let Some(mut mpv) = old_mpv {
+                mpv.shutdown();
+            }
+        }
+
+        self.state.status = RuntimeStatus::Recovering;
+        self.state.mpv_alive = false;
+        self.state.position = 0.0;
+        self.state.current_plan_id = None;
+        emit(RuntimeEvent::state_changed(self.state.snapshot())).map_err(|err| err.to_string())?;
+
+        match MpvSupervisor::start(socket_path) {
+            Ok(supervisor) => {
+                self.mpv = Some(supervisor);
+                self.state.status = RuntimeStatus::Ready;
+                self.state.mpv_alive = true;
+                emit(RuntimeEvent::runtime_recovered(
+                    reason,
+                    self.state.snapshot(),
+                ))
+                .map_err(|err| err.to_string())?;
+                emit(RuntimeEvent::state_changed(self.state.snapshot()))
+                    .map_err(|err| err.to_string())?;
+                Ok(())
+            }
+            Err(err) => {
+                self.state.status = RuntimeStatus::Failed;
+                self.state.mpv_alive = false;
+                emit(RuntimeEvent::state_changed(self.state.snapshot()))
+                    .map_err(|err| err.to_string())?;
+                Err(err)
+            }
+        }
+    }
+
+    fn current_mpv_socket_path(&self) -> PathBuf {
+        self.mpv
+            .as_ref()
+            .map(|mpv| mpv.socket_path.clone())
+            .unwrap_or_else(|| {
+                env::temp_dir().join(format!("openktv-runtime-{}.sock", std::process::id()))
+            })
     }
 
     fn command_payload(&self, kind: &str, mpv_response: Option<Value>) -> Value {
@@ -488,15 +545,28 @@ impl MpvSupervisor {
 
         let mut stream = UnixStream::connect(&self.socket_path)
             .map_err(|err| format!("failed to connect mpv IPC: {err}"))?;
+        stream
+            .set_read_timeout(Some(Duration::from_secs(5)))
+            .map_err(|err| err.to_string())?;
         serde_json::to_writer(&mut stream, &request).map_err(|err| err.to_string())?;
         stream.write_all(b"\n").map_err(|err| err.to_string())?;
         stream.flush().map_err(|err| err.to_string())?;
 
-        let mut response = String::new();
-        BufReader::new(stream)
-            .read_line(&mut response)
-            .map_err(|err| err.to_string())?;
-        let value: Value = serde_json::from_str(&response).map_err(|err| err.to_string())?;
+        let mut reader = BufReader::new(stream);
+        let value = loop {
+            let mut response = String::new();
+            let bytes = reader
+                .read_line(&mut response)
+                .map_err(|err| err.to_string())?;
+            if bytes == 0 {
+                return Err("mpv IPC closed before command response".to_string());
+            }
+
+            let value: Value = serde_json::from_str(&response).map_err(|err| err.to_string())?;
+            if value.get("request_id").and_then(Value::as_i64) == Some(request_id) {
+                break value;
+            }
+        };
         let error = value
             .get("error")
             .and_then(Value::as_str)
@@ -577,6 +647,18 @@ impl RuntimeEvent {
                     "code": "mpvExited",
                     "message": message,
                 }
+            })),
+        }
+    }
+
+    fn runtime_recovered(message: &str, snapshot: RuntimeSnapshot) -> Self {
+        Self {
+            event_type: "runtimeRecovered",
+            created_at: now(),
+            request_id: None,
+            payload: Some(json!({
+                "message": message,
+                "snapshot": snapshot,
             })),
         }
     }

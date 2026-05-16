@@ -1,10 +1,12 @@
 use std::{
     env, fs,
-    io::{Read, Write},
+    io::{BufRead, BufReader, Read, Write},
     net::TcpStream,
     path::{Path, PathBuf},
     process::{Command, ExitCode, Stdio},
-    time::{Duration, SystemTime},
+    sync::mpsc::{self, Receiver},
+    thread,
+    time::{Duration, Instant, SystemTime},
 };
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -42,6 +44,7 @@ fn main() -> ExitCode {
         "runtime-check" => runtime_check(&ctx),
         "runtime-mpv-check" => runtime_mpv_check(&ctx),
         "runtime-mpv-loadplan-check" => runtime_mpv_loadplan_check(&ctx),
+        "runtime-mpv-recover-check" => runtime_mpv_recover_check(&ctx),
         "health" => health(
             args.next()
                 .as_deref()
@@ -123,6 +126,8 @@ Usage:
   yarn dev:runtime-mpv-check   Smoke-test the Rust runtime with a real mpv IPC process
   yarn dev:runtime-mpv-loadplan-check
                                Smoke-test Rust runtime loadPlan with a local media file
+  yarn dev:runtime-mpv-recover-check
+                               Kill test mpv and verify automatic Rust runtime recovery
   yarn dev:health [url]        Fetch /health from a running instance
   yarn dev:snapshot [url]      Print a local appliance diagnostic snapshot
   yarn dev:logs [lines]        Print the tail of the latest app log
@@ -152,8 +157,12 @@ fn doctor(ctx: &Context) -> Result<()> {
             &ctx.frontend.join("node_modules"),
             true,
         ),
-        check_path("backend dist", &ctx.root.join("dist/index.mjs"), true),
-        check_path("frontend dist", &ctx.frontend.join("dist/index.html"), true),
+        check_path("backend dist", &ctx.root.join("dist/index.mjs"), false),
+        check_path(
+            "frontend dist",
+            &ctx.frontend.join("dist/index.html"),
+            false,
+        ),
         check_path("src/lib submodule", &ctx.root.join("src/lib/.git"), true),
         check_path(
             "systemRepo submodule",
@@ -317,6 +326,100 @@ fn runtime_mpv_loadplan_check(ctx: &Context) -> Result<()> {
     runtime_smoke(ctx, true, true)
 }
 
+fn runtime_mpv_recover_check(ctx: &Context) -> Result<()> {
+    run(
+        "cargo",
+        &["check", "--manifest-path", "tools/runtime/Cargo.toml"],
+        &ctx.root,
+        None,
+    )?;
+
+    fs::create_dir_all(ctx.root.join("app/run"))?;
+    let socket_path = ctx.root.join("app/run/openktv-runtime-recover.sock");
+    let _ = fs::remove_file(&socket_path);
+
+    let mut command = Command::new("cargo");
+    command
+        .args([
+            "run",
+            "--quiet",
+            "--manifest-path",
+            "tools/runtime/Cargo.toml",
+            "--",
+            "--mpv",
+        ])
+        .current_dir(&ctx.root)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::inherit())
+        .env("OPENKTV_RUNTIME_MPV_ARGS", "--vo=null --ao=null")
+        .env("OPENKTV_RUNTIME_MPV_SOCKET", &socket_path);
+
+    let mut child = command.spawn()?;
+    let stdout = child.stdout.take().ok_or("runtime stdout unavailable")?;
+    let receiver = spawn_line_reader(stdout);
+    let mut transcript = Vec::new();
+
+    let result = (|| -> Result<()> {
+        wait_for_runtime_output(
+            &receiver,
+            &mut transcript,
+            r#""type":"runtimeReady""#,
+            Duration::from_secs(15),
+        )?;
+
+        let mpv_pid =
+            wait_for_pid_matching(&socket_path.display().to_string(), Duration::from_secs(5))?;
+        kill_pid(mpv_pid)?;
+        wait_until_stopped(mpv_pid, Duration::from_secs(5));
+
+        let stdin = child.stdin.as_mut().ok_or("runtime stdin unavailable")?;
+        stdin.write_all(br#"{"requestId":"devctl-recover-ping","kind":"ping"}"#)?;
+        stdin.write_all(b"\n")?;
+        stdin.flush()?;
+
+        wait_for_runtime_outputs(
+            &receiver,
+            &mut transcript,
+            &[
+                r#""type":"runtimeCrashed""#,
+                r#""type":"runtimeRecovered""#,
+                r#""requestId":"devctl-recover-ping""#,
+            ],
+            Duration::from_secs(15),
+        )?;
+
+        let stdin = child.stdin.as_mut().ok_or("runtime stdin unavailable")?;
+        stdin.write_all(
+            br#"{"requestId":"devctl-post-recover-volume","kind":"setVolume","payload":{"volume":25}}"#,
+        )?;
+        stdin.write_all(b"\n")?;
+        stdin.flush()?;
+
+        wait_for_runtime_output(
+            &receiver,
+            &mut transcript,
+            r#""requestId":"devctl-post-recover-volume""#,
+            Duration::from_secs(15),
+        )?;
+        Ok(())
+    })();
+
+    drop(child.stdin.take());
+    if result.is_err() {
+        let _ = child.kill();
+    }
+    let status = child.wait()?;
+    print_block(transcript.join("\n"));
+
+    result?;
+    if !status.success() {
+        return Err(format!("runtime recovery smoke test failed with status {status}").into());
+    }
+
+    Ok(())
+}
+
 fn runtime_smoke(ctx: &Context, mpv: bool, load_plan: bool) -> Result<()> {
     run(
         "cargo",
@@ -395,28 +498,35 @@ fn runtime_smoke(ctx: &Context, mpv: bool, load_plan: bool) -> Result<()> {
         return Err(format!("runtime smoke test failed with status {status}").into());
     }
     if !output.contains(r#""type":"runtimeReady""#)
-        || !output.contains(r#""requestId":"devctl-ping""#)
+        || !output_has_command_ack(&output, "devctl-ping")
     {
         return Err("runtime smoke test did not produce ready and ping ack events".into());
     }
     if mpv
         && (!output.contains(r#""backend":"mpv""#)
-            || !output.contains(r#""requestId":"devctl-volume""#))
+            || !output_has_command_ack(&output, "devctl-volume"))
     {
         return Err(
             "mpv runtime smoke test did not produce mpv backend and volume ack events".into(),
         );
     }
     if load_plan
-        && (!output.contains(r#""requestId":"devctl-loadplan""#)
+        && (!output_has_command_ack(&output, "devctl-loadplan")
             || !output.contains(r#""currentPlanId":"devctl-smoke""#)
-            || !output.contains(r#""requestId":"devctl-stop""#))
+            || !output_has_command_ack(&output, "devctl-stop"))
     {
         return Err(
             "mpv runtime loadPlan smoke test did not load and stop the local media plan".into(),
         );
     }
     Ok(())
+}
+
+fn output_has_command_ack(output: &str, request_id: &str) -> bool {
+    let request_id = format!(r#""requestId":"{request_id}""#);
+    output
+        .lines()
+        .any(|line| line.contains(r#""type":"commandAck""#) && line.contains(&request_id))
 }
 
 fn write_runtime_smoke_wav(ctx: &Context) -> Result<PathBuf> {
@@ -560,6 +670,7 @@ fn start_detached(ctx: &Context) -> Result<()> {
         .open(&log_path)?;
     let stderr = stdout.try_clone()?;
     let electron = electron_binary(ctx);
+    let fallback_display = fallback_display();
 
     let mut command = if command_available("setsid") {
         let mut command = Command::new("setsid");
@@ -576,6 +687,9 @@ fn start_detached(ctx: &Context) -> Result<()> {
         .stderr(Stdio::from(stderr))
         .env_remove("ELECTRON_RUN_AS_NODE")
         .env("ELECTRON_DISABLE_SANDBOX", "1");
+    if let Some(display) = fallback_display.as_deref() {
+        command.env("DISPLAY", display);
+    }
 
     let child = command.spawn()?;
     fs::write(pid_path(ctx), format!("{}\n", child.id()))?;
@@ -716,6 +830,10 @@ fn start_headless(ctx: &Context) -> Result<()> {
     let mut envs: Vec<(String, String)> = env::vars().collect();
     envs.retain(|(key, _)| key != "ELECTRON_RUN_AS_NODE");
     envs.push(("ELECTRON_DISABLE_SANDBOX".to_string(), "1".to_string()));
+    if let Some(display) = fallback_display() {
+        envs.retain(|(key, _)| key != "DISPLAY");
+        envs.push(("DISPLAY".to_string(), display));
+    }
     run_path(&electron, &[".", "--cli"], &ctx.root, Some(&envs))?;
     Ok(())
 }
@@ -739,6 +857,19 @@ fn electron_binary(ctx: &Context) -> PathBuf {
     } else {
         ctx.root.join("node_modules/.bin/electron")
     }
+}
+
+fn fallback_display() -> Option<String> {
+    if env::var_os("DISPLAY").is_some() {
+        return None;
+    }
+    [":0", ":1"].iter().find_map(|display| {
+        let socket = display.trim_start_matches(':');
+        Path::new("/tmp/.X11-unix")
+            .join(format!("X{socket}"))
+            .exists()
+            .then(|| (*display).to_string())
+    })
 }
 
 fn read_pid(ctx: &Context) -> Result<Option<u32>> {
@@ -773,6 +904,89 @@ fn wait_until_stopped(pid: u32, timeout: Duration) {
     while process_alive(pid) && SystemTime::now() < deadline {
         std::thread::sleep(Duration::from_millis(250));
     }
+}
+
+fn wait_for_pid_matching(pattern: &str, timeout: Duration) -> Result<u32> {
+    let deadline = Instant::now() + timeout;
+    while Instant::now() < deadline {
+        if let Some(pid) = pids_matching(pattern)?
+            .into_iter()
+            .find(|pid| process_alive(*pid))
+        {
+            return Ok(pid);
+        }
+        thread::sleep(Duration::from_millis(100));
+    }
+
+    Err(format!("timed out waiting for process matching {pattern}").into())
+}
+
+fn spawn_line_reader<R: Read + Send + 'static>(reader: R) -> Receiver<String> {
+    let (sender, receiver) = mpsc::channel();
+    thread::spawn(move || {
+        for line in BufReader::new(reader).lines() {
+            match line {
+                Ok(line) => {
+                    if sender.send(line).is_err() {
+                        break;
+                    }
+                }
+                Err(err) => {
+                    let _ = sender.send(format!("__OPENKTV_DEVCTL_READ_ERROR__ {err}"));
+                    break;
+                }
+            }
+        }
+    });
+    receiver
+}
+
+fn wait_for_runtime_output(
+    receiver: &Receiver<String>,
+    transcript: &mut Vec<String>,
+    needle: &str,
+    timeout: Duration,
+) -> Result<()> {
+    wait_for_runtime_outputs(receiver, transcript, &[needle], timeout)
+}
+
+fn wait_for_runtime_outputs(
+    receiver: &Receiver<String>,
+    transcript: &mut Vec<String>,
+    needles: &[&str],
+    timeout: Duration,
+) -> Result<()> {
+    let deadline = Instant::now() + timeout;
+    let mut seen = vec![false; needles.len()];
+
+    while Instant::now() < deadline {
+        let remaining = deadline.saturating_duration_since(Instant::now());
+        let line = match receiver.recv_timeout(remaining) {
+            Ok(line) => line,
+            Err(mpsc::RecvTimeoutError::Timeout) => break,
+            Err(mpsc::RecvTimeoutError::Disconnected) => break,
+        };
+        if line.starts_with("__OPENKTV_DEVCTL_READ_ERROR__") {
+            return Err(line.into());
+        }
+        for (index, needle) in needles.iter().enumerate() {
+            if line.contains(needle) {
+                seen[index] = true;
+            }
+        }
+        transcript.push(line);
+        if seen.iter().all(|value| *value) {
+            return Ok(());
+        }
+    }
+
+    let missing = needles
+        .iter()
+        .enumerate()
+        .filter_map(|(index, needle)| (!seen[index]).then_some(*needle))
+        .collect::<Vec<_>>()
+        .join(", ");
+    Err(format!("runtime output did not contain: {missing}").into())
 }
 
 fn kill_matching(pattern: &str) -> Result<()> {
