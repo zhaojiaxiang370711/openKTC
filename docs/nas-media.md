@@ -2,7 +2,8 @@
 
 OpenKTV should use the Feiniu NAS share as the durable media store:
 
-- SMB URL: `smb://xfn.local/nas_hdd/`
+- SMB URL: `smb://192.168.0.109/nas_hdd/`
+- Optional LAN alias: `smb://xfn.local/nas_hdd/`
 - Local mount point: `/home/x/code/openktv/app/media/nas_hdd`
 
 Karaoke Mugen/OpenKTV media code expects normal filesystem paths for downloads, scans, previews, and mpv playback. Do not put the raw `smb://...` URL into `app/config.yml`; mount it locally first.
@@ -11,11 +12,21 @@ Karaoke Mugen/OpenKTV media code expects normal filesystem paths for downloads, 
 
 ```sh
 mkdir -p /home/x/code/openktv/app/media/nas_hdd
-sudo mount -t cifs //xfn.local/nas_hdd /home/x/code/openktv/app/media/nas_hdd \
-  -o username=<NAS_USER>,uid=$(id -u),gid=$(id -g),iocharset=utf8,vers=3.0
+sudo mount -t cifs //192.168.0.109/nas_hdd /home/x/code/openktv/app/media/nas_hdd \
+  -o credentials=/home/x/.config/openktv/nas-credentials,uid=$(id -u),gid=$(id -g),iocharset=utf8,vers=3.0,noperm
 ```
 
-If the NAS allows guest access, replace the username option with `guest`.
+The credentials file is local-private and must not be committed:
+
+```text
+username=<NAS_USER>
+password=<NAS_PASSWORD>
+domain=WORKGROUP
+```
+
+Use `chmod 600 /home/x/.config/openktv/nas-credentials` after creating it.
+
+If the NAS allows guest access, replace the credentials option with `guest`.
 
 ## Expected Layout
 

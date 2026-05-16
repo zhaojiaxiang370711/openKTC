@@ -27,7 +27,7 @@ Dependency install note: `register-scheme` reports a Yarn build warning in this 
 - Chinese appliance default: `App.Language` now defaults to `zh-Hans`, the system preferences page exposes an application language selector, and the frontend registers the existing Simplified Chinese locale.
 - Rust diagnostic helpers for appliance snapshots and latest-log inspection.
 - Local project name is `openktv`; the compatibility layer still preserves upstream Karaoke Mugen WebSocket/API behavior.
-- NAS media plan: mount `smb://xfn.local/nas_hdd/` to a local filesystem path and point repository media folders at that mount, so downloads and playback both use the NAS-backed files.
+- NAS media plan: mount `smb://192.168.0.109/nas_hdd/` to a local filesystem path and point repository media folders at that mount, so downloads and playback both use the NAS-backed files.
 
 ## Developer CLI
 
@@ -48,7 +48,7 @@ yarn dev:frontend
 
 `yarn dev:snapshot` prints branch/revision, key tool versions, PostgreSQL cluster state, relevant local processes, `/health`, and the newest app log path. `yarn dev:logs [lines]` tails the newest file in `app/logs`.
 
-`yarn dev:nas` checks the Feiniu NAS media convention (`smb://xfn.local/nas_hdd/` mounted at `app/media/nas_hdd`) and prints whether the local mount path is actually mounted and writable.
+`yarn dev:nas` checks the Feiniu NAS media convention (`smb://192.168.0.109/nas_hdd/` mounted at `app/media/nas_hdd`) and prints whether the local mount path is actually mounted and writable.
 
 ## Next Execution Steps
 

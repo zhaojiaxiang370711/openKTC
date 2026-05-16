@@ -21,6 +21,27 @@ type ApplianceUpdateEntry = {
 
 const entries: ApplianceUpdateEntry[] = [
 	{
+		date: '2026-05-16T13:05:00+08:00',
+		version: 'appliance-0.6',
+		type: 'appliance',
+		title: {
+			'zh-Hans': 'NAS 地址确认和挂载验证',
+			en: 'NAS address confirmed and mount verified',
+		},
+		changes: {
+			improved: [
+				{
+					'zh-Hans': '将飞牛 NAS 默认地址固定为 smb://192.168.0.109/nas_hdd/，xfn.local 仅作为局域网别名保留。',
+					en: 'Pinned the Feiniu NAS default address to smb://192.168.0.109/nas_hdd/ while keeping xfn.local as a LAN alias.',
+				},
+				{
+					'zh-Hans': '本机媒体挂载点使用私有凭据文件接入 NAS，避免把账号密码写入仓库配置。',
+					en: 'Connected the local media mount through a private credentials file so NAS credentials stay out of repository config.',
+				},
+			],
+		},
+	},
+	{
 		date: '2026-05-16T12:20:00+08:00',
 		version: 'appliance-0.5',
 		type: 'appliance',
@@ -35,8 +56,8 @@ const entries: ApplianceUpdateEntry[] = [
 					en: 'Renamed the local project to OpenKTV while preserving Karaoke Mugen upstream protocol and client compatibility.',
 				},
 				{
-					'zh-Hans': '新增飞牛 NAS 媒体目录约定：将 smb://xfn.local/nas_hdd/ 挂载为本机目录后作为下载和播放媒体根。',
-					en: 'Added the Feiniu NAS media convention: mount smb://xfn.local/nas_hdd/ locally and use it as the download/playback media root.',
+					'zh-Hans': '新增飞牛 NAS 媒体目录约定：将 SMB 共享挂载为本机目录后作为下载和播放媒体根。',
+					en: 'Added the Feiniu NAS media convention: mount the SMB share locally and use it as the download/playback media root.',
 				},
 			],
 		},

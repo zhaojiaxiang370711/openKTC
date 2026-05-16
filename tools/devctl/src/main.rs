@@ -457,8 +457,8 @@ fn status(ctx: &Context) -> Result<()> {
 }
 
 fn nas_media(ctx: &Context) -> Result<()> {
-    let smb_url =
-        env::var("OPENKTV_NAS_SMB").unwrap_or_else(|_| "smb://xfn.local/nas_hdd/".to_string());
+    let smb_url = env::var("OPENKTV_NAS_SMB")
+        .unwrap_or_else(|_| "smb://192.168.0.109/nas_hdd/".to_string());
     let mount_path = env::var("OPENKTV_NAS_MOUNT")
         .map(PathBuf::from)
         .unwrap_or_else(|_| ctx.root.join("app/media/nas_hdd"));
