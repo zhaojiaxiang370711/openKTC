@@ -35,6 +35,8 @@ export class RustPlaybackRuntimeClient extends EventEmitter {
 
 	private readyPromise?: Promise<void>;
 
+	private readySeen = false;
+
 	private pending = new Map<string, PendingCommand>();
 
 	constructor(private readonly options: RustPlaybackRuntimeOptions) {
@@ -49,6 +51,7 @@ export class RustPlaybackRuntimeClient extends EventEmitter {
 			env: this.options.env,
 			stdio: 'pipe',
 		});
+		this.readySeen = false;
 
 		this.lines = createInterface({ input: this.child.stdout });
 		this.lines.on('line', line => this.handleLine(line));
@@ -69,6 +72,10 @@ export class RustPlaybackRuntimeClient extends EventEmitter {
 				clearTimeout(timeout);
 				reject(error);
 			});
+			if (this.readySeen) {
+				clearTimeout(timeout);
+				resolve();
+			}
 		});
 
 		return this.readyPromise;
@@ -112,6 +119,7 @@ export class RustPlaybackRuntimeClient extends EventEmitter {
 	stop() {
 		this.lines?.close();
 		this.lines = undefined;
+		this.readySeen = false;
 		if (this.child && !this.child.killed) {
 			this.child.kill();
 		}
@@ -136,6 +144,7 @@ export class RustPlaybackRuntimeClient extends EventEmitter {
 
 		this.emit('event', event);
 		this.emit(event.type, event);
+		if (event.type === 'runtimeReady') this.readySeen = true;
 
 		if (event.requestId && (event.type === 'commandAck' || event.type === 'commandFailed')) {
 			this.resolvePending(event);

@@ -39,6 +39,7 @@ yarn dev:build
 yarn dev:test
 yarn dev:runtime
 yarn dev:runtime-check
+yarn dev:runtime-mpv-check
 yarn dev:health
 yarn dev:snapshot
 yarn dev:logs
@@ -51,7 +52,7 @@ yarn dev:frontend
 
 `yarn dev:snapshot` prints branch/revision, key tool versions, PostgreSQL cluster state, relevant local processes, `/health`, and the newest app log path. `yarn dev:logs [lines]` tails the newest file in `app/logs`.
 
-`yarn dev:runtime` starts the Rust playback runtime JSONL process on stdio. `yarn dev:runtime-check` compiles it and performs a `runtimeReady` + `ping` smoke test.
+`yarn dev:runtime` starts the Rust playback runtime JSONL process on stdio. `yarn dev:runtime-check` compiles it and performs a `runtimeReady` + `ping` smoke test. `yarn dev:runtime-mpv-check` starts the runtime in mpv backend mode with null audio/video output and verifies a real mpv IPC command acknowledgement.
 
 `yarn dev:nas` checks the Feiniu NAS media convention (`smb://192.168.0.109/nas_hdd/` mounted at `app/media/nas_hdd`) and prints whether the local mount path is actually mounted and writable.
 
@@ -60,7 +61,7 @@ yarn dev:frontend
 See `docs/appliance-todo.md` for the living TODO list with completed and pending work.
 
 1. Move PlayPlan creation earlier, before playback, so the current song and next song can be precomputed from the queue.
-2. Move the Rust runtime from dry-run command acknowledgement to real mpv process ownership.
+2. Expand Rust mpv ownership from smoke-tested lifecycle/control commands to `loadPlan` playback with real media files.
 3. Replace direct `Players` calls in player services with the `RustPlaybackRuntimeClient` behind a feature flag.
 4. Split `playerEnding()` into a pure decision function and side-effect subscribers.
 5. Add fake mpv integration tests for ack timeout, crash, recover, and media-ended behavior.

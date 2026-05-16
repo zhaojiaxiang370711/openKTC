@@ -41,6 +41,7 @@
   - `openktv-runtime` JSONL 进程骨架
   - `runtimeReady / stateChanged / commandAck / commandFailed` 事件输出
   - `ping / play / pause / stop / seek / setVolume / setPitch / setSpeed / setSubs / toggleFullscreen / restart` 命令确认
+  - 可选 `--mpv` backend：启动真实 mpv idle 进程、创建 IPC socket、发送基础 mpv IPC 命令、检测 mpv 退出并上报 `runtimeCrashed`
   - TypeScript `RustPlaybackRuntimeClient` IPC adapter 和单元测试
 - 新增 `LegacyPlaybackRuntimeAdapter`，把旧播放器服务调用和 command bus 包装从 WebSocket controller 中抽出，为 Phase 3 的真实 `PlaybackRuntime` 替换预留边界。
 - 本地项目名改为 `openktv`，保留上游兼容行为。
@@ -58,13 +59,14 @@
 - 将 Rust `devctl` 作为本地 appliance 操作入口，减少对 Node 脚本的诊断依赖。
 - 将现有播放器状态逐步从全局 `state.player` 迁到 `PlayerSnapshot` 真相源。
 - 将播放控制路径从旧服务 adapter 迁到真正独立的 `PlaybackRuntime`。
-- 将 Rust runtime 从 dry-run command ack 升级到真实 mpv 生命周期所有者。
+- 将 Rust runtime 从 mpv lifecycle smoke test 升级到真实 `PlayPlan` 播放所有者。
 - 将 `PlayPlan` 创建前移到播放热路径之前。
 
 ## 未完成
 
 - Phase 3: Playback Runtime 独立化
   - 从 `mpv.ts`、`mpvIPC.ts`、`player.ts`、`karaEngine.ts` 中抽出真实 mpv runtime adapter。
+  - 将 `loadPlan` 接到真实本地媒体播放，并通过 feature flag 接入旧 WebSocket 播放控制路径。
   - 所有 mpv 命令统一 requestId、ack、timeout、错误码、结构化日志。
   - mpv 崩溃后进入 `Recovering`，自动重建并向 UI 上报。
 - Phase 4: PlayPlan 预计算

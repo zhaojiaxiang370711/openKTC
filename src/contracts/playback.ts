@@ -45,6 +45,7 @@ export type PlaybackEventType =
 	| 'mediaEnded'
 	| 'commandAck'
 	| 'commandFailed'
+	| 'runtimeCrashed'
 	| 'runtimeRecovered';
 
 export interface PlayPlan {
@@ -87,4 +88,3 @@ export interface PlaybackEvent<Payload = unknown> {
 	requestId?: string;
 	createdAt: string;
 }
-

@@ -40,6 +40,7 @@ fn main() -> ExitCode {
         "build" => build(&ctx),
         "test" => test(&ctx),
         "runtime-check" => runtime_check(&ctx),
+        "runtime-mpv-check" => runtime_mpv_check(&ctx),
         "health" => health(
             args.next()
                 .as_deref()
@@ -118,6 +119,7 @@ Usage:
   yarn dev:build               Build backend and frontend
   yarn dev:test                Run typecheck and unit tests
   yarn dev:runtime-check       Build and smoke-test the Rust playback runtime
+  yarn dev:runtime-mpv-check   Smoke-test the Rust runtime with a real mpv IPC process
   yarn dev:health [url]        Fetch /health from a running instance
   yarn dev:snapshot [url]      Print a local appliance diagnostic snapshot
   yarn dev:logs [lines]        Print the tail of the latest app log
@@ -301,6 +303,14 @@ fn test(ctx: &Context) -> Result<()> {
 }
 
 fn runtime_check(ctx: &Context) -> Result<()> {
+    runtime_smoke(ctx, false)
+}
+
+fn runtime_mpv_check(ctx: &Context) -> Result<()> {
+    runtime_smoke(ctx, true)
+}
+
+fn runtime_smoke(ctx: &Context, mpv: bool) -> Result<()> {
     run(
         "cargo",
         &["check", "--manifest-path", "tools/runtime/Cargo.toml"],
@@ -308,23 +318,40 @@ fn runtime_check(ctx: &Context) -> Result<()> {
         None,
     )?;
 
-    let mut child = Command::new("cargo")
-        .args([
-            "run",
-            "--quiet",
-            "--manifest-path",
-            "tools/runtime/Cargo.toml",
-        ])
+    let mut args = vec![
+        "run",
+        "--quiet",
+        "--manifest-path",
+        "tools/runtime/Cargo.toml",
+    ];
+    if mpv {
+        args.push("--");
+        args.push("--mpv");
+    }
+
+    let mut command = Command::new("cargo");
+    command
+        .args(args)
         .current_dir(&ctx.root)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
-        .stderr(Stdio::inherit())
-        .spawn()?;
+        .stderr(Stdio::inherit());
+    if mpv {
+        command.env("OPENKTV_RUNTIME_MPV_ARGS", "--vo=null --ao=null");
+    }
+
+    let mut child = command.spawn()?;
 
     {
         let stdin = child.stdin.as_mut().ok_or("runtime stdin unavailable")?;
         stdin.write_all(br#"{"requestId":"devctl-ping","kind":"ping"}"#)?;
         stdin.write_all(b"\n")?;
+        if mpv {
+            stdin.write_all(
+                br#"{"requestId":"devctl-volume","kind":"setVolume","payload":{"volume":50}}"#,
+            )?;
+            stdin.write_all(b"\n")?;
+        }
     }
     drop(child.stdin.take());
 
@@ -344,6 +371,14 @@ fn runtime_check(ctx: &Context) -> Result<()> {
         || !output.contains(r#""requestId":"devctl-ping""#)
     {
         return Err("runtime smoke test did not produce ready and ping ack events".into());
+    }
+    if mpv
+        && (!output.contains(r#""backend":"mpv""#)
+            || !output.contains(r#""requestId":"devctl-volume""#))
+    {
+        return Err(
+            "mpv runtime smoke test did not produce mpv backend and volume ack events".into(),
+        );
     }
     Ok(())
 }

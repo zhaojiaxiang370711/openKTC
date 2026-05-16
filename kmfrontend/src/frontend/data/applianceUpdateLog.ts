@@ -21,6 +21,27 @@ type ApplianceUpdateEntry = {
 
 const entries: ApplianceUpdateEntry[] = [
 	{
+		date: '2026-05-16T14:10:00+08:00',
+		version: 'appliance-0.8',
+		type: 'appliance',
+		title: {
+			'zh-Hans': 'Rust runtime 接入真实 mpv IPC',
+			en: 'Rust runtime connected to real mpv IPC',
+		},
+		changes: {
+			improved: [
+				{
+					'zh-Hans': 'openktv-runtime 新增可选 --mpv backend，可以启动真实 mpv idle 进程并通过 IPC 确认基础播放控制命令。',
+					en: 'openktv-runtime now has an optional --mpv backend that starts a real idle mpv process and acknowledges basic playback controls through IPC.',
+				},
+				{
+					'zh-Hans': '新增 dev:runtime-mpv-check，用 null 音视频输出验证 mpv IPC，不影响当前客厅播放服务。',
+					en: 'Added dev:runtime-mpv-check to verify mpv IPC with null audio/video output without affecting the current living-room playback service.',
+				},
+			],
+		},
+	},
+	{
 		date: '2026-05-16T13:40:00+08:00',
 		version: 'appliance-0.7',
 		type: 'appliance',
