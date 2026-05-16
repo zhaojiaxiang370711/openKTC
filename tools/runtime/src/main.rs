@@ -262,7 +262,21 @@ impl Runtime {
                             .and_then(Value::as_str)
                     })
                     .ok_or("loadPlan requires mediaPath")?;
-                response = Some(mpv.ipc_command(json!(["loadfile", media_path, "replace"]))?);
+                let mut command = vec![
+                    json!("loadfile"),
+                    json!(media_path),
+                    json!("replace"),
+                    json!("0"),
+                    normalize_mpv_options(payload.get("mpvOptions")),
+                ];
+                if let Some(subtitle_path) = payload.get("subtitlePath").and_then(Value::as_str) {
+                    let options = command.last_mut().expect("loadfile options exists");
+                    if let Some(map) = options.as_object_mut() {
+                        map.insert("sub-file".to_string(), json!(subtitle_path));
+                        map.insert("sid".to_string(), json!("1"));
+                    }
+                }
+                response = Some(mpv.ipc_command(Value::Array(std::mem::take(&mut command)))?);
             }
             "play" => {
                 response = Some(mpv.ipc_command(json!(["set_property", "pause", false]))?);
@@ -573,6 +587,13 @@ fn extra_mpv_args() -> Vec<String> {
         .ok()
         .map(|args| args.split_whitespace().map(ToOwned::to_owned).collect())
         .unwrap_or_default()
+}
+
+fn normalize_mpv_options(options: Option<&Value>) -> Value {
+    match options {
+        Some(Value::Object(map)) => Value::Object(map.clone()),
+        _ => json!({}),
+    }
 }
 
 fn wait_for_socket(path: &Path, child: &mut Child) -> std::result::Result<(), String> {

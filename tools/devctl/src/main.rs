@@ -367,7 +367,7 @@ fn runtime_smoke(ctx: &Context, mpv: bool, load_plan: bool) -> Result<()> {
         }
         if let Some(media_path) = smoke_media.as_ref() {
             let load_plan = format!(
-                r#"{{"requestId":"devctl-loadplan","kind":"loadPlan","payload":{{"id":"devctl-smoke","mediaType":"song","mediaPath":"{}","mpvOptions":{{}},"displayInfo":"OpenKTV runtime smoke","createdAt":"devctl"}}}}"#,
+                r#"{{"requestId":"devctl-loadplan","kind":"loadPlan","payload":{{"id":"devctl-smoke","mediaType":"song","mediaPath":"{}","mpvOptions":{{"start":"0"}},"displayInfo":"OpenKTV runtime smoke","createdAt":"devctl"}}}}"#,
                 json_escape(&media_path.display().to_string())
             );
             stdin.write_all(load_plan.as_bytes())?;

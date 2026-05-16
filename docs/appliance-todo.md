@@ -44,7 +44,7 @@
   - 可选 `--mpv` backend：启动真实 mpv idle 进程、创建 IPC socket、发送基础 mpv IPC 命令、检测 mpv 退出并上报 `runtimeCrashed`
   - `dev:runtime-mpv-loadplan-check`：生成本地 WAV，提交 `PlayPlan`，并通过真实 mpv IPC 验证 `loadPlan/play/pause/stop`
   - TypeScript `RustPlaybackRuntimeClient` IPC adapter 和单元测试
-- 新增默认关闭的 Rust playback shadow 接入点：设置 `OPENKTV_RUST_PLAYBACK_SHADOW=1` 时，旧播放器仍为真相源，安全的 legacy 控制命令会镜像到 Rust runtime。
+- 新增默认关闭的 Rust playback shadow 接入点：设置 `OPENKTV_RUST_PLAYBACK_SHADOW=1` 时，旧播放器仍为真相源，安全的 legacy 控制命令和真实已解析 `PlayPlan` 会镜像到 Rust runtime。
 - 新增 `LegacyPlaybackRuntimeAdapter`，把旧播放器服务调用和 command bus 包装从 WebSocket controller 中抽出，为 Phase 3 的真实 `PlaybackRuntime` 替换预留边界。
 - 本地项目名改为 `openktv`，保留上游兼容行为。
 - 建立 NAS 媒体目录约定：`smb://192.168.0.109/nas_hdd/` 需要挂载到本机路径后再作为下载和播放媒体根使用。

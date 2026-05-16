@@ -2,6 +2,7 @@ import { PlayerSnapshot } from '../contracts/playback.js';
 import { emitWS } from '../lib/utils/ws.js';
 import { PublicPlayerState } from '../types/state.js';
 import { createPlayerSnapshot } from './playerSnapshot.js';
+import { clearRustPlaybackShadowPlan, mirrorPlayPlanToRust } from './rustPlaybackRuntimeInstance.js';
 
 let currentSnapshot: PlayerSnapshot = createPlayerSnapshot({});
 let currentPlayPlan: PlayerSnapshot['currentPlan'];
@@ -12,11 +13,17 @@ export function getCurrentPlayerSnapshot() {
 
 export function setCurrentPlayPlan(playPlan: PlayerSnapshot['currentPlan']) {
 	currentPlayPlan = playPlan;
+	void mirrorPlayPlanToRust(playPlan).catch(err => {
+		console.warn(`Rust playback shadow loadPlan failed: ${err.message}`);
+	});
 	return currentPlayPlan;
 }
 
 export function clearCurrentPlayPlan() {
 	currentPlayPlan = undefined;
+	void clearRustPlaybackShadowPlan().catch(err => {
+		console.warn(`Rust playback shadow stop failed: ${err.message}`);
+	});
 	return currentPlayPlan;
 }
 

@@ -1,3 +1,4 @@
+import { PlayPlan } from '../contracts/playback.js';
 import { PlayerCommand } from '../types/player.js';
 import { mapPlayerCommandKind } from './legacyPlaybackRuntime.js';
 import { RustPlaybackRuntimeClient } from './rustPlaybackRuntime.js';
@@ -18,6 +19,26 @@ export async function mirrorLegacyPlayerCommandToRust(command: PlayerCommand, op
 	const result = await runtime.dispatch(kind, payload, { timeoutMs: 5000 });
 	if (!result.ok) {
 		throw Object.assign(new Error(result.error?.message ?? 'Rust playback shadow command failed'), {
+			code: result.error?.code,
+		});
+	}
+}
+
+export async function mirrorPlayPlanToRust(playPlan: PlayPlan | undefined) {
+	if (!isRustPlaybackRuntimeShadowEnabled() || !playPlan) return;
+	const result = await getShadowRuntime().loadPlan(playPlan, { timeoutMs: 10000 });
+	if (!result.ok) {
+		throw Object.assign(new Error(result.error?.message ?? 'Rust playback shadow loadPlan failed'), {
+			code: result.error?.code,
+		});
+	}
+}
+
+export async function clearRustPlaybackShadowPlan() {
+	if (!isRustPlaybackRuntimeShadowEnabled()) return;
+	const result = await getShadowRuntime().stopPlayback({ timeoutMs: 5000 });
+	if (!result.ok) {
+		throw Object.assign(new Error(result.error?.message ?? 'Rust playback shadow stop failed'), {
 			code: result.error?.code,
 		});
 	}

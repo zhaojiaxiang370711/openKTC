@@ -21,6 +21,27 @@ type ApplianceUpdateEntry = {
 
 const entries: ApplianceUpdateEntry[] = [
 	{
+		date: '2026-05-16T14:55:00+08:00',
+		version: 'appliance-0.10',
+		type: 'appliance',
+		title: {
+			'zh-Hans': '真实 PlayPlan shadow 到 Rust runtime',
+			en: 'Real PlayPlan shadowing into Rust runtime',
+		},
+		changes: {
+			improved: [
+				{
+					'zh-Hans': 'Rust loadPlan 现在会带上 mpvOptions 和字幕路径，更接近旧播放器的真实加载参数。',
+					en: 'Rust loadPlan now carries mpvOptions and subtitle paths, making it closer to the legacy player load parameters.',
+				},
+				{
+					'zh-Hans': '开启 OPENKTV_RUST_PLAYBACK_SHADOW=1 后，旧播放器解析出的真实 PlayPlan 会镜像到 Rust runtime，旧播放器仍然是真相源。',
+					en: 'With OPENKTV_RUST_PLAYBACK_SHADOW=1, real PlayPlans resolved by the legacy player are mirrored into the Rust runtime while legacy playback remains the source of truth.',
+				},
+			],
+		},
+	},
+	{
 		date: '2026-05-16T14:35:00+08:00',
 		version: 'appliance-0.9',
 		type: 'appliance',
