@@ -6,6 +6,7 @@ import { createServer } from 'http';
 import { resolve } from 'path';
 
 import authController from '../controllers/auth.js';
+import audioController from '../controllers/frontend/audio.js';
 import backgroundsController from '../controllers/frontend/backgrounds.js';
 import downloadController from '../controllers/frontend/download.js';
 import emulateController from '../controllers/frontend/emulate.js';
@@ -47,6 +48,7 @@ function apiHTTPRouter(ws: SocketIOApp): Router {
 function apiRouter(ws: SocketIOApp) {
 	filesSocketController(ws);
 	authController(ws);
+	audioController(ws);
 	downloadController(ws);
 	favoritesController(ws);
 	backgroundsController(ws);

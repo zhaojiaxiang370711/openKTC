@@ -8,6 +8,7 @@ import GlobalContext from '../../../store/context';
 import { commandBackend } from '../../../utils/socket';
 import { tagTypes, YEARS } from '../../../utils/tagTypes';
 import { is_touch_device, secondsTimeSpanToHMS } from '../../../utils/tools';
+import AudioMonitorPanel from './AudioMonitorPanel';
 import LyricsBox from './LyricsBox';
 import PlayerBox from './PlayerBox';
 import { WS_CMD } from '../../../utils/ws';
@@ -92,6 +93,7 @@ function PublicHomepage(props: IProps) {
 							<i className="fas fa-music" /> {i18next.t('PUBLIC_HOMEPAGE.REQUEST_GUIDE.SING')}
 						</span>
 					</div>
+					<AudioMonitorPanel />
 					<div className="home-actions">
 						<div className="action-cluster primary">
 							{props.activePoll ? (

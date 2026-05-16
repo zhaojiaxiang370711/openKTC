@@ -389,6 +389,19 @@
 			"ADD": "加入队列",
 			"SING": "等候开唱"
 		},
+		"AUDIO": {
+			"TITLE": "麦克风监听",
+			"ROUTE": "{{source}} → {{sink}}",
+			"MONITOR_ON": "监听已开启",
+			"MONITOR_OFF": "开启监听",
+			"UNAVAILABLE": "未检测到 Newmine 麦克风或 HDMI/显示器音响，请检查设备连接。",
+			"MIC_VOLUME": "麦克风音量",
+			"OUTPUT_VOLUME": "音响音量",
+			"MIC_MUTED": "麦克风已静音",
+			"MIC_ACTIVE": "麦克风开启",
+			"OUTPUT_MUTED": "音响已静音",
+			"OUTPUT_ACTIVE": "音响开启"
+		},
 		"REQUESTED_KARAOKES": "点播次数最多的歌曲",
 		"RESTRICTED_DESCRIPTION": "卡拉OK限制模式开启，无法添加歌曲。",
 		"QUOTA_KARA_DESCRIPTION_one": "您只能推荐 {{count}} 首歌曲。主持人接受或拒绝您的建议，或屏幕上播放您的歌曲后，您将可以再次推荐。",

@@ -34,6 +34,7 @@ import { Tag, TagParams, TagTypeNum } from '../../../src/lib/types/tag.js';
 import { OldJWTToken, OldTokenResponse, Role, User } from '../../../src/lib/types/user.js';
 import { HttpMessage, WSCmdDefinition } from '../../../src/lib/types/frontend.js';
 import { BackgroundList, BackgroundListRequest, BackgroundRequest } from '../../../src/types/backgrounds.js';
+import { ApplianceAudioMonitorStatus, ApplianceAudioMonitorUpdate } from '../../../src/types/audio.js';
 import { Config, QuizGameConfig } from '../../../src/types/config.js';
 import { DBStats } from '../../../src/types/database/database.js';
 import { DBDownload } from '../../../src/types/database/download.js';
@@ -63,6 +64,12 @@ export function defineWSCmd<Body extends object, Response>(value: string): WSCmd
 }
 
 export const WS_CMD = {
+	// AREA src\controllers\frontend\audio.ts
+	GET_APPLIANCE_AUDIO_MONITOR: defineWSCmd<undefined, ApplianceAudioMonitorStatus>('getApplianceAudioMonitor'),
+	UPDATE_APPLIANCE_AUDIO_MONITOR: defineWSCmd<
+		ApplianceAudioMonitorUpdate,
+		ApplianceAudioMonitorStatus
+	>('updateApplianceAudioMonitor'),
 	// AREA src\controllers\frontend\backgrounds.ts
 	GET_BACKGROUND_FILES: defineWSCmd<BackgroundListRequest, BackgroundList>('getBackgroundFiles'),
 	ADD_BACKGROUND: defineWSCmd<BackgroundRequest<Express.Multer.File>, void>('addBackground'),

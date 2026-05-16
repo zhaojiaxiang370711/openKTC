@@ -21,6 +21,71 @@ type ApplianceUpdateEntry = {
 
 const entries: ApplianceUpdateEntry[] = [
 	{
+		date: '2026-05-16T21:00:00+08:00',
+		version: 'appliance-0.18',
+		type: 'appliance',
+		title: {
+			'zh-Hans': '关闭默认片头和赞助视频',
+			en: 'Disabled default intro and sponsor videos',
+		},
+		changes: {
+			improved: [
+				{
+					'zh-Hans':
+						'本地 appliance 不再在歌曲播放前插入 kara.moe 默认片头、赞助、间奏、返场或结束视频，点播歌曲会直接开始。',
+					en: 'The local appliance no longer inserts kara.moe default intros, sponsors, jingles, encores, or outros before requested songs; selected songs start directly.',
+				},
+			],
+		},
+	},
+	{
+		date: '2026-05-16T20:20:00+08:00',
+		version: 'appliance-0.17',
+		type: 'appliance',
+		title: {
+			'zh-Hans': '修复 MV 画面显示位置',
+			en: 'Fixed MV display placement',
+		},
+		changes: {
+			fixed: [
+				{
+					'zh-Hans':
+						'播放器现在会启动到 HDMI 外接显示器全屏，避免只听到声音但 MV 小窗口藏在电脑屏幕或浏览器后面。',
+					en: 'The player now starts fullscreen on the HDMI display, avoiding cases where audio plays while the MV window is hidden behind the browser or on the laptop screen.',
+				},
+			],
+			improved: [
+				{
+					'zh-Hans': '屏蔽 mpv 默认的 F、ESC 和鼠标双击全屏切换，减少客厅播放时误触退出全屏。',
+					en: 'Disabled mpv default F, ESC, and double-click fullscreen toggles to reduce accidental fullscreen exits during living-room playback.',
+				},
+			],
+		},
+	},
+	{
+		date: '2026-05-16T18:10:00+08:00',
+		version: 'appliance-0.16',
+		type: 'appliance',
+		title: {
+			'zh-Hans': '新增麦克风监听控制',
+			en: 'Added microphone monitor controls',
+		},
+		changes: {
+			improved: [
+				{
+					'zh-Hans':
+						'公共点歌首页新增 Newmine 麦克风到 HDMI/显示器音响的监听开关，并支持麦克风、音响音量和静音控制。',
+					en: 'The public request homepage now controls Newmine microphone monitoring into the HDMI/display speakers, with mic and speaker volume and mute controls.',
+				},
+				{
+					'zh-Hans':
+						'麦克风声音通过系统 PipeWire/PulseAudio loopback 输出，不进入播放器混音链路，降低延迟并减少播放逻辑风险。',
+					en: 'Microphone audio now uses a system PipeWire/PulseAudio loopback instead of entering the player mixing path, reducing latency and playback risk.',
+				},
+			],
+		},
+	},
+	{
 		date: '2026-05-16T17:35:00+08:00',
 		version: 'appliance-0.15',
 		type: 'appliance',
