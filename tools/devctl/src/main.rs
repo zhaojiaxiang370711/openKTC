@@ -376,7 +376,6 @@ fn start_detached(ctx: &Context) -> Result<()> {
     doctor(ctx)?;
     build(ctx)?;
     fs::create_dir_all(ctx.root.join("app/run"))?;
-    fs::create_dir_all(ctx.root.join("app/logs"))?;
 
     let log_path = detached_log_path(ctx);
     let stdout = fs::OpenOptions::new()
@@ -386,7 +385,13 @@ fn start_detached(ctx: &Context) -> Result<()> {
     let stderr = stdout.try_clone()?;
     let electron = electron_binary(ctx);
 
-    let mut command = Command::new(&electron);
+    let mut command = if command_available("setsid") {
+        let mut command = Command::new("setsid");
+        command.arg(&electron);
+        command
+    } else {
+        Command::new(&electron)
+    };
     command
         .args([".", "--cli"])
         .current_dir(&ctx.root)
@@ -497,7 +502,7 @@ fn pid_path(ctx: &Context) -> PathBuf {
 }
 
 fn detached_log_path(ctx: &Context) -> PathBuf {
-    ctx.root.join("app/logs/devctl-headless.log")
+    ctx.root.join("app/run/devctl-headless.log")
 }
 
 fn electron_binary(ctx: &Context) -> PathBuf {
@@ -560,6 +565,14 @@ fn pids_matching(pattern: &str) -> Result<Vec<u32>> {
         .lines()
         .filter_map(|line| line.trim().parse::<u32>().ok())
         .collect())
+}
+
+fn command_available(command: &str) -> bool {
+    Command::new("sh")
+        .args(["-lc", &format!("command -v {command} >/dev/null 2>&1")])
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false)
 }
 
 fn run_yarn(args: &[&str], cwd: &Path) -> Result<()> {
