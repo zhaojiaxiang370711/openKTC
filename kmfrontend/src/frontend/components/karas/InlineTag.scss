@@ -1,34 +1,44 @@
+@use 'sass:color';
+@use '../../styles/neo-tokens';
+
 .inline-tag {
-	display: inline-block;
-	position: relative;
+    display: inline-block;
+    position: relative;
 }
 
 .inline-tag.public span {
-	cursor: zoom-in;
+    cursor: zoom-in;
 }
 
 .tag-popup {
-	position: absolute;
-	background-color: black;
-	margin-top: 0.25em;
-	padding: 0.5em;
-	width: max-content;
-	z-index: 2;
-	color: white;
-	&.right {
-		right: 0;
-	}
+    position: absolute;
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-surface-top, $lightness: 4%, $space: hsl),
+        neo-tokens.$neo-bg);
+    border: neo-tokens.$neo-border;
+    border-radius: neo-tokens.$neo-radius;
+    box-shadow:
+        12px 12px 24px neo-tokens.$neo-shadow-dark,
+        -7px -7px 16px neo-tokens.$neo-highlight;
+    margin-top: 0.25em;
+    padding: 0.5em;
+    width: max-content;
+    z-index: 2;
+    color: neo-tokens.$neo-text-primary;
+    &.right {
+        right: 0;
+    }
 
-	.tag-name {
-		font-weight: bold;
-		font-size: 1.1em;
-	}
-	.tag-stat {
-		font-weight: lighter;
-		font-style: italic;
-	}
-	.tag-action {
-		font-weight: bold;
-		margin-top: 0.25em;
-	}
+    .tag-name {
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+    .tag-stat {
+        font-weight: lighter;
+        font-style: italic;
+    }
+    .tag-action {
+        font-weight: bold;
+        margin-top: 0.25em;
+    }
 }

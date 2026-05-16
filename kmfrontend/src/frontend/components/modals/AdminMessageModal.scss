@@ -1,3 +1,5 @@
+@use '../../styles/neo-tokens';
+
 .admin-message {
 	.dest-duration {
 		display: flex;
@@ -5,13 +7,19 @@
 		margin-bottom: 0.5em;
 
 		input[type='number'].duration {
-			background-color: #343434;
-			color: white;
-			border-radius: 0.5em;
-			border: 1px solid #fafafa70;
+			background-color: neo-tokens.$neo-surface-pressed;
+			color: neo-tokens.$neo-text-primary;
+			border-radius: neo-tokens.$neo-radius-sm;
+			border: neo-tokens.$neo-border;
 			padding: 0 0.5em;
+			box-shadow:
+				inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+				inset -2px -2px 4px neo-tokens.$neo-highlight-soft;
 			&:focus {
-				box-shadow: 0 1px 0 0 #546e7a;
+				box-shadow:
+					inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+					inset -2px -2px 4px neo-tokens.$neo-highlight-soft,
+					0 0 0 2px rgba(155, 197, 255, 0.25);
 			}
 		}
 	}

@@ -1,11 +1,18 @@
+@use 'sass:color';
 @use '../../styles/variables.scss';
+@use '../../styles/neo-tokens';
 
 .selectWithIcon {
 	position: relative;
 	display: inline-block;
-	background-color: variables.$mugen-select-background;
-	border: variables.$mugen-select-border;
-	border-radius: 4px;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface, $lightness: 3%, $space: hsl),
+		neo-tokens.$neo-surface-pressed);
+	border: neo-tokens.$neo-border;
+	border-radius: neo-tokens.$neo-radius-sm;
+	box-shadow:
+		3px 3px 6px neo-tokens.$neo-shadow-soft,
+		-2px -2px 4px neo-tokens.$neo-highlight;
 }
 
 .modal-body .selectWithIcon {
@@ -33,14 +40,18 @@
 
 .selectWithIcon-menu {
 	cursor: pointer;
-	background-color: variables.$mugen-select-background;
-	color: white;
-	border: variables.$mugen-select-border;
-	border-radius: 4px;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface-top, $lightness: 2%, $space: hsl),
+		neo-tokens.$neo-bg);
+	color: neo-tokens.$neo-text-primary;
+	border: neo-tokens.$neo-border;
+	border-radius: neo-tokens.$neo-radius;
+	box-shadow:
+		6px 6px 12px neo-tokens.$neo-shadow-soft,
+		-4px -4px 8px neo-tokens.$neo-highlight;
 	list-style-type: none;
 	padding-left: 0;
 	position: absolute;
-	// left: 0;
 	z-index: 100;
 	margin: 5px 0 0 0;
 	white-space: nowrap;
@@ -51,9 +62,10 @@
 
 .selectWithIcon-menuItem {
 	padding: 0.5rem 0.5rem 0.5rem 1rem;
+	border-radius: neo-tokens.$neo-radius-sm;
 	&:hover,
 	&:focus {
-		background: variables.$mugen-select-focus;
+		background: color.adjust(neo-tokens.$neo-accent, $alpha: -0.8);
 	}
 }
 

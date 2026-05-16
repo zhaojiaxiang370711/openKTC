@@ -1,4 +1,6 @@
+@use 'sass:color';
 @use '../../styles/variables.scss';
+@use '../../styles/neo-tokens';
 
 #playlist-import-modal {
 	.closeModal {
@@ -14,7 +16,7 @@
 			flex: 1;
 			margin: 0em;
 			font-weight: bold;
-			color: #ccc;
+			color: neo-tokens.$neo-text-secondary;
 			font-family: Lato, 'Font Awesome 7 Free', sans-serif;
 		}
 
@@ -67,7 +69,7 @@
 			.playlist-card {
 				display: flex;
 				justify-content: space-between;
-				border-bottom: 1px solid #5e6d6f;
+				border-bottom: 1px solid neo-tokens.$neo-border-color;
 				padding-top: 0.7rem;
 				padding-bottom: 0.7rem;
 				margin-left: 0.7rem;
@@ -113,7 +115,10 @@
 				margin: 2px;
 
 				&.current {
-					background-color: variables.$mugen-btn-primary-background;
+					background: linear-gradient(145deg,
+						color.adjust(neo-tokens.$neo-accent, $lightness: -2%, $space: hsl),
+						color.adjust(neo-tokens.$neo-accent, $lightness: -14%, $space: hsl));
+					color: white;
 					cursor: default;
 				}
 			}

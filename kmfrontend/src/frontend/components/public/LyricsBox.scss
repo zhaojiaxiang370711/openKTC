@@ -1,5 +1,6 @@
 @use 'sass:color';
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
 .lyrics-box {
 	&.mobile {
@@ -20,10 +21,14 @@
 	}
 	> .lyrics {
 		width: 100%;
-		background-color: color.adjust(variables.$mugen-background, $lightness: 10%, $space: hsl);
+		background-color: neo-tokens.$neo-surface-pressed;
 		padding: 1em;
 		margin: 0 0.5em;
 		border-radius: 15px;
+		border: neo-tokens.$neo-border;
+		box-shadow:
+			inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+			inset -2px -2px 4px neo-tokens.$neo-highlight-soft;
 		text-align: center;
 		> div {
 			transition:
@@ -34,26 +39,26 @@
 				200ms;
 			span {
 				&.singing {
-					color: color.scale(skyblue, $saturation: 100%, $lightness: -15%);
+					color: neo-tokens.$neo-accent;
 				}
 			}
 			&.hidden {
 				font-size: 0;
 			}
 			&.greyed {
-				color: color.adjust(variables.$mugen-background, $lightness: 65%, $space: hsl);
+				color: neo-tokens.$neo-text-tertiary;
 			}
 			&.current {
 				font-size: 1.25em;
 				font-weight: bold;
-				color: ghostwhite;
+				color: neo-tokens.$neo-text-primary;
 				margin: 0.25em 0;
 				&.forced {
-					color: goldenrod;
+					color: neo-tokens.$neo-progress-mid;
 				}
 			}
 			&.incoming {
-				color: white;
+				color: neo-tokens.$neo-text-secondary;
 				margin: 0.1em 0;
 			}
 		}

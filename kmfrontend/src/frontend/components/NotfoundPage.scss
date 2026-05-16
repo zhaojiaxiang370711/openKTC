@@ -1,3 +1,6 @@
+@use 'sass:color';
+@use '../styles/neo-tokens';
+
 .page404-lost {
 	padding: 1em 1em 0 1em;
 	text-align: center;
@@ -18,7 +21,14 @@
 }
 
 .you-are-here {
-	background-color: #404346;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface, $lightness: 3%, $space: hsl),
+		neo-tokens.$neo-surface-pressed);
+	border: neo-tokens.$neo-border;
+	border-radius: neo-tokens.$neo-radius-sm;
+	box-shadow:
+		3px 3px 6px neo-tokens.$neo-shadow-soft,
+		-2px -2px 4px neo-tokens.$neo-highlight;
 	padding: 0.5em;
 	width: max-content;
 	margin: 1em auto;
@@ -33,10 +43,16 @@
 
 .page404-btn {
 	display: block;
-	background-color: #e2754a;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-progress-end, $lightness: -4%, $space: hsl),
+		color.adjust(neo-tokens.$neo-progress-end, $lightness: -20%, $space: hsl));
 	width: fit-content;
 	padding: 1em;
 	margin: 1em auto;
 	color: white;
 	text-decoration: none;
+	border-radius: neo-tokens.$neo-radius;
+	box-shadow:
+		4px 4px 8px rgba(8, 9, 11, 0.34),
+		-2px -2px 5px neo-tokens.$neo-highlight;
 }

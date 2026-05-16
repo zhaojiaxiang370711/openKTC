@@ -1,26 +1,34 @@
+@use '../../styles/neo-tokens';
+
 .userLine {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
-	height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0.5em;
+    border-radius: neo-tokens.$neo-radius;
+    background: neo-tokens.$neo-surface-pressed;
+    box-shadow:
+        inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+        inset -2px -2px 4px neo-tokens.$neo-highlight-soft;
 
-	> div {
-		flex: 1;
-	}
+    > div {
+        flex: 1;
+    }
 
-	.userNickname {
-		display: flex;
-		align-items: center;
-	}
+    .userNickname {
+        display: flex;
+        align-items: center;
+    }
 
-	.userAnswer {
-		text-align: center;
-		padding-left: 1em;
-		padding-right: 1em;
-	}
+    .userAnswer {
+        text-align: center;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
 
-	.userPoints {
-		line-height: normal;
-		text-align: right;
-	}
+    .userPoints {
+        line-height: normal;
+        text-align: right;
+    }
 }

@@ -1,5 +1,6 @@
 @use 'sass:color';
 @use '../../frontend/styles/variables';
+@use '../../frontend/styles/neo-tokens';
 
 .modal {
 	position: fixed;
@@ -9,6 +10,7 @@
 	left: 0;
 	z-index: 999;
 	background-color: rgba(10, 10, 10, 0.66);
+	backdrop-filter: blur(2px);
 	overflow-y: auto;
 	> .modal-dialog {
 		position: relative;
@@ -19,7 +21,7 @@
 		margin: auto auto 100px;
 		width: 95vw;
 		max-width: 800px;
-		filter: drop-shadow(0px 4px 4px black);
+		filter: drop-shadow(12px 12px 24px neo-tokens.$neo-shadow-dark);
 	}
 }
 
@@ -36,15 +38,22 @@
 }
 
 .modal .modal-content {
-	color: #eee;
-	background-color: #3a3c45;
-	border-radius: 8px;
+	color: neo-tokens.$neo-text-primary;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface-top, $lightness: 2%, $space: hsl),
+		neo-tokens.$neo-bg);
+	border: neo-tokens.$neo-border;
+	border-radius: neo-tokens.$neo-radius;
+	box-shadow:
+		12px 12px 24px neo-tokens.$neo-shadow-dark,
+		-7px -7px 16px neo-tokens.$neo-highlight;
 }
 .modal .modal-footer {
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
 	border: 0;
+	border-top: 1px solid neo-tokens.$neo-border-color;
 	padding: 0.5em;
 	> button {
 		order: 0;
@@ -59,13 +68,13 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	border-bottom: 1px solid neo-tokens.$neo-border-color;
 	.modal-title {
 		> picture {
 			display: flex;
 			justify-content: center;
 			> img {
 				width: 50%;
-				// Safari Mac height hack: https://stackoverflow.com/a/61196907
 				object-fit: contain;
 				align-self: flex-start;
 			}
@@ -91,7 +100,7 @@
 		padding: 0.25em;
 	}
 	a {
-		color: #a4c7e5;
+		color: neo-tokens.$neo-accent;
 	}
 }
 
@@ -119,7 +128,7 @@
 .nav > li > a:hover {
 	border-top: none;
 	text-decoration: none;
-	background-color: #4b4b4b;
+	background-color: color.adjust(neo-tokens.$neo-accent, $alpha: -0.8);
 }
 .modal button.fluid {
 	width: 100%;
@@ -155,14 +164,35 @@
 .modal button.confirm {
 	height: 100%;
 	width: 100%;
-	background-color: #0f5f6c;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-success, $lightness: -4%, $space: hsl),
+		color.adjust(neo-tokens.$neo-success, $lightness: -20%, $space: hsl));
+	border: 0;
+	color: white;
+	box-shadow:
+		4px 4px 8px rgba(8, 9, 11, 0.34),
+		-2px -2px 5px neo-tokens.$neo-highlight;
 }
 .modal button.ok {
-	background-color: #304035;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-success, $lightness: -4%, $space: hsl),
+		color.adjust(neo-tokens.$neo-success, $lightness: -20%, $space: hsl));
+	border: 0;
+	color: white;
+	box-shadow:
+		4px 4px 8px rgba(8, 9, 11, 0.34),
+		-2px -2px 5px neo-tokens.$neo-highlight;
 }
 
 .modal button.other {
-	background-color: #422f2f;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-danger, $lightness: -4%, $space: hsl),
+		color.adjust(neo-tokens.$neo-danger, $lightness: -20%, $space: hsl));
+	border: 0;
+	color: white;
+	box-shadow:
+		4px 4px 8px rgba(8, 9, 11, 0.34),
+		-2px -2px 5px neo-tokens.$neo-highlight;
 }
 
 #modalBox {
@@ -175,19 +205,31 @@
 }
 
 .closeModal {
-	background-color: variables.$mugen-btn-background;
-	color: whitesmoke;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface, $lightness: 3%, $space: hsl),
+		neo-tokens.$neo-surface-pressed);
+	color: neo-tokens.$neo-text-primary;
 	font-size: 1.75em;
 	width: 1.75em;
 	height: 1.75em;
 	cursor: pointer;
 	z-index: 1;
 	padding: 0.25em;
-	border: variables.$mugen-btn-border;
+	border: neo-tokens.$neo-border;
+	border-radius: neo-tokens.$neo-radius-sm;
+	box-shadow:
+		4px 4px 8px neo-tokens.$neo-shadow-soft,
+		-2px -2px 5px neo-tokens.$neo-highlight;
+	transition: box-shadow neo-tokens.$neo-transition, opacity neo-tokens.$neo-transition;
 }
 .closeModal:hover {
-	color: #e6e6e6fa;
-	background-color: transparent;
+	color: neo-tokens.$neo-accent;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface, $lightness: 3%, $space: hsl),
+		neo-tokens.$neo-surface-pressed);
+	box-shadow:
+		6px 6px 10px neo-tokens.$neo-shadow-soft,
+		-2px -2px 5px neo-tokens.$neo-highlight;
 }
 
 .public-modal.modal-header {
@@ -202,16 +244,21 @@
 #manage .modalPage {
 	padding: 0;
 	.closeModal {
-		background-color: variables.$mugen-nav-background;
+		background: neo-tokens.$neo-surface;
 		position: unset;
 		margin: 0;
-		color: #dbdbdbde;
+		color: neo-tokens.$neo-text-secondary;
 		padding: 0 0.5em;
 		border-radius: 0;
 		line-height: 1.75em;
 		font-size: 1.25em;
 		border: none;
 		height: unset;
+		box-shadow: none;
+		&:hover {
+			background: neo-tokens.$neo-surface-pressed;
+			color: neo-tokens.$neo-accent;
+		}
 	}
 }
 .nav.nav-tabs {
@@ -229,11 +276,18 @@
 		flex-grow: 1;
 		&.active {
 			> a {
-				background-color: color.adjust(variables.$mugen-nav-background, $lightness: -10%, $space: hsl);
+				background: linear-gradient(145deg,
+					neo-tokens.$neo-surface-pressed,
+					color.adjust(neo-tokens.$neo-surface-pressed, $lightness: -5%, $space: hsl));
+				box-shadow:
+					inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+					inset -2px -2px 4px neo-tokens.$neo-highlight-soft;
 				&:focus,
 				&:active:focus,
 				&:hover {
-					background-color: color.adjust(variables.$mugen-nav-background, $lightness: -10%, $space: hsl);
+					background: linear-gradient(145deg,
+						neo-tokens.$neo-surface-pressed,
+						color.adjust(neo-tokens.$neo-surface-pressed, $lightness: -5%, $space: hsl));
 				}
 			}
 		}
@@ -242,14 +296,21 @@
 			height: 100%;
 			display: block;
 			border: none;
-			color: white;
-			background-color: variables.$mugen-nav-background;
+			color: neo-tokens.$neo-text-primary;
+			background: linear-gradient(145deg,
+				color.adjust(neo-tokens.$neo-surface, $lightness: 3%, $space: hsl),
+				neo-tokens.$neo-surface-pressed);
+			box-shadow:
+				3px 3px 6px neo-tokens.$neo-shadow-soft,
+				-2px -2px 4px neo-tokens.$neo-highlight;
 			&:hover {
-				background-color: color.adjust(variables.$mugen-nav-background, $lightness: 5%, $space: hsl);
+				background: linear-gradient(145deg,
+					color.adjust(neo-tokens.$neo-surface-raised, $lightness: 4%, $space: hsl),
+					neo-tokens.$neo-surface);
 			}
 		}
 	}
 }
 #manage .modalPage .nav-tabs > li > a {
-	border-left: 1px solid #1e212440;
+	border-left: 1px solid neo-tokens.$neo-border-color;
 }

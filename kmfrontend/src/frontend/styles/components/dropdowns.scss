@@ -1,31 +1,39 @@
+@use 'sass:color';
 @use '../variables';
+@use '../neo-tokens';
 
 .dropdown-menu {
-	background-color: variables.$mugen-btn-background;
-	border: variables.$mugen-btn-border;
-	cursor: pointer;
-	position: absolute;
-	list-style: none;
-	padding: 0;
-	z-index: 60;
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-surface-top, $lightness: 4%, $space: hsl),
+        neo-tokens.$neo-bg);
+    border: neo-tokens.$neo-border;
+    border-radius: neo-tokens.$neo-radius;
+    box-shadow:
+        12px 12px 24px neo-tokens.$neo-shadow-dark,
+        -8px -8px 16px neo-tokens.$neo-highlight;
+    cursor: pointer;
+    position: absolute;
+    list-style: none;
+    padding: 0.35rem;
+    z-index: 60;
 }
 
 .dropdown-menu > li > a,
 .dropdown-menu > li > div:not(.radiobutton-ui) {
-	display: inline-block;
-	width: 100%;
-	padding: 0.2rem 0.5rem;
-	color: #eee;
-	// Ant Design overrides
-	transition: none;
-	text-decoration: none;
+    display: inline-block;
+    width: 100%;
+    padding: 0.2rem 0.5rem;
+    color: neo-tokens.$neo-text-primary;
+    border-radius: neo-tokens.$neo-radius-sm;
+    transition: none;
+    text-decoration: none;
 }
 
 .dropdown-menu > li > a i,
 .dropdown-menu > li > div:not(.radiobutton-ui) i {
-	margin-right: 0.5em;
+    margin-right: 0.5em;
 }
 .dropdown-menu > li:hover > a,
 .dropdown-menu > li:hover > div:not(.radiobutton-ui) {
-	background-color: variables.$mugen-select-focus;
+    background-color: rgba(155, 197, 255, 0.12);
 }

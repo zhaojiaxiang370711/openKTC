@@ -1,6 +1,8 @@
 // Minireset
 @use 'minireset.css/minireset';
 @use 'styles/variables';
+@use 'styles/neo-tokens';
+@use 'styles/components/neo-primitives';
 
 // Our stylesheet
 @use 'styles/components/buttons';

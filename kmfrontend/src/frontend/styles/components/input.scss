@@ -1,140 +1,147 @@
 @use 'sass:color';
 @use 'sass:map';
 @use '../variables';
+@use '../neo-tokens';
 
 select {
-	background-color: variables.$mugen-select-background;
-	color: white;
-	border-radius: 0.5em;
-	border: variables.$mugen-select-border;
+    background-color: neo-tokens.$neo-surface-pressed;
+    color: white;
+    border-radius: neo-tokens.$neo-radius;
+    border: neo-tokens.$neo-border;
+    box-shadow:
+        inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+        inset -3px -3px 6px neo-tokens.$neo-highlight-soft;
 }
 
 /* Range input sliders */
 
 input[type='range']:focus {
-	outline: none;
+    outline: none;
 }
 
 /* settings slider */
 
 #settings input[type='range'] {
-	-webkit-appearance: none;
-	width: 100%;
+    -webkit-appearance: none;
+    width: 100%;
 }
 
 @mixin track($microsoft: false) {
-	width: 100%;
-	height: 1em;
-	cursor: pointer;
-	-webkit-appearance: none;
-	@if $microsoft {
-		background: transparent;
-		border-color: transparent;
-		color: transparent;
-	} @else {
-		box-shadow:
-			1px 1px 1px #00000008,
-			0 0 1px #0d0d0d08;
-		background: color.adjust(variables.$mugen-background, $lightness: 10%, $space: hsl);
-		border-radius: 0;
-		border: 1px solid #0001015c;
-	}
+    width: 100%;
+    height: 1em;
+    cursor: pointer;
+    -webkit-appearance: none;
+    @if $microsoft {
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+    } @else {
+        background: neo-tokens.$neo-surface-pressed;
+        border-radius: neo-tokens.$neo-radius-pill;
+        border: none;
+        box-shadow:
+            inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+            inset -2px -2px 5px neo-tokens.$neo-highlight-soft;
+    }
 }
 @mixin slider {
-	box-shadow:
-		1px 1px 1px black,
-		0 0 1px #0d0d0d;
-	border: 1px solid #d8d8d8;
-	height: 1.5em;
-	width: 1.75em;
-	border-radius: 0;
-	background: color.adjust(variables.$mugen-background, $lightness: 20%, $space: hsl);
-	cursor: pointer;
-	-webkit-appearance: none;
-	margin-top: -3px;
+    border: none;
+    height: 1.5em;
+    width: 1.75em;
+    border-radius: neo-tokens.$neo-radius-sm;
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-surface-raised, $lightness: 4%, $space: hsl),
+        neo-tokens.$neo-bg);
+    box-shadow:
+        4px 4px 8px neo-tokens.$neo-shadow-dark,
+        -2px -2px 5px neo-tokens.$neo-highlight;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -3px;
 }
 
 input[type='range']::-webkit-slider-runnable-track {
-	@include track;
+    @include track;
 }
 input[type='range']::-moz-range-track {
-	@include track;
+    @include track;
 }
 input[type='range']::-ms-track {
-	@include track(true);
+    @include track(true);
 }
 input[type='range']::-webkit-slider-thumb {
-	@include slider;
+    @include slider;
 }
 input[type='range']::-moz-range-thumb {
-	@include slider;
+    @include slider;
 }
 input[type='range']::-ms-thumb {
-	@include slider;
+    @include slider;
 }
 input[type='range']:focus::-webkit-slider-runnable-track {
-	background: color.adjust(variables.$mugen-background, $lightness: 10%, $space: hsl);
+    background: neo-tokens.$neo-surface-pressed;
 }
 input[type='range']::-ms-fill-lower {
-	background: color.adjust(variables.$mugen-background, $lightness: 15%, $space: hsl);
-	border: 0.1px solid #0001015c;
-	border-radius: 0;
-	box-shadow:
-		1px 1px 1px #00000008,
-		0 0 1px #0d0d0d08;
+    background: neo-tokens.$neo-surface;
+    border: none;
+    border-radius: 0;
 }
 input[type='range']::-ms-fill-upper {
-	background: color.adjust(variables.$mugen-background, $lightness: 10%, $space: hsl);
-	border: 0.1px solid #0001015c;
-	border-radius: 0;
-	box-shadow:
-		1px 1px 1px #00000008,
-		0 0 1px #0d0d0d08;
+    background: neo-tokens.$neo-surface-pressed;
+    border: none;
+    border-radius: 0;
 }
 input[type='range']:focus::-ms-fill-lower {
-	background: color.adjust(variables.$mugen-background, $lightness: 10%, $space: hsl);
+    background: neo-tokens.$neo-surface;
 }
 input[type='range']:focus::-ms-fill-upper {
-	background: color.adjust(variables.$mugen-background, $lightness: 10%, $space: hsl);
+    background: neo-tokens.$neo-surface-pressed;
 }
 
 input[type='text']:not([data-exclude='true']):not(.ant-input, .ant-select-input):not(
-		.ant-pagination-options-quick-jumper > input
-	),
+        .ant-pagination-options-quick-jumper > input
+    ),
 input[type='url']:not([data-exclude='true']):not(.ant-input, .ant-select-input),
 input[type='password']:not([data-exclude='true']):not(.ant-input, .ant-select-input),
 input[type='number']:not([data-exclude='true']):not(.ant-input, .ant-select-input) {
-	width: 100%;
-	border: 0;
-	box-shadow: none;
-	font-size: 1.5rem;
-	line-height: 1.5rem;
-	background-color: color.adjust(variables.$mugen-background, $lightness: 10%, $space: hsl);
-	outline: none;
-	margin: 0;
-	padding: 0 1rem;
-	color: #ccc;
-	&.errorBackground {
-		background-color: map.get(variables.$mugen-colors, 'red');
-		&:focus {
-			background-color: color.adjust(map.get(variables.$mugen-colors, 'red'), $lightness: 5%, $space: hsl);
-		}
-	}
+    width: 100%;
+    border: 0;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    background-color: neo-tokens.$neo-surface-pressed;
+    box-shadow:
+        inset 4px 4px 8px neo-tokens.$neo-shadow-deep,
+        inset -3px -3px 6px neo-tokens.$neo-highlight-soft;
+    outline: none;
+    margin: 0;
+    padding: 0 1rem;
+    color: neo-tokens.$neo-text-primary;
+    border-radius: neo-tokens.$neo-radius;
+    transition: box-shadow neo-tokens.$neo-transition;
+    &.errorBackground {
+        background-color: map.get(variables.$mugen-colors, 'red');
+        &:focus {
+            background-color: color.adjust(map.get(variables.$mugen-colors, 'red'), $lightness: 5%, $space: hsl);
+        }
+    }
 }
 
 input[type='text']:not([data-exclude='true']):not(.ant-input, .ant-select-input):not(
-		.ant-pagination-options-quick-jumper > input
-	):focus,
+        .ant-pagination-options-quick-jumper > input
+    ):focus,
 input[type='url']:not([data-exclude='true']):not(.ant-input, .ant-select-input):focus,
 input[type='password']:not([data-exclude='true']):not(.ant-input, .ant-select-input):focus,
 input[type='number']:not([data-exclude='true']):not(.ant-input, .ant-select-input):focus {
-	box-shadow: 0 1px 0 0 #546e7a;
+    box-shadow:
+        inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+        inset -3px -3px 6px neo-tokens.$neo-highlight-soft,
+        0 0 0 2px rgba(155, 197, 255, 0.25);
 }
 
 .panel-heading input[type='text'] {
-	height: 100%;
-	font-size: 1.2rem;
-	line-height: 1.8rem;
-	padding-left: 1rem;
-	padding-right: 1rem;
+    height: 100%;
+    font-size: 1.2rem;
+    line-height: 1.8rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }

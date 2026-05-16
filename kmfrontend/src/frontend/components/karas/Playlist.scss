@@ -1,146 +1,172 @@
 @use 'sass:color';
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
 .playlist-main {
-	display: flex;
-	flex-direction: row;
-	flex: 1 0 auto;
+    display: flex;
+    flex-direction: row;
+    flex: 1 0 auto;
 
-	.panel {
-		flex: 1;
-		border: 0.5em solid color.adjust(variables.$mugen-background, $lightness: -20%, $space: hsl);
-	}
+    .panel {
+        flex: 1;
+        border: 0.5em solid neo-tokens.$neo-surface-pressed;
+    }
 
-	@media screen and (max-width: variables.$mugen-breakpoint-large) {
-		flex-direction: column;
+    @media screen and (max-width: variables.$mugen-breakpoint-large) {
+        flex-direction: column;
 
-		#panel2 {
-			display: none;
-		}
-	}
+        #panel2 {
+            display: none;
+        }
+    }
 }
 
 .single .infoDiv {
-	order: -1;
+    order: -1;
 }
 
 .playlistContainer {
-	flex: 1 0 auto;
-	display: inline-flex;
-	flex-flow: column;
+    flex: 1 0 auto;
+    display: inline-flex;
+    flex-flow: column;
 }
 
 .playlist-main .list-group-item.karaSuggestion {
-	background-color: #5d83778c;
-	font-size: 120%;
-	padding: 1em;
-	display: flex;
-	flex-direction: column;
-	flex-wrap: wrap;
-	align-items: center;
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-success, $lightness: -14%, $space: hsl),
+        color.adjust(neo-tokens.$neo-success, $lightness: -28%, $space: hsl));
+    border: 0;
+    box-shadow:
+        6px 6px 12px neo-tokens.$neo-shadow-dark,
+        -3px -3px 8px neo-tokens.$neo-highlight;
+    color: white;
+    font-size: 120%;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
 
-	div:not(.page-tasks-wrapper) {
-		margin-left: 0.25em;
-	}
+    div:not(.page-tasks-wrapper) {
+        margin-left: 0.25em;
+    }
 
-	.page-tasks-wrapper {
-		margin: 0.25em;
-	}
+    .page-tasks-wrapper {
+        margin: 0.25em;
+    }
 
-	a {
-		cursor: pointer;
-	}
+    a {
+        cursor: pointer;
+    }
 }
 
 .list-group-item.empty {
-	font-size: 120%;
-	padding: 1em;
-	display: flex;
-	flex-direction: column;
-	flex-wrap: wrap;
-	align-items: center;
+    font-size: 120%;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
 
-	&.incoming-empty {
-		gap: 0.55rem;
-		text-align: center;
+    &.incoming-empty {
+        gap: 0.55rem;
+        text-align: center;
 
-		> i {
-			display: grid;
-			place-items: center;
-			width: 3rem;
-			aspect-ratio: 1;
-			border-radius: 8px;
-			color: #9bc5ff;
-			background: rgba(255, 255, 255, 0.06);
-			box-shadow:
-				inset 4px 4px 10px rgba(0, 0, 0, 0.35),
-				inset -4px -4px 10px rgba(255, 255, 255, 0.055);
-		}
+        > i {
+            display: grid;
+            place-items: center;
+            width: 3rem;
+            aspect-ratio: 1;
+            border-radius: neo-tokens.$neo-radius;
+            color: neo-tokens.$neo-accent;
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow:
+                inset 4px 4px 10px rgba(0, 0, 0, 0.35),
+                inset -4px -4px 10px neo-tokens.$neo-highlight-soft;
+        }
 
-		strong {
-			font-size: 1.15rem;
-		}
+        strong {
+            font-size: 1.15rem;
+        }
 
-		span {
-			max-width: 36rem;
-			color: rgba(255, 255, 255, 0.72);
-			line-height: 1.4;
-		}
+        span {
+            max-width: 36rem;
+            color: rgba(255, 255, 255, 0.72);
+            line-height: 1.4;
+        }
 
-		a.btn {
-			display: inline-flex;
-			align-items: center;
-			gap: 0.45rem;
-			margin-top: 0.25rem;
-			text-decoration: none;
-		}
-	}
+        a.btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-top: 0.25rem;
+            text-decoration: none;
+        }
+    }
 }
 
 .playlist-main .list-group-item.liType {
-	background-color: #607e97;
-	padding-left: 1em;
-	font-weight: bold;
-	line-height: 1.5em;
+    background: neo-tokens.$neo-surface;
+    border: neo-tokens.$neo-border;
+    color: neo-tokens.$neo-text-primary;
+    padding-left: 1em;
+    font-weight: bold;
+    line-height: 1.5em;
+    box-shadow:
+        4px 4px 8px neo-tokens.$neo-shadow-soft,
+        -3px -3px 6px neo-tokens.$neo-highlight;
 }
 
 .ReactVirtualized__Grid__innerScrollContainer {
-	margin-bottom: 31px;
+    margin-bottom: 31px;
 }
 
 @media (max-width: variables.$mugen-breakpoint-small) {
-	.ReactVirtualized__Grid__innerScrollContainer {
-		margin-bottom: 63px;
-	}
+    .ReactVirtualized__Grid__innerScrollContainer {
+        margin-bottom: 63px;
+    }
 }
 
 .playlist-tooltip {
-	padding: 1em;
-	background-color: color.adjust(variables.$mugen-background, $lightness: 5%, $space: hsl);
+    padding: 1em;
+    background: neo-tokens.$neo-surface-top;
+    border: neo-tokens.$neo-border;
+    border-radius: neo-tokens.$neo-radius;
+    box-shadow:
+        10px 10px 22px neo-tokens.$neo-shadow-dark,
+        -7px -7px 16px neo-tokens.$neo-highlight;
 }
 
 .playlist-tooltip-refresh {
-	padding: 1em;
-	background-color: #1861b1;
+    padding: 1em;
+    background: neo-tokens.$neo-accent;
+    color: #0d1117;
+    border-radius: neo-tokens.$neo-radius;
+    box-shadow:
+        8px 8px 16px rgba(8, 9, 11, 0.38),
+        -4px -4px 10px neo-tokens.$neo-highlight;
 }
 
 .playlist--wrapper {
-	flex: 1 0 auto;
-	display: inline-flex;
-	flex-direction: column;
-	position: relative;
+    flex: 1 0 auto;
+    display: inline-flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .playlist-dragged-item {
-	cursor: grabbing;
-	list-style: none;
+    cursor: grabbing;
+    list-style: none;
 
-	&.side-left .list-group-item:not(.karaSuggestion) {
-		flex-direction: row-reverse;
-	}
+    &.side-left .list-group-item:not(.karaSuggestion) {
+        flex-direction: row-reverse;
+    }
 
-	.list-group-item {
-		background: #333;
-		z-index: 200;
-	}
+    .list-group-item {
+        background: neo-tokens.$neo-surface-raised;
+        z-index: 200;
+        box-shadow:
+            14px 14px 28px neo-tokens.$neo-shadow-dark,
+            -8px -8px 16px neo-tokens.$neo-highlight;
+    }
 }

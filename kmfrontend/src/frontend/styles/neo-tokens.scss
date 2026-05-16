@@ -1,0 +1,189 @@
+// neo-tokens.scss — Single source of truth for neumorphic design tokens
+//
+// All neumorphic SCSS files should @use this module instead of
+// duplicating local variables. Use the mixins for common surface
+// treatments; override shadow parameters when a component needs
+// a different elevation.
+
+@use 'sass:color';
+
+// ── Surface Levels ──────────────────────────────────────────────
+// Level 0: page background (canvas, negative space)
+// Level 1: base raised surface (buttons, tags, list items)
+// Level 2: elevated surface (cards, panels)
+// Level 3: highest surface (modals, dropdowns)
+// Pressed: inset / depressed surface
+
+$neo-bg:              #34373b;
+$neo-surface:         #3a3d42;
+$neo-surface-raised:  #3c4045;
+$neo-surface-top:     #3e4247;
+$neo-surface-pressed: #2f3236;
+
+// ── Shadows ─────────────────────────────────────────────────────
+$neo-shadow-dark:     rgba(9, 10, 12, 0.48);
+$neo-shadow-soft:     rgba(10, 11, 13, 0.35);
+$neo-shadow-deep:     rgba(10, 11, 13, 0.55);
+$neo-shadow-black:    rgba(0, 0, 0, 0.5);
+$neo-highlight:       rgba(255, 255, 255, 0.07);
+$neo-highlight-soft:  rgba(255, 255, 255, 0.055);
+$neo-highlight-tint:  rgba(255, 255, 255, 0.05);
+
+// ── Borders ─────────────────────────────────────────────────────
+$neo-border:          1px solid rgba(255, 255, 255, 0.06);
+$neo-border-strong:   1px solid rgba(255, 255, 255, 0.08);
+$neo-border-color:    rgba(255, 255, 255, 0.06);
+
+// ── Radius ──────────────────────────────────────────────────────
+$neo-radius:          8px;
+$neo-radius-sm:       6px;
+$neo-radius-pill:     999px;
+
+// ── Transitions ─────────────────────────────────────────────────
+$neo-transition:      160ms ease;
+$neo-transition-slow: 250ms ease;
+
+// ── Accent Palette ──────────────────────────────────────────────
+$neo-accent:          #9bc5ff;
+$neo-accent-gold:     #f4c56a;
+$neo-accent-warm:     #f29b74;
+
+// ── Semantic ────────────────────────────────────────────────────
+$neo-success:         #4caf50;
+$neo-warning:         #f4c56a;
+$neo-danger:          #e0554a;
+$neo-info:            #5b9bd5;
+
+// ── Text Hierarchy ──────────────────────────────────────────────
+$neo-text-primary:    rgba(255, 255, 255, 0.92);
+$neo-text-secondary:  rgba(255, 255, 255, 0.76);
+$neo-text-tertiary:   rgba(255, 255, 255, 0.55);
+
+// ── Progress Bar ────────────────────────────────────────────────
+$neo-progress-mid:     #f4c56a;
+$neo-progress-end:     #f29b74;
+$neo-progress-gradient: linear-gradient(90deg, #9bc5ff, #f4c56a 58%, #f29b74);
+$neo-progress-glow:     0 0 16px rgba(155, 197, 255, 0.34);
+$neo-progress-track-bg: rgba(15, 16, 18, 0.62);
+
+// ── Page Background ─────────────────────────────────────────────
+$neo-page-bg:
+    radial-gradient(circle at 18% 8%, rgba(155, 197, 255, 0.12), transparent 28rem),
+    radial-gradient(circle at 82% 12%, rgba(244, 197, 106, 0.1), transparent 24rem),
+    $neo-bg;
+
+// ═══════════════════════════════════════════════════════════════════
+// Mixins
+// ═══════════════════════════════════════════════════════════════════
+
+// Raised / convex surface. Creates a "pillow" effect with a gradient
+// background and dual-layered shadows (dark bottom-right + light top-left).
+//
+// $size: shadow size multiplier — 'sm' | 'md' (default) | 'lg' | 'xl'
+// $radius: border-radius override
+// $surface: base surface color to lighten from (defaults to $neo-surface-raised)
+@mixin neo-raised($size: 'md', $radius: $neo-radius, $surface: $neo-surface-raised) {
+    background: linear-gradient(145deg,
+        color.adjust($surface, $lightness: 4%, $space: hsl),
+        $neo-bg);
+    border: $neo-border;
+    border-radius: $radius;
+
+    @if $size == 'sm' {
+        box-shadow:
+            6px 6px 14px $neo-shadow-soft,
+            -4px -4px 10px $neo-highlight;
+    } @else if $size == 'md' {
+        box-shadow:
+            10px 10px 22px $neo-shadow-dark,
+            -8px -8px 18px $neo-highlight;
+    } @else if $size == 'lg' {
+        box-shadow:
+            14px 14px 28px $neo-shadow-dark,
+            -9px -9px 20px $neo-highlight;
+    } @else if $size == 'xl' {
+        box-shadow:
+            16px 16px 32px $neo-shadow-black,
+            -10px -10px 24px rgba(255, 255, 255, 0.065);
+    }
+}
+
+// Pressed / concave surface. Inset shadows simulate depth.
+@mixin neo-pressed($radius: $neo-radius) {
+    background: $neo-surface-pressed;
+    border-radius: $radius;
+    box-shadow:
+        inset 6px 6px 14px $neo-shadow-deep,
+        inset -6px -6px 14px $neo-highlight-soft;
+}
+
+// Subtle raised — lighter shadow for inline elements (tags, badges)
+@mixin neo-subtle($radius: $neo-radius) {
+    background: $neo-surface;
+    border: $neo-border;
+    border-radius: $radius;
+    box-shadow:
+        3px 3px 6px $neo-shadow-soft,
+        -2px -2px 5px $neo-highlight;
+}
+
+// Hover lift — applied on :hover / :focus-visible
+@mixin neo-hover-lift {
+    transform: translateY(-1px);
+    box-shadow:
+        13px 13px 26px $neo-shadow-deep,
+        -9px -9px 19px $neo-highlight;
+}
+
+// Active press — applied on :active
+@mixin neo-active-press {
+    transform: translateY(0);
+    box-shadow:
+        inset 5px 5px 12px $neo-shadow-deep,
+        inset -5px -5px 12px $neo-highlight-soft;
+}
+
+// Shared interactivity transition (use on clickable neumorphic elements)
+@mixin neo-interactive {
+    transition:
+        box-shadow $neo-transition,
+        transform $neo-transition,
+        color $neo-transition,
+        background-color $neo-transition;
+    cursor: pointer;
+}
+
+// Page-level background with ambient light
+@mixin neo-page-bg {
+    background: $neo-page-bg;
+}
+
+// Progress bar track (inset pill)
+@mixin neo-progress-track {
+    background-color: $neo-progress-track-bg;
+    border-radius: $neo-radius-pill;
+    box-shadow:
+        inset 4px 4px 10px rgba(0, 0, 0, 0.55),
+        inset -3px -3px 8px $neo-highlight-soft;
+}
+
+// Progress bar fill (gradient with glow)
+@mixin neo-progress-fill {
+    height: 100%;
+    background: $neo-progress-gradient;
+    border-radius: inherit;
+    box-shadow: $neo-progress-glow;
+}
+
+// Bullet — small raised circle/badge (queue positions, status indicators)
+@mixin neo-bullet($size: 3rem) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $size;
+    border-radius: $neo-radius;
+    background: linear-gradient(145deg, #383c41, #2d3034);
+    box-shadow:
+        6px 6px 12px rgba(0, 0, 0, 0.32),
+        -4px -4px 10px $neo-highlight-soft;
+}

@@ -1,14 +1,15 @@
 @use 'sass:color';
 @use 'sass:map';
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
 #profilModal {
 	.avatar {
-		border: none;
+		border: neo-tokens.$neo-border;
+		border-radius: neo-tokens.$neo-radius;
 		box-shadow:
-			0 2px 5px 0 #00000029,
-			0 1px 8px 0 #00000029,
-			0 3px 5px -1px #00000029;
+			4px 4px 8px neo-tokens.$neo-shadow-soft,
+			-2px -2px 5px neo-tokens.$neo-highlight;
 	}
 
 	.avatarButton {
@@ -42,12 +43,23 @@
 		}
 		button.btn-save {
 			font-size: 1.5em;
-			background-color: map.get(variables.$mugen-colors, 'green');
+			background: linear-gradient(145deg,
+				color.adjust(neo-tokens.$neo-success, $lightness: -4%, $space: hsl),
+				color.adjust(neo-tokens.$neo-success, $lightness: -20%, $space: hsl));
+			border: 0;
+			color: white;
+			box-shadow:
+				4px 4px 8px rgba(8, 9, 11, 0.34),
+				-2px -2px 5px neo-tokens.$neo-highlight;
 			&:hover {
-				background-color: color.scale(map.get(variables.$mugen-colors, 'green'), $lightness: 5%);
+				background: linear-gradient(145deg,
+					color.adjust(neo-tokens.$neo-success, $lightness: -2%, $space: hsl),
+					color.adjust(neo-tokens.$neo-success, $lightness: -16%, $space: hsl));
 			}
 			&:active {
-				background-color: color.scale(map.get(variables.$mugen-colors, 'green'), $lightness: 10%);
+				background: linear-gradient(145deg,
+					color.adjust(neo-tokens.$neo-success, $lightness: -6%, $space: hsl),
+					color.adjust(neo-tokens.$neo-success, $lightness: -22%, $space: hsl));
 			}
 		}
 	}
@@ -99,9 +111,19 @@
 		input[type='password'] {
 			text-align: left;
 			padding: 0.5rem;
-			border: solid 1px gray;
+			background-color: neo-tokens.$neo-surface-pressed;
+			border: neo-tokens.$neo-border;
+			border-radius: neo-tokens.$neo-radius-sm;
+			box-shadow:
+				inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+				inset -2px -2px 4px neo-tokens.$neo-highlight-soft;
+			color: neo-tokens.$neo-text-primary;
 			&:focus {
-				border: solid 1px gainsboro;
+				border: solid 1px neo-tokens.$neo-accent;
+				box-shadow:
+					inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+					inset -2px -2px 4px neo-tokens.$neo-highlight-soft,
+					0 0 0 2px rgba(155, 197, 255, 0.25);
 			}
 		}
 		> select {

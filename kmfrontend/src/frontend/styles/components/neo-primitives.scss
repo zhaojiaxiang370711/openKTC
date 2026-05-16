@@ -1,0 +1,219 @@
+// neo-primitives.scss — Reusable BEM-style CSS classes for
+// neumorphic components. Import this in KMFrontend.scss so every
+// page can use .neo-card, .neo-btn, .neo-input etc. directly.
+//
+// TSX components should prefer these classes where possible;
+// component-specific SCSS should @use '../styles/neo-tokens' for
+// more complex one-off patterns.
+
+@use 'sass:color';
+@use '../neo-tokens';
+
+// ── Surface ─────────────────────────────────────────────────────
+
+.neo-card {
+    @include neo-tokens.neo-raised;
+}
+
+.neo-card--sm {
+    @include neo-tokens.neo-raised($size: 'sm');
+}
+
+.neo-card--lg {
+    @include neo-tokens.neo-raised($size: 'lg');
+}
+
+.neo-card--xl {
+    @include neo-tokens.neo-raised($size: 'xl');
+}
+
+.neo-card--subtle {
+    @include neo-tokens.neo-subtle;
+}
+
+.neo-inset {
+    @include neo-tokens.neo-pressed;
+}
+
+.neo-page {
+    @include neo-tokens.neo-page-bg;
+    min-height: 100vh;
+}
+
+// ── Buttons ─────────────────────────────────────────────────────
+
+.neo-btn {
+    @include neo-tokens.neo-raised($size: 'sm', $surface: neo-tokens.$neo-surface);
+    @include neo-tokens.neo-interactive;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.1rem;
+    color: neo-tokens.$neo-text-primary;
+    font-weight: 700;
+    font-family: inherit;
+    font-size: 1rem;
+    border: none;
+    outline: none;
+    user-select: none;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus-visible {
+        @include neo-tokens.neo-hover-lift;
+        color: white;
+    }
+
+    &:active {
+        @include neo-tokens.neo-active-press;
+    }
+
+    &:disabled,
+    &.disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.neo-btn--primary {
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-accent, $lightness: -8%, $space: hsl),
+        color.adjust(neo-tokens.$neo-accent, $lightness: -22%, $space: hsl));
+    border: 0;
+    box-shadow:
+        8px 8px 16px rgba(8, 9, 11, 0.38),
+        -5px -5px 12px neo-tokens.$neo-highlight;
+    color: #0d1117;
+    font-weight: 800;
+}
+
+.neo-btn--danger {
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-danger, $lightness: -4%, $space: hsl),
+        color.adjust(neo-tokens.$neo-danger, $lightness: -18%, $space: hsl));
+    border: 0;
+    box-shadow:
+        8px 8px 16px rgba(8, 9, 11, 0.38),
+        -5px -5px 12px neo-tokens.$neo-highlight;
+    color: white;
+    font-weight: 800;
+}
+
+.neo-btn--success {
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-success, $lightness: -2%, $space: hsl),
+        color.adjust(neo-tokens.$neo-success, $lightness: -16%, $space: hsl));
+    border: 0;
+    box-shadow:
+        8px 8px 16px rgba(8, 9, 11, 0.38),
+        -5px -5px 12px neo-tokens.$neo-highlight;
+    color: white;
+    font-weight: 800;
+}
+
+.neo-btn--ghost {
+    background: transparent;
+    border: neo-tokens.$neo-border-strong;
+    box-shadow: none;
+
+    &:hover,
+    &:focus-visible {
+        background: rgba(255, 255, 255, 0.04);
+        box-shadow:
+            4px 4px 10px neo-tokens.$neo-shadow-soft,
+            -3px -3px 8px neo-tokens.$neo-highlight;
+    }
+}
+
+// ── Input ───────────────────────────────────────────────────────
+
+.neo-input {
+    @include neo-tokens.neo-pressed;
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    color: neo-tokens.$neo-text-primary;
+    font-size: 1rem;
+    font-family: inherit;
+    border: none;
+    outline: none;
+
+    &:focus {
+        box-shadow:
+            inset 4px 4px 10px neo-tokens.$neo-shadow-deep,
+            inset -4px -4px 10px neo-tokens.$neo-highlight-soft,
+            0 0 0 2px rgba(155, 197, 255, 0.25);
+    }
+}
+
+// ── Progress ────────────────────────────────────────────────────
+
+.neo-progress-track {
+    @include neo-tokens.neo-progress-track;
+    overflow: hidden;
+    height: 0.9em;
+}
+
+.neo-progress-fill {
+    @include neo-tokens.neo-progress-fill;
+    transition: width linear 0.5s;
+}
+
+// ── Modal Overlay / Dimmer ──────────────────────────────────────
+
+.neo-modal-overlay {
+    background:
+        radial-gradient(circle at 18% 12%, rgba(155, 197, 255, 0.16), transparent 34rem),
+        radial-gradient(circle at 86% 20%, rgba(244, 197, 106, 0.12), transparent 28rem),
+        rgba(15, 16, 18, 0.76);
+    backdrop-filter: blur(4px);
+}
+
+// ── Dropdown ────────────────────────────────────────────────────
+
+.neo-dropdown {
+    @include neo-tokens.neo-raised($size: 'lg', $surface: neo-tokens.$neo-surface-top);
+    position: absolute;
+    z-index: 60;
+    padding: 0.5rem;
+    list-style: none;
+}
+
+// ── Tag ─────────────────────────────────────────────────────────
+
+.neo-tag {
+    background: neo-tokens.$neo-surface;
+    border: neo-tokens.$neo-border;
+    border-radius: neo-tokens.$neo-radius-sm;
+    padding: 0.2em 0.65em;
+    font-weight: 700;
+    box-shadow:
+        3px 3px 6px neo-tokens.$neo-shadow-soft,
+        -2px -2px 5px neo-tokens.$neo-highlight;
+}
+
+// ── Switch / Toggle ─────────────────────────────────────────────
+
+.neo-switch-track {
+    background: rgba(0, 0, 0, 0.30);
+    border-radius: neo-tokens.$neo-radius-pill;
+    box-shadow:
+        inset 3px 3px 6px rgba(10, 11, 13, 0.5),
+        inset -2px -2px 5px neo-tokens.$neo-highlight-soft;
+}
+
+.neo-switch-thumb {
+    background: neo-tokens.$neo-text-secondary;
+    border-radius: 50%;
+    box-shadow:
+        2px 2px 5px rgba(10, 11, 13, 0.45),
+        -1px -1px 4px neo-tokens.$neo-highlight;
+}
+
+// ── Bullet ──────────────────────────────────────────────────────
+
+.neo-bullet {
+    @include neo-tokens.neo-bullet;
+}

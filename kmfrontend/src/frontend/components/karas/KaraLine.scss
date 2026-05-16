@@ -1,295 +1,308 @@
 @use 'sass:color';
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
 // Hover events only for PCs
 body:not(.touch) {
-	.playlist-main .list-group-item:hover {
-		background-color: color.scale(variables.$mugen-playlist-odd, $lightness: -35%);
-		&.list-group-item-even {
-			background-color: color.scale(variables.$mugen-playlist-even, $lightness: -25%);
-		}
-		&.dejavu {
-			background-color: color.scale(variables.$mugen-playlist-dejavu-odd, $lightness: -35%);
-			&.list-group-item-even {
-				background-color: color.scale(variables.$mugen-playlist-dejavu-even, $lightness: -25%);
-			}
-		}
-		&.currentlyplaying {
-			background-color: color.scale(
-				variables.$mugen-playlist-currently-playing,
-				$lightness: -55%,
-				$saturation: -25%
-			);
-			&.list-group-item-even {
-				background-color: color.scale(
-					variables.$mugen-playlist-currently-playing,
-					$lightness: -45%,
-					$saturation: -25%
-				);
-			}
-		}
-	}
+    .playlist-main .list-group-item:hover {
+        background-color: color.adjust(neo-tokens.$neo-surface-pressed, $lightness: -4%, $space: hsl);
+        box-shadow:
+            4px 4px 10px neo-tokens.$neo-shadow-dark,
+            -3px -3px 8px neo-tokens.$neo-highlight;
+        &.list-group-item-even {
+            background-color: color.adjust(neo-tokens.$neo-surface, $lightness: -3%, $space: hsl);
+        }
+        &.dejavu {
+            background-color: color.scale(variables.$mugen-playlist-dejavu-odd, $lightness: -35%);
+            &.list-group-item-even {
+                background-color: color.scale(variables.$mugen-playlist-dejavu-even, $lightness: -25%);
+            }
+        }
+        &.currentlyplaying {
+            background-color: color.scale(
+                variables.$mugen-playlist-currently-playing,
+                $lightness: -55%,
+                $saturation: -25%
+            );
+            &.list-group-item-even {
+                background-color: color.scale(
+                    variables.$mugen-playlist-currently-playing,
+                    $lightness: -45%,
+                    $saturation: -25%
+                );
+            }
+        }
+    }
 }
 
 .list-group-item {
-	background-color: variables.$mugen-playlist-odd;
-	&.dejavu {
-		.playKara {
-			background-color: variables.$mugen-playlist-dejavu-odd;
-		}
-		.contentDiv {
-			i.fas.dejavu-icon {
-				color: color.scale(variables.$mugen-playlist-dejavu-odd, $lightness: 20%, $saturation: 15%);
-				margin-left: unset;
-				margin-right: 0.25em;
-			}
-		}
-	}
-	&.currentlyplaying,
-	&.dejavu.currentlyplaying,
-	&.list-group-item-even.currentlyplaying,
-	&.list-group-item-even.dejavu.currentlyplaying {
-		background-color: color.scale(
-			variables.$mugen-playlist-currently-playing,
-			$lightness: -50%,
-			$saturation: -15%,
-			$alpha: -25%
-		);
-		.playKara {
-			background-color: variables.$mugen-playlist-currently-playing;
-			animation: btn-pulse infinite ease-in-out 1s;
-		}
-		.contentDiv {
-			color: inherit;
-		}
-	}
-	&.list-group-item-even {
-		background-color: variables.$mugen-playlist-even;
-	}
-	z-index: 20;
-	overflow: auto;
-	padding: 0.5em;
-	line-height: 1.5rem;
-	transition: background-color 250ms ease;
-	display: flex;
-	flex-wrap: nowrap;
-	flex-direction: row;
-	@media screen and (max-width: variables.$mugen-breakpoint-large) {
-		flex-wrap: wrap;
-	}
+    background: neo-tokens.$neo-surface-pressed;
+    box-shadow:
+        inset 4px 4px 8px neo-tokens.$neo-shadow-deep,
+        inset -3px -3px 6px neo-tokens.$neo-highlight-soft;
+    &.dejavu {
+        .playKara {
+            background-color: variables.$mugen-playlist-dejavu-odd;
+        }
+        .contentDiv {
+            i.fas.dejavu-icon {
+                color: color.scale(variables.$mugen-playlist-dejavu-odd, $lightness: 20%, $saturation: 15%);
+                margin-left: unset;
+                margin-right: 0.25em;
+            }
+        }
+    }
+    &.currentlyplaying,
+    &.dejavu.currentlyplaying,
+    &.list-group-item-even.currentlyplaying,
+    &.list-group-item-even.dejavu.currentlyplaying {
+        background-color: color.scale(
+            variables.$mugen-playlist-currently-playing,
+            $lightness: -50%,
+            $saturation: -15%,
+            $alpha: -25%
+        );
+        .playKara {
+            background-color: variables.$mugen-playlist-currently-playing;
+            animation: btn-pulse infinite ease-in-out 1s;
+        }
+        .contentDiv {
+            color: inherit;
+        }
+    }
+    &.list-group-item-even {
+        background: neo-tokens.$neo-surface;
+        box-shadow:
+            inset 3px 3px 6px neo-tokens.$neo-shadow-soft,
+            inset -2px -2px 4px neo-tokens.$neo-highlight;
+    }
+    z-index: 20;
+    overflow: auto;
+    padding: 0.5em;
+    line-height: 1.5rem;
+    transition: background-color 250ms ease, box-shadow 250ms ease;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    border-radius: neo-tokens.$neo-radius-sm;
+    margin: 1px 0;
+    @media screen and (max-width: variables.$mugen-breakpoint-large) {
+        flex-wrap: wrap;
+    }
 
-	&.marker {
-		border-bottom: 0.25em black solid;
-		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
-	}
+    &.marker {
+        border-bottom: 0.25em black solid;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
 
-	&.marker.green {
-		border-bottom-color: forestgreen;
-	}
+    &.marker.green {
+        border-bottom-color: neo-tokens.$neo-success;
+    }
 
-	.img-container {
-		flex-grow: 1;
-	}
+    .img-container {
+        flex-grow: 1;
+    }
 
-	.img-circle {
-		width: auto;
-		height: 2em;
-		border-radius: 10%;
-		float: right;
-		display: block;
-		margin: 0 0.25em;
-		user-select: none;
-	}
-	// .actionDiv: profile picture of the requester and remove/add/actions buttons
-	.actionDiv {
-		display: flex;
-		flex-direction: row;
-		flex: 0 0 auto;
-		align-items: center;
-		&.vertical {
-			flex-wrap: wrap;
-			flex-direction: column;
-			justify-content: center;
-			.btn-group {
-				padding-top: 0.15em;
-			}
-		}
-		button {
-			z-index: 9;
-			position: relative;
-		}
-		// .dragHandle: in playlists, the three-dot handle to drag
-		.dragHandle {
-			padding-left: 0.5em;
-			padding-right: 0.5em;
-			align-self: center;
-			cursor: move;
-		}
-	}
-	// .contentDiv: karaTitle and tags
-	> .contentDiv {
-		padding: 0.25em 0.5em;
-		overflow: auto;
-		display: flex;
-		flex-wrap: wrap;
-		flex: 1 1 auto;
-		i.fas.problematic {
-			color: gold;
-		}
-	}
-	&:not(.liTag) > .contentDiv {
-		cursor: zoom-in;
-	}
-	> .contentDiv.contentDivMobile {
-		&.problematic {
-			color: gold;
-		}
-		padding: 0.125em 0;
-		flex-direction: column;
-		display: flex;
-		flex-basis: 50%;
-		> * {
-			flex: 0 0 auto !important;
-		}
-		.tag.inline {
-			margin-bottom: 0;
-			padding: 0 0.25em;
-			font-style: normal;
-			min-width: 3em;
-			display: inline-block;
-			height: min-content;
-			overflow-wrap: break-word;
-			&.empty {
-				height: 1.5rem;
-			}
-		}
-		.contentDivMobileSerie,
-		.contentDivMobileTitle {
-			.tag.inline.green {
-				margin-left: 0;
-			}
-		}
-		.contentDivMobileSerie {
-			font-weight: bold;
-		}
-		.contentDivMobileTitle {
-			display: flex;
-			font-style: italic;
-			margin-bottom: 0.25em;
-			> i.fas {
-				margin-left: 0.375em;
-				line-height: 1.2;
-			}
-		}
-		.contentDivMobileTags {
-			display: flex;
-			justify-content: space-between;
-			padding: 0.5em 0 0;
-			@media screen and (max-width: variables.$mugen-breakpoint-small) {
-				flex-direction: column;
-				align-items: flex-start;
-			}
-			.tagConteneur {
-				margin-left: 0;
-			}
-			.playingIn {
-				display: flex;
-				justify-content: space-between;
-				gap: 0.5em;
-			}
-		}
-	}
-	.infoDiv {
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
-	// Overrides, original tagConteneur in styles/components/tags.scss
-	.tagConteneur {
-		margin-left: auto;
-		display: flex;
-		align-items: flex-end;
-		flex-wrap: wrap;
-		.tag {
-			padding: 0 0.25em;
-			margin-bottom: 0;
-		}
-	}
-	// .checkboxKara: checkbox for bulk selection in admin interface
-	.checkboxKara {
-		padding: 0.25em;
-		font-size: 1.25em;
-		float: right;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-	}
+    .img-circle {
+        width: auto;
+        height: 2em;
+        border-radius: 10%;
+        float: right;
+        display: block;
+        margin: 0 0.25em;
+        user-select: none;
+    }
+    .actionDiv {
+        display: flex;
+        flex-direction: row;
+        flex: 0 0 auto;
+        align-items: center;
+        &.vertical {
+            flex-wrap: wrap;
+            flex-direction: column;
+            justify-content: center;
+            .btn-group {
+                padding-top: 0.15em;
+            }
+        }
+        button {
+            z-index: 9;
+            position: relative;
+        }
+        .dragHandle {
+            padding-left: 0.5em;
+            padding-right: 0.5em;
+            align-self: center;
+            cursor: move;
+        }
+    }
+    > .contentDiv {
+        padding: 0.25em 0.5em;
+        overflow: auto;
+        display: flex;
+        flex-wrap: wrap;
+        flex: 1 1 auto;
+        i.fas.problematic {
+            color: gold;
+        }
+    }
+    &:not(.liTag) > .contentDiv {
+        cursor: zoom-in;
+    }
+    > .contentDiv.contentDivMobile {
+        &.problematic {
+            color: gold;
+        }
+        padding: 0.125em 0;
+        flex-direction: column;
+        display: flex;
+        flex-basis: 50%;
+        > * {
+            flex: 0 0 auto !important;
+        }
+        .tag.inline {
+            margin-bottom: 0;
+            padding: 0 0.25em;
+            font-style: normal;
+            min-width: 3em;
+            display: inline-block;
+            height: min-content;
+            overflow-wrap: break-word;
+            &.empty {
+                height: 1.5rem;
+            }
+        }
+        .contentDivMobileSerie,
+        .contentDivMobileTitle {
+            .tag.inline.green {
+                margin-left: 0;
+            }
+        }
+        .contentDivMobileSerie {
+            font-weight: bold;
+        }
+        .contentDivMobileTitle {
+            display: flex;
+            font-style: italic;
+            margin-bottom: 0.25em;
+            > i.fas {
+                margin-left: 0.375em;
+                line-height: 1.2;
+            }
+        }
+        .contentDivMobileTags {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5em 0 0;
+            @media screen and (max-width: variables.$mugen-breakpoint-small) {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .tagConteneur {
+                margin-left: 0;
+            }
+            .playingIn {
+                display: flex;
+                justify-content: space-between;
+                gap: 0.5em;
+            }
+        }
+    }
+    .infoDiv {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .tagConteneur {
+        margin-left: auto;
+        display: flex;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        .tag {
+            padding: 0 0.25em;
+            margin-bottom: 0;
+        }
+    }
+    .checkboxKara {
+        padding: 0.25em;
+        font-size: 1.25em;
+        float: right;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-	// Axial symmetry
+    &.side-right {
+        flex-direction: row-reverse;
+        .actionDiv {
+            float: left;
+            flex-direction: row-reverse;
+        }
+        .checkboxKara {
+            float: left;
+        }
+    }
 
-	&.side-right {
-		flex-direction: row-reverse;
-		.actionDiv {
-			float: left;
-			flex-direction: row-reverse;
-		}
-		.checkboxKara {
-			float: left;
-		}
-	}
-
-	.upvoteKara:disabled {
-		color: grey;
-		cursor: not-allowed;
-	}
+    .upvoteKara:disabled {
+        color: grey;
+        cursor: not-allowed;
+    }
 }
 
 .marker-label {
-	background: black;
-	&.green {
-		background: forestgreen;
-	}
-	color: white;
-	padding: 0.2em;
-	position: absolute;
-	left: 50%;
-	transform: translate(-50%, -60%);
-	z-index: 10000;
-	font-size: small;
-	font-weight: 600;
+    background: black;
+    &.green {
+        background: neo-tokens.$neo-success;
+    }
+    color: white;
+    padding: 0.2em;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    z-index: 10000;
+    font-size: small;
+    font-weight: 600;
+    border-radius: neo-tokens.$neo-radius-sm;
+    box-shadow:
+        3px 3px 6px neo-tokens.$neo-shadow-soft,
+        -2px -2px 5px neo-tokens.$neo-highlight;
 }
 
 .upvoteCount {
-	color: #aaa;
-	margin-left: 0.5em;
-	background-color: #212831;
-	padding: 0 0.5em;
-	text-align: center;
-	font-weight: bold;
-	border-radius: 10%;
-	> i {
-		font-size: 88%;
-		margin-right: 0.5em;
-	}
+    color: neo-tokens.$neo-text-secondary;
+    margin-left: 0.5em;
+    background-color: neo-tokens.$neo-surface;
+    padding: 0 0.5em;
+    text-align: center;
+    font-weight: bold;
+    border-radius: neo-tokens.$neo-radius-sm;
+    border: neo-tokens.$neo-border;
+    box-shadow:
+        2px 2px 4px neo-tokens.$neo-shadow-soft,
+        -1px -1px 3px neo-tokens.$neo-highlight;
+    > i {
+        font-size: 88%;
+        margin-right: 0.5em;
+    }
 }
 
 .disable-select {
-	user-select: none;
+    user-select: none;
 }
 
 .swapButton {
-	margin-right: 0.5em;
+    margin-right: 0.5em;
 }
 
 @keyframes btn-pulse {
-	0% {
-		background-color: color.scale(variables.$mugen-playlist-currently-playing, $lightness: -55%);
-	}
-	50% {
-		background-color: color.scale(variables.$mugen-playlist-currently-playing, $lightness: -65%, $saturation: -5%);
-	}
-	100% {
-		background-color: color.scale(variables.$mugen-playlist-currently-playing, $lightness: -55%);
-	}
+    0% {
+        background-color: color.scale(variables.$mugen-playlist-currently-playing, $lightness: -55%);
+    }
+    50% {
+        background-color: color.scale(variables.$mugen-playlist-currently-playing, $lightness: -65%, $saturation: -5%);
+    }
+    100% {
+        background-color: color.scale(variables.$mugen-playlist-currently-playing, $lightness: -55%);
+    }
 }

@@ -1,4 +1,5 @@
 @use 'sass:string';
+@use './frontend/styles/neo-tokens';
 
 * {
 	forced-color-adjust: none;
@@ -27,9 +28,13 @@
 select {
 	display: inline-block;
 	box-sizing: border-box;
-	background-color: white;
-	border: 1px solid #d9d9d9;
-	border-radius: 4px;
+	background-color: neo-tokens.$neo-surface-pressed;
+	color: neo-tokens.$neo-text-primary;
+	border: neo-tokens.$neo-border;
+	border-radius: neo-tokens.$neo-radius-sm;
+	box-shadow:
+		inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+		inset -2px -2px 4px neo-tokens.$neo-highlight-soft;
 	outline: none;
 	padding: 4px 5px 5px;
 }
@@ -37,7 +42,12 @@ select {
 .futurTime {
 	position: absolute;
 	top: 6.5em;
-	background-color: black;
+	background-color: neo-tokens.$neo-surface-top;
+	border: neo-tokens.$neo-border;
+	border-radius: neo-tokens.$neo-radius;
+	box-shadow:
+		6px 6px 12px neo-tokens.$neo-shadow-soft,
+		-4px -4px 8px neo-tokens.$neo-highlight;
 	padding: 0.5rem;
 }
 

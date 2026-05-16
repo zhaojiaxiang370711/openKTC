@@ -1,18 +1,20 @@
 @use '../variables';
+@use '../neo-tokens';
 
 .article-wrapper {
 	width: 100%;
-	background-color: variables.$mugen-article-background;
+	background: rgba(255, 255, 255, 0.06);
+	backdrop-filter: blur(4px);
 	cursor: pointer;
 	margin-top: 1em;
+	border-radius: neo-tokens.$neo-radius-sm;
 	box-shadow:
-		0 2px 2px 0 #00000024,
-		0 1px 5px 0 #0000001f,
-		0 3px 1px -2px #00000033;
+		4px 4px 8px rgba(0, 0, 0, 0.2),
+		-2px -2px 5px rgba(255, 255, 255, 0.04);
 	padding: 0.5em 1em;
 	transition: all 0.5s ease-in-out 0s;
 	list-style: none;
-	border-left: 4px solid white;
+	border-left: 4px solid rgba(255, 255, 255, 0.4);
 
 	.article-body {
 		max-height: 6em;
@@ -38,7 +40,7 @@
 			left: 0em;
 			width: 100%;
 			height: 5em;
-			background: linear-gradient(#6a767100 0%, #6a7671 100%);
+			background: linear-gradient(rgba(52, 55, 59, 0) 0%, neo-tokens.$neo-bg 100%);
 		}
 	}
 
@@ -57,23 +59,23 @@
 	}
 
 	&[data-type='mast'] {
-		border-color: variables.$mugen-article-mastodon-border;
+		border-color: neo-tokens.$neo-accent;
 	}
 	&[data-type='app'] {
-		border-color: variables.$mugen-article-application-border;
+		border-color: neo-tokens.$neo-success;
 	}
 	&[data-type='appliance'] {
-		border-color: variables.$mugen-article-application-border;
+		border-color: neo-tokens.$neo-success;
 	}
 	&[data-type='base'] {
-		border-color: variables.$mugen-article-database-border;
+		border-color: #ff99ff;
 	}
 	&[data-type='system_error'] {
-		border-color: variables.$mugen-article-error-border;
+		border-color: neo-tokens.$neo-danger;
 		background-color: black;
 		color: palegoldenrod;
 		.article-body:after {
-			background: linear-gradient(#00000000 0%, black 100%);
+			background: linear-gradient(rgba(0, 0, 0, 0) 0%, black 100%);
 		}
 	}
 }

@@ -109,6 +109,25 @@ class KMSystem extends Component<unknown, unknown> {
 				locale={locale}
 				theme={{
 					algorithm: theme.darkAlgorithm,
+					token: {
+						colorBgBase: '#34373b',
+						colorBgContainer: '#3a3d42',
+						colorBgElevated: '#3e4247',
+						colorPrimary: '#9bc5ff',
+						colorSuccess: '#4caf50',
+						colorError: '#e0554a',
+						colorWarning: '#f4c56a',
+						borderRadius: 8,
+						borderRadiusSM: 6,
+						borderRadiusLG: 12,
+						colorBorder: 'rgba(255, 255, 255, 0.06)',
+						colorBorderSecondary: 'rgba(255, 255, 255, 0.06)',
+						colorText: 'rgba(255, 255, 255, 0.88)',
+						colorTextSecondary: 'rgba(255, 255, 255, 0.68)',
+						colorTextTertiary: 'rgba(255, 255, 255, 0.55)',
+						boxShadow: '4px 4px 8px rgba(10, 11, 13, 0.35)',
+						boxShadowSecondary: '6px 6px 12px rgba(10, 11, 13, 0.35)',
+					},
 					components: {
 						Menu: {
 							darkItemBg: '#1f1f1f',

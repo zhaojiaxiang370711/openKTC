@@ -1,94 +1,99 @@
 @use 'sass:color';
 @use 'sass:map';
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
 @keyframes slide-ltr {
-	0% {
-		transform: translateX(5px);
-	}
-	100% {
-		transform: translateX(var(--offset, 50%));
-	}
+    0% {
+        transform: translateX(5px);
+    }
+    100% {
+        transform: translateX(var(--offset, 50%));
+    }
 }
 
 #progressBar {
-	width: 100%;
-	height: 2em;
-	position: relative;
-	border-bottom: variables.$mugen-btn-border;
-	border-top: variables.$mugen-btn-border;
-	background-color: #1e2124;
-	cursor: grab;
+    width: 100%;
+    height: 2em;
+    position: relative;
+    background-color: neo-tokens.$neo-surface-pressed;
+    cursor: grab;
+    box-shadow:
+        inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+        inset -2px -2px 5px neo-tokens.$neo-highlight-soft;
 
-	&:hover {
-		#progressBarColor {
-			background-color: color.adjust(map.get(variables.$mugen-colors, 'blue'), $lightness: -10%, $space: hsl);
-		}
-	}
-	&:active {
-		cursor: grabbing;
-		#progressBarColor {
-			background-color: color.adjust(map.get(variables.$mugen-colors, 'blue'), $lightness: -15%, $space: hsl);
-		}
-	}
+    &:hover {
+        #progressBarColor {
+            background-color: color.adjust(map.get(variables.$mugen-colors, 'blue'), $lightness: -10%, $space: hsl);
+        }
+    }
+    &:active {
+        cursor: grabbing;
+        #progressBarColor {
+            background-color: color.adjust(map.get(variables.$mugen-colors, 'blue'), $lightness: -15%, $space: hsl);
+        }
+    }
 
-	#progressBarColor {
-		position: absolute;
-		background-color: color.adjust(map.get(variables.$mugen-colors, 'blue'), $lightness: -5%, $space: hsl);
-		border-bottom: solid 1px #595959;
-		z-index: 0;
-		left: 0;
-		top: 0;
-		max-width: 100%;
-		height: 100%;
-		transition:
-			width 300ms linear,
-			background-color 250ms ease;
-	}
+    #progressBarColor {
+        position: absolute;
+        background: linear-gradient(90deg,
+            color.adjust(map.get(variables.$mugen-colors, 'blue'), $lightness: 4%, $space: hsl),
+            color.adjust(map.get(variables.$mugen-colors, 'blue'), $lightness: -8%, $space: hsl));
+        border-bottom: solid 1px rgba(255, 255, 255, 0.08);
+        z-index: 0;
+        left: 0;
+        top: 0;
+        max-width: 100%;
+        height: 100%;
+        border-radius: 0 neo-tokens.$neo-radius-sm neo-tokens.$neo-radius-sm 0;
+        transition:
+            width 300ms linear,
+            background-color 250ms ease;
+    }
 
-	#karaInfo > .karaTitle {
-		justify-content: center;
-		height: 2em;
-		line-height: 2em;
-		overflow: hidden;
-		margin: 0 1em;
-		&.animate {
-			justify-content: flex-start;
-			position: relative;
-			> p {
-				animation: slide-ltr var(--duration, 10s) linear infinite alternate;
-				position: absolute;
-			}
-			&.pause > p {
-				animation-play-state: paused;
-			}
-		}
-	}
+    #karaInfo > .karaTitle {
+        justify-content: center;
+        height: 2em;
+        line-height: 2em;
+        overflow: hidden;
+        margin: 0 1em;
+        &.animate {
+            justify-content: flex-start;
+            position: relative;
+            > p {
+                animation: slide-ltr var(--duration, 10s) linear infinite alternate;
+                position: absolute;
+            }
+            &.pause > p {
+                animation-play-state: paused;
+            }
+        }
+    }
 
-	#karaInfo {
-		text-align: center;
-		z-index: 10;
-		position: absolute;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-		overflow: hidden;
-		display: flex;
-		align-items: center;
-		user-select: none;
+    #karaInfo {
+        text-align: center;
+        z-index: 10;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        user-select: none;
 
-		.actualTime {
-			justify-content: flex-start;
-			margin-left: 1em;
-			font-weight: bold;
-		}
+        .actualTime {
+            justify-content: flex-start;
+            margin-left: 1em;
+            font-weight: bold;
+        }
 
-		.remainTime {
-			justify-content: end;
-			margin-right: 1em;
-			font-weight: bold;
-		}
-	}
+        .remainTime {
+            justify-content: end;
+            margin-right: 1em;
+            font-weight: bold;
+        }
+    }
 }

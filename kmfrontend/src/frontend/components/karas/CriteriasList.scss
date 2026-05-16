@@ -1,83 +1,87 @@
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
 .criteriasContainer {
-	height: 100%;
-	overflow-y: scroll;
-	> *:last-child {
-		margin-bottom: 2em;
-	}
+    height: 100%;
+    overflow-y: scroll;
+    > *:last-child {
+        margin-bottom: 2em;
+    }
 }
 
 .criterias-line {
-	margin: 1em;
-	display: flex;
-	align-items: center;
+    margin: 1em;
+    display: flex;
+    align-items: center;
 
-	.criterias-type-smart-label {
-		margin-top: 0.5em;
-		margin-left: 0.5em;
-		margin-right: 0.5em;
-	}
+    .criterias-type-smart-label {
+        margin-top: 0.5em;
+        margin-left: 0.5em;
+        margin-right: 0.5em;
+    }
 
-	input {
-		margin-left: 0.5em;
-		margin-right: 0.5em;
-		border: 0;
-		box-shadow: none;
-		font-size: 1rem;
-		background-color: #5a5a5a;
-		outline: none;
-		color: #ccc;
-	}
+    input {
+        margin-left: 0.5em;
+        margin-right: 0.5em;
+        border: 0;
+        font-size: 1rem;
+        background-color: neo-tokens.$neo-surface-pressed;
+        box-shadow:
+            inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+            inset -2px -2px 4px neo-tokens.$neo-highlight-soft;
+        outline: none;
+        color: neo-tokens.$neo-text-primary;
+        border-radius: neo-tokens.$neo-radius-sm;
+    }
 
-	input[type='number'] {
-		width: 5em;
-	}
+    input[type='number'] {
+        width: 5em;
+    }
 
-	select {
-		margin-left: 0.5em;
-		margin-right: 0.5em;
-	}
+    select {
+        margin-left: 0.5em;
+        margin-right: 0.5em;
+    }
 }
 
 .criteriasDescription {
-	margin: 1em;
-	font-weight: bold;
+    margin: 1em;
+    font-weight: bold;
 }
 
 .criterias-input {
-	margin: 1em;
+    margin: 1em;
 
-	select {
-		margin-bottom: 1em;
-	}
+    select {
+        margin-bottom: 1em;
+    }
 
-	.criteriasValContainer {
-		display: flex;
-		flex-direction: column;
-		> .input-blc {
-			font-weight: bold;
-			padding: 4px !important;
-		}
-		> .UI-autocomplete {
-			flex-grow: 1;
-		}
-		> .btn:last-child {
-			margin-top: 0.5em;
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-		}
-	}
+    .criteriasValContainer {
+        display: flex;
+        flex-direction: column;
+        > .input-blc {
+            font-weight: bold;
+            padding: 4px !important;
+        }
+        > .UI-autocomplete {
+            flex-grow: 1;
+        }
+        > .btn:last-child {
+            margin-top: 0.5em;
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+    }
 }
 
 .list-group-item.liTag {
-	min-height: auto;
+    min-height: auto;
 }
 
 .list-group-item.liTag > .actionDiv {
-	padding: 0;
+    padding: 0;
 }
 .list-group-item.liTag > div {
-	padding-top: 0;
-	padding-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }

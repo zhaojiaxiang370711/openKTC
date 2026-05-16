@@ -1,6 +1,7 @@
 // Common CSS for green-blue gradient pages (setup, migrations, welcome)
 
 @use '../variables';
+@use '../neo-tokens';
 
 .start-page {
 	background: variables.$mugen-welcome-page-background;
@@ -19,7 +20,13 @@
 		}
 
 		button {
-			background-color: grey;
+			background-color: neo-tokens.$neo-surface;
+			color: neo-tokens.$neo-text-primary;
+			border: neo-tokens.$neo-border;
+			border-radius: neo-tokens.$neo-radius-sm;
+			box-shadow:
+				3px 3px 6px neo-tokens.$neo-shadow-soft,
+				-2px -2px 4px neo-tokens.$neo-highlight;
 		}
 
 		button.fas,
@@ -31,6 +38,7 @@
 			margin: 0 0.2em;
 			background: none;
 			border: none;
+			box-shadow: none;
 		}
 
 		.input-group {
@@ -41,7 +49,8 @@
 			margin: 0.5em 0;
 			border-left: variables.$block-border-width white;
 			padding: 0.5em 1em;
-			background: #0000004d;
+			background: rgba(0, 0, 0, 0.3);
+			border-radius: neo-tokens.$neo-radius-sm;
 
 			> p {
 				width: 100%;
@@ -59,14 +68,14 @@
 				.input-field {
 					width: 100%;
 					font-size: 1.2em;
-					background: none;
-					border: none;
-					border-bottom: 1px solid white;
+					background: rgba(255, 255, 255, 0.05);
+					border: 1px solid rgba(255, 255, 255, 0.15);
+					border-radius: neo-tokens.$neo-radius-sm;
 					padding: 0.2em 0;
 					margin: 0;
 					color: white;
 					&:focus {
-						background: none;
+						background: rgba(255, 255, 255, 0.1);
 					}
 				}
 			}
@@ -125,9 +134,14 @@
 					li {
 						margin-right: 1em;
 						margin-bottom: 0.5em;
-						border-radius: 0.75em;
+						border-radius: neo-tokens.$neo-radius;
 						padding: 0.5em;
-						border: 0.1em solid #bbbcbc;
+						border: 1px solid rgba(255, 255, 255, 0.2);
+						background: rgba(255, 255, 255, 0.05);
+						backdrop-filter: blur(4px);
+						box-shadow:
+							3px 3px 6px rgba(0, 0, 0, 0.15),
+							-2px -2px 4px rgba(255, 255, 255, 0.05);
 						a {
 							display: flex;
 							text-decoration: none;

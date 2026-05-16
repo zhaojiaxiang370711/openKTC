@@ -1,16 +1,16 @@
 .karaTitle {
-	display: flex;
-	flex-grow: 1;
-	align-items: center;
-	flex-wrap: wrap;
-	> span {
-		margin: 0.125em 0;
-	}
-	span.tag.inline.white {
-		padding: 0 0.25em;
-		margin: 0.125em 0 0.125em 0.5em;
-	}
-	> i.fas {
-		margin-left: 0.375em;
-	}
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    flex-wrap: wrap;
+    > span {
+        margin: 0.125em 0;
+    }
+    span.tag.inline.white {
+        padding: 0 0.25em;
+        margin: 0.125em 0 0.125em 0.5em;
+    }
+    > i.fas {
+        margin-left: 0.375em;
+    }
 }

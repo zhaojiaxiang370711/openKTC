@@ -1,9 +1,13 @@
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
 @keyframes warn {
 	from {
-		background-color: variables.$mugen-select-background;
-		border: variables.$mugen-select-border;
+		background-color: neo-tokens.$neo-surface-pressed;
+		border: neo-tokens.$neo-border;
+		box-shadow:
+			inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+			inset -2px -2px 4px neo-tokens.$neo-highlight-soft;
 	}
 	to {
 		background-color: palevioletred;

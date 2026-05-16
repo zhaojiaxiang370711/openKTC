@@ -1,222 +1,205 @@
 @use 'sass:color';
 @use 'sass:map';
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 @use '../../styles/components/blurred-bg';
 
-$neo-base: #34373b;
-$neo-surface: #3c4045;
-$neo-highlight: rgba(255, 255, 255, 0.07);
-$neo-shadow: rgba(9, 10, 12, 0.5);
-
-@mixin neo-raised($radius: 8px) {
-	background:
-		linear-gradient(145deg, color.adjust($neo-surface, $lightness: 4%, $space: hsl), $neo-base);
-	border: 1px solid rgba(255, 255, 255, 0.06);
-	border-radius: $radius;
-	box-shadow:
-		12px 12px 24px $neo-shadow,
-		-8px -8px 18px $neo-highlight;
-}
-
 .player-box {
-	margin: 1em 0;
-	padding: 1rem;
-	display: flex;
-	justify-content: space-between;
-	flex-direction: column;
-	position: relative;
-	align-items: stretch;
-	cursor: pointer;
-	overflow: hidden;
-	@include neo-raised;
-	&.quiz {
-		cursor: unset;
-	}
-	&.fixed {
-		cursor: pointer;
-		margin: 0;
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		padding: 0.5em 0.5em 1em;
-		background: rgba(52, 55, 59, 0.96);
-		border-radius: 0;
-		border-left: 0;
-		border-right: 0;
-		box-shadow:
-			0 -10px 24px rgba(0, 0, 0, 0.34),
-			inset 0 1px 0 rgba(255, 255, 255, 0.08);
-		z-index: 99;
-		&::before {
-			border-radius: 0;
-			filter: blur(5px) contrast(75%) brightness(75%) saturate(80%);
-		}
-	}
-	> * {
-		z-index: 10;
-	}
-	@include blurred-bg.blurred-bg;
-	&::before {
-		z-index: 0;
-		border-radius: inherit;
-		opacity: 0.38;
-		filter: blur(14px) contrast(72%) brightness(68%) saturate(90%);
-		transform: scale(1.04);
-	}
-	&::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		z-index: 1;
-		border-radius: inherit;
-		background:
-			radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 36%),
-			linear-gradient(145deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.18));
-		pointer-events: none;
-	}
-	&:hover > .first > p.next,
-	> .first > p.next:focus {
-		color: aliceblue;
-		transform: translateX(0.25rem);
-	}
-	> .first {
-		font-size: 1rem;
-		font-weight: 900;
-		display: flex;
-		align-items: center;
-		margin-bottom: 0.75rem;
-		color: rgba(255, 255, 255, 0.76);
-		p:first-child {
-			flex-grow: 1;
-			text-transform: uppercase;
-			letter-spacing: 0;
-		}
-		p.next {
-			display: inline-flex;
-			align-items: center;
-			gap: 0.35rem;
-			transition:
-				color,
-				transform ease 100ms,
-				200ms;
-		}
-	}
-	> .title {
-		& > div {
-			display: flex;
-			align-items: center;
-			@media screen and (max-width: variables.$mugen-breakpoint-small) {
-				align-items: start;
-				gap: 0.25em;
-				flex-flow: column wrap;
-				.tag {
-					margin: 0.2em;
-				}
-			}
-		}
-		.song {
-			font-size: clamp(1.65rem, 3vw, 2.35rem);
-			font-weight: 900;
-			line-height: 1.05;
-			margin: 0;
-			text-wrap: balance;
-		}
-		.series {
-			font-size: 1.05rem;
-			color: rgba(255, 255, 255, 0.72);
-			margin-top: 0.4rem;
-		}
-		&.inline {
-			.song {
-				font-size: 1.25em;
-				text-overflow: ellipsis;
-			}
-			.series {
-				font-size: 1.1em;
-				text-overflow: ellipsis;
-			}
-			margin-bottom: 0.5em;
-		}
-	}
-	> .timers {
-		display: flex;
-		justify-content: space-between;
-		flex-direction: row;
-		margin-bottom: 0.5em;
-		> div {
-			width: min-content;
-			color: rgba(255, 255, 255, 0.76);
-			font-variant-numeric: tabular-nums;
-		}
-	}
-	.progress-bar-container {
-		background-color: rgba(15, 16, 18, 0.62);
-		height: 0.9em;
-		border-radius: 999px;
-		box-shadow:
-			inset 4px 4px 10px rgba(0, 0, 0, 0.55),
-			inset -3px -3px 8px rgba(255, 255, 255, 0.055);
-		> .progress-bar {
-			height: 100%;
-			transition: width linear 0.5s;
-			&.long {
-				transition:
-					width linear 1s,
-					background-color ease 0.5s;
-			}
-			background:
-				linear-gradient(90deg, #9bc5ff, #f4c56a 58%, #f29b74);
-			border-radius: inherit;
-			box-shadow: 0 0 16px rgba(155, 197, 255, 0.34);
-		}
-	}
-	&.fixed {
-		.progress-bar-container {
-			position: absolute;
-			width: 100%;
-			bottom: 0;
-			left: 0;
-			border-radius: 0;
-		}
-	}
-	&.quiz {
-		.progress-bar-container {
-			border-radius: 0;
-			height: 0.15rem;
-			opacity: 1;
-			margin-top: 0.5rem;
-		}
-	}
-	.favorites {
-		background:
-			linear-gradient(
-				145deg,
-				color.adjust(map.get(variables.$mugen-colors, 'yellow'), $lightness: 6%, $space: hsl),
-				color.adjust(map.get(variables.$mugen-colors, 'yellow'), $lightness: -16%, $space: hsl)
-			);
-		width: max-content;
-		margin: 0.5em 0;
-		box-shadow:
-			7px 7px 14px rgba(0, 0, 0, 0.32),
-			-4px -4px 10px rgba(255, 255, 255, 0.08);
-		transition: background-color 200ms linear;
-		border: 0;
-		border-radius: 8px;
-		font-weight: 900;
-		> i {
-			margin-right: 0.25em;
-		}
-		&:hover {
-			background-color: color.adjust(map.get(variables.$mugen-colors, 'yellow'), $lightness: -15%, $space: hsl);
-		}
-	}
+    margin: 1em 0;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    position: relative;
+    align-items: stretch;
+    cursor: pointer;
+    overflow: hidden;
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-surface-raised, $lightness: 4%, $space: hsl),
+        neo-tokens.$neo-bg);
+    border: neo-tokens.$neo-border;
+    border-radius: neo-tokens.$neo-radius;
+    box-shadow:
+        12px 12px 24px neo-tokens.$neo-shadow-dark,
+        -8px -8px 18px neo-tokens.$neo-highlight;
+    &.quiz {
+        cursor: unset;
+    }
+    &.fixed {
+        cursor: pointer;
+        margin: 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 0.5em 0.5em 1em;
+        background: rgba(52, 55, 59, 0.96);
+        border-radius: 0;
+        border-left: 0;
+        border-right: 0;
+        box-shadow:
+            0 -10px 24px rgba(0, 0, 0, 0.34),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        z-index: 99;
+        &::before {
+            border-radius: 0;
+            filter: blur(5px) contrast(75%) brightness(75%) saturate(80%);
+        }
+    }
+    > * {
+        z-index: 10;
+    }
+    @include blurred-bg.blurred-bg;
+    &::before {
+        z-index: 0;
+        border-radius: inherit;
+        opacity: 0.38;
+        filter: blur(14px) contrast(72%) brightness(68%) saturate(90%);
+        transform: scale(1.04);
+    }
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        border-radius: inherit;
+        background:
+            radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 36%),
+            linear-gradient(145deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.18));
+        pointer-events: none;
+    }
+    &:hover > .first > p.next,
+    > .first > p.next:focus {
+        color: aliceblue;
+        transform: translateX(0.25rem);
+    }
+    > .first {
+        font-size: 1rem;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        color: neo-tokens.$neo-text-secondary;
+        p:first-child {
+            flex-grow: 1;
+            text-transform: uppercase;
+            letter-spacing: 0;
+        }
+        p.next {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition:
+                color,
+                transform ease 100ms,
+                200ms;
+        }
+    }
+    > .title {
+        & > div {
+            display: flex;
+            align-items: center;
+            @media screen and (max-width: variables.$mugen-breakpoint-small) {
+                align-items: start;
+                gap: 0.25em;
+                flex-flow: column wrap;
+                .tag {
+                    margin: 0.2em;
+                }
+            }
+        }
+        .song {
+            font-size: clamp(1.65rem, 3vw, 2.35rem);
+            font-weight: 900;
+            line-height: 1.05;
+            margin: 0;
+            text-wrap: balance;
+        }
+        .series {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.72);
+            margin-top: 0.4rem;
+        }
+        &.inline {
+            .song {
+                font-size: 1.25em;
+                text-overflow: ellipsis;
+            }
+            .series {
+                font-size: 1.1em;
+                text-overflow: ellipsis;
+            }
+            margin-bottom: 0.5em;
+        }
+    }
+    > .timers {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        margin-bottom: 0.5em;
+        > div {
+            width: min-content;
+            color: neo-tokens.$neo-text-secondary;
+            font-variant-numeric: tabular-nums;
+        }
+    }
+    .progress-bar-container {
+        @include neo-tokens.neo-progress-track;
+        > .progress-bar {
+            @include neo-tokens.neo-progress-fill;
+            &.long {
+                transition:
+                    width linear 1s,
+                    background-color ease 0.5s;
+            }
+        }
+    }
+    &.fixed {
+        .progress-bar-container {
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+            border-radius: 0;
+        }
+    }
+    &.quiz {
+        .progress-bar-container {
+            border-radius: 0;
+            height: 0.15rem;
+            opacity: 1;
+            margin-top: 0.5rem;
+        }
+    }
+    .favorites {
+        background:
+            linear-gradient(
+                145deg,
+                color.adjust(map.get(variables.$mugen-colors, 'yellow'), $lightness: 6%, $space: hsl),
+                color.adjust(map.get(variables.$mugen-colors, 'yellow'), $lightness: -16%, $space: hsl)
+            );
+        width: max-content;
+        margin: 0.5em 0;
+        box-shadow:
+            7px 7px 14px rgba(0, 0, 0, 0.32),
+            -4px -4px 10px rgba(255, 255, 255, 0.08);
+        transition: background-color 200ms linear;
+        border: 0;
+        border-radius: neo-tokens.$neo-radius;
+        font-weight: 900;
+        > i {
+            margin-right: 0.25em;
+        }
+        &:hover {
+            background-color: color.adjust(map.get(variables.$mugen-colors, 'yellow'), $lightness: -15%, $space: hsl);
+        }
+    }
 }
 
 @media screen and (min-width: variables.$mugen-breakpoint-large) {
-	.player-box.fixed {
-		.title .song {
-			font-size: 2em;
-		}
-	}
+    .player-box.fixed {
+        .title .song {
+            font-size: 2em;
+        }
+    }
 }

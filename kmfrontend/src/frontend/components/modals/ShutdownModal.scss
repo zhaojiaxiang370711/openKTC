@@ -1,3 +1,4 @@
+@use '../../styles/neo-tokens';
 .shutdown-popup {
 	display: flex;
 	justify-content: center;
@@ -6,12 +7,12 @@
 	position: fixed;
 	width: 100%;
 	height: 100%;
-	color: #dededeed;
-	background-color: #000000c2;
+	color: neo-tokens.$neo-text-primary;
+	background-color: rgba(10, 11, 13, 0.85);
 	z-index: 10003;
 	text-align: center;
 	font-size: 2.5rem;
-	text-shadow: 2px 2px 19px #e6e6e66b;
+	text-shadow: 2px 2px 12px neo-tokens.$neo-shadow-dark;
 }
 
 .shutdown-popup > .closeParent {
@@ -48,7 +49,7 @@
 		right: 0;
 		bottom: 0;
 		left: 0;
-		background: radial-gradient(ellipse at center, black 0%, #000000bf 100%);
+		background: radial-gradient(ellipse at center, neo-tokens.$neo-bg 0%, rgba(10, 11, 13, 0.85) 100%);
 	}
 }
 

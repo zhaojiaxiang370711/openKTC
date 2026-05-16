@@ -1,4 +1,5 @@
 @use 'sass:color';
+@use '../styles/neo-tokens';
 
 .about-page {
 	padding: 1em;
@@ -13,7 +14,7 @@
 	}
 	.awesome-person {
 		font-weight: bold;
-		color: color.scale(#26aacc, $lightness: 40%);
+		color: neo-tokens.$neo-accent;
 	}
 	.app-presentation {
 		img {

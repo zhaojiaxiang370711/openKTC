@@ -1,4 +1,6 @@
+@use 'sass:color';
 @use '../variables';
+@use '../neo-tokens';
 
 .start-page .wrapper.setup {
 	font-weight: 300;
@@ -67,23 +69,32 @@
 			flex-direction: row;
 			button {
 				cursor: pointer;
-				border: 2px solid white;
-				border-radius: 0.5em;
+				border: neo-tokens.$neo-border;
+				border-radius: neo-tokens.$neo-radius-sm;
 				padding: 0.5em 1em;
 				text-transform: uppercase;
 				font-weight: bold;
-				background: none;
+				background: rgba(255, 255, 255, 0.08);
 				outline: none;
 				transition: background-color 150ms linear;
+				box-shadow:
+					3px 3px 6px rgba(0, 0, 0, 0.2),
+					-2px -2px 4px rgba(255, 255, 255, 0.05);
 				&.in {
-					background: #ffffff33;
+					background: rgba(255, 255, 255, 0.15);
 				}
 				&.on {
-					background: #3c5c00;
+					background: linear-gradient(145deg,
+						color.adjust(neo-tokens.$neo-success, $lightness: -4%, $space: hsl),
+						color.adjust(neo-tokens.$neo-success, $lightness: -20%, $space: hsl));
+					color: white;
 					font-weight: bold;
 				}
 				&.off {
-					background: #880500;
+					background: linear-gradient(145deg,
+						color.adjust(neo-tokens.$neo-danger, $lightness: -4%, $space: hsl),
+						color.adjust(neo-tokens.$neo-danger, $lightness: -20%, $space: hsl));
+					color: white;
 					font-weight: bold;
 				}
 			}
@@ -91,14 +102,15 @@
 
 		blockquote {
 			margin: 0.5em 0;
-			border-left: variables.$block-border-width #880500;
+			border-left: variables.$block-border-width neo-tokens.$neo-danger;
+			border-radius: 0 neo-tokens.$neo-radius-sm neo-tokens.$neo-radius-sm 0;
 			padding: 0.5em 1em 1em;
-			background: #0000004d;
+			background: rgba(0, 0, 0, 0.25);
 		}
 
 		.intro {
 			em {
-				color: orangered;
+				color: neo-tokens.$neo-danger;
 				font-weight: normal;
 			}
 		}
@@ -119,12 +131,15 @@
 
 		&.step-3 {
 			.input-group {
-				border-left-color: #880500;
+				border-left-color: neo-tokens.$neo-danger;
 			}
 			.actions {
 				justify-content: flex-end;
 				button {
-					background: #880500;
+					background: linear-gradient(145deg,
+						color.adjust(neo-tokens.$neo-danger, $lightness: -4%, $space: hsl),
+						color.adjust(neo-tokens.$neo-danger, $lightness: -20%, $space: hsl));
+					color: white;
 				}
 			}
 		}
@@ -139,11 +154,11 @@
 	.error {
 		font-weight: bold;
 		font-size: large;
-		color: orangered;
+		color: neo-tokens.$neo-danger;
 		margin: 0.5em;
 	}
 
 	.text-danger {
-		color: tomato;
+		color: neo-tokens.$neo-danger;
 	}
 }

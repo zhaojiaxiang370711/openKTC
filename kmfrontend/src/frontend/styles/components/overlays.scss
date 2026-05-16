@@ -1,10 +1,11 @@
-@use '../variables';
+@use '../neo-tokens';
 
 .overlay {
-	background-color: variables.$mugen-video-overlay;
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+    background: rgba(15, 16, 18, 0.72);
+    backdrop-filter: blur(2px);
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }

@@ -1,14 +1,18 @@
+@use 'sass:color';
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
-$input-color: white;
-$input-placeholder: #aaa;
+$input-color: neo-tokens.$neo-text-primary;
+$input-placeholder: neo-tokens.$neo-text-secondary;
 
-$options-color: white;
-$options-background: #333;
-$option-hover-color: white;
-$option-hover-background: #666;
+$options-color: neo-tokens.$neo-text-primary;
+$options-background: linear-gradient(145deg, color.adjust(neo-tokens.$neo-surface-top, $lightness: 2%, $space: hsl), neo-tokens.$neo-bg);
+$option-hover-color: neo-tokens.$neo-text-primary;
+$option-hover-background: color.adjust(neo-tokens.$neo-accent, $alpha: -0.8);
 $option-active-color: white;
-$option-active-background: #00b0ed;
+$option-active-background: linear-gradient(145deg,
+	color.adjust(neo-tokens.$neo-accent, $lightness: -2%, $space: hsl),
+	color.adjust(neo-tokens.$neo-accent, $lightness: -14%, $space: hsl));
 
 // options list display on input focus
 .UI-autocomplete-options {
@@ -33,9 +37,13 @@ $option-active-background: #00b0ed;
 	position: relative;
 	z-index: 1;
 	padding: 0.5em;
-	border: variables.$mugen-select-border;
+	border: neo-tokens.$neo-border;
+	border-radius: neo-tokens.$neo-radius-sm;
 	color: $input-color;
-	background: variables.$mugen-select-background;
+	background-color: neo-tokens.$neo-surface-pressed;
+	box-shadow:
+		inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+		inset -2px -2px 4px neo-tokens.$neo-highlight-soft;
 	max-width: 100%;
 	width: 100%;
 	text-align: left;
@@ -46,13 +54,18 @@ $option-active-background: #00b0ed;
 	list-style-type: none;
 	padding: 0.25em;
 	margin: 0;
-	border: variables.$mugen-select-border;
+	border: neo-tokens.$neo-border;
+	border-radius: neo-tokens.$neo-radius;
 	color: $options-color;
 	background: $options-background;
+	box-shadow:
+		6px 6px 12px neo-tokens.$neo-shadow-soft,
+		-4px -4px 8px neo-tokens.$neo-highlight;
 	.UI-autocomplete-option {
 		cursor: pointer;
 		padding: 0.25em 1.5em 0.25em 0.25em;
 		margin: 0;
+		border-radius: neo-tokens.$neo-radius-sm;
 		text-align: left;
 		&[data-active='true'] {
 			color: $option-active-color;

@@ -1,5 +1,6 @@
 @use 'sass:color';
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
 .scores-popup {
 	display: none;
@@ -18,9 +19,15 @@
 	z-index: 10;
 
 	padding: 1em;
-	border-radius: 16px;
+	border-radius: neo-tokens.$neo-radius;
+	border: neo-tokens.$neo-border;
 
-	background-color: color.scale(variables.$mugen-background, $lightness: -75%);
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface-top, $lightness: 2%, $space: hsl),
+		neo-tokens.$neo-bg);
+	box-shadow:
+		12px 12px 24px neo-tokens.$neo-shadow-dark,
+		-7px -7px 16px neo-tokens.$neo-highlight;
 	font-size: 1.125rem;
 
 	> hr {

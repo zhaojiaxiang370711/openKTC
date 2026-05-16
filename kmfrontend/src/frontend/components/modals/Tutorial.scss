@@ -1,212 +1,203 @@
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
 @mixin tutorial-panel {
-	border: 1px solid rgba(255, 255, 255, 0.08);
-	border-radius: 8px;
-	background: linear-gradient(145deg, #3d4146, #303337);
-	box-shadow:
-		16px 16px 32px rgba(0, 0, 0, 0.5),
-		-10px -10px 24px rgba(255, 255, 255, 0.065);
+    @include neo-tokens.neo-raised($size: 'xl');
 }
 
 .tutorial {
-	position: fixed;
-	top: 0;
-	left: 0;
-	height: 100vh;
-	width: 100vw;
-	z-index: 100;
-	color: rgba(255, 255, 255, 0.92);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 100;
+    color: neo-tokens.$neo-text-primary;
 
-	.dimmer {
-		background:
-			radial-gradient(circle at 18% 12%, rgba(155, 197, 255, 0.16), transparent 34rem),
-			radial-gradient(circle at 86% 20%, rgba(244, 197, 106, 0.12), transparent 28rem),
-			rgba(15, 16, 18, 0.76);
-		backdrop-filter: blur(4px);
-		&.transparent {
-			background: linear-gradient(transparent 0%, transparent 165px, rgba(15, 16, 18, 0.78) 170px);
-			&.player-bar {
-				background: linear-gradient(transparent 0%, transparent 95px, rgba(15, 16, 18, 0.78) 100px);
-			}
-		}
-		width: 100%;
-		height: 100%;
-		position: absolute;
-	}
+    .dimmer {
+        background:
+            radial-gradient(circle at 18% 12%, rgba(155, 197, 255, 0.16), transparent 34rem),
+            radial-gradient(circle at 86% 20%, rgba(244, 197, 106, 0.12), transparent 28rem),
+            rgba(15, 16, 18, 0.76);
+        backdrop-filter: blur(4px);
+        &.transparent {
+            background: linear-gradient(transparent 0%, transparent 165px, rgba(15, 16, 18, 0.78) 170px);
+            &.player-bar {
+                background: linear-gradient(transparent 0%, transparent 95px, rgba(15, 16, 18, 0.78) 100px);
+            }
+        }
+        width: 100%;
+        height: 100%;
+        position: absolute;
+    }
 
-	.title {
-		position: absolute;
-		left: 1rem;
-		top: 1rem;
-		font-size: clamp(1.4rem, 3vw, 2rem);
-		font-weight: 900;
-		background: #303337;
-		padding: 0.75rem 1rem;
-		border-radius: 8px;
-		box-shadow:
-			8px 8px 18px rgba(0, 0, 0, 0.42),
-			-5px -5px 14px rgba(255, 255, 255, 0.06);
-	}
+    .title {
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        font-size: clamp(1.4rem, 3vw, 2rem);
+        font-weight: 900;
+        background: neo-tokens.$neo-surface-pressed;
+        padding: 0.75rem 1rem;
+        border-radius: neo-tokens.$neo-radius;
+        box-shadow:
+            8px 8px 18px rgba(0, 0, 0, 0.42),
+            -5px -5px 14px rgba(255, 255, 255, 0.06);
+    }
 
-	.steps {
-		display: flex;
-		flex-direction: column;
-		width: 25%;
-		margin: 0 37.5%;
-		position: absolute;
-		bottom: 90px;
-		@media screen and (max-width: variables.$mugen-breakpoint-xl) {
-			flex-direction: row;
-			width: 80%;
-			margin: 0 10%;
-			justify-content: center;
-			bottom: 5px;
-		}
-	}
+    .steps {
+        display: flex;
+        flex-direction: column;
+        width: 25%;
+        margin: 0 37.5%;
+        position: absolute;
+        bottom: 90px;
+        @media screen and (max-width: variables.$mugen-breakpoint-xl) {
+            flex-direction: row;
+            width: 80%;
+            margin: 0 10%;
+            justify-content: center;
+            bottom: 5px;
+        }
+    }
 
-	.step {
-		cursor: pointer;
-		color: rgba(255, 255, 255, 0.92);
-		text-decoration: none;
-		margin: 0.5em;
-		font-size: 1.5em;
-		text-align: center;
-		background: linear-gradient(145deg, #3b3f44, #303337);
-		padding: 1em;
-		border: 1px solid rgba(255, 255, 255, 0.08);
-		border-radius: 8px;
-		box-shadow:
-			9px 9px 18px rgba(0, 0, 0, 0.42),
-			-6px -6px 14px rgba(255, 255, 255, 0.06);
-		transition:
-			transform ease 160ms,
-			box-shadow ease 160ms;
-		&:hover,
-		&:focus {
-			transform: translateY(-1px);
-			box-shadow:
-				12px 12px 22px rgba(0, 0, 0, 0.48),
-				-7px -7px 16px rgba(255, 255, 255, 0.075);
-		}
-		@media screen and (max-height: variables.$mugen-height-small) {
-			margin: 0 10%;
-		}
-		&.inline {
-			padding: 0.5em;
-			font-size: 1.25em;
-		}
-	}
+    .step {
+        cursor: pointer;
+        color: neo-tokens.$neo-text-primary;
+        text-decoration: none;
+        margin: 0.5em;
+        font-size: 1.5em;
+        text-align: center;
+        background: linear-gradient(145deg, #3b3f44, #303337);
+        padding: 1em;
+        border: neo-tokens.$neo-border-strong;
+        border-radius: neo-tokens.$neo-radius;
+        box-shadow:
+            9px 9px 18px rgba(0, 0, 0, 0.42),
+            -6px -6px 14px rgba(255, 255, 255, 0.06);
+        @include neo-tokens.neo-interactive;
+        &:hover,
+        &:focus {
+            @include neo-tokens.neo-hover-lift;
+        }
+        @media screen and (max-height: variables.$mugen-height-small) {
+            margin: 0 10%;
+        }
+        &.inline {
+            padding: 0.5em;
+            font-size: 1.25em;
+        }
+    }
 
-	.playlists {
-		position: absolute;
-		top: 100px;
-		width: 50%;
-		margin: 0 25%;
-		text-align: center;
-		@include tutorial-panel;
-		padding: 1em;
+    .playlists {
+        position: absolute;
+        top: 100px;
+        width: 50%;
+        margin: 0 25%;
+        text-align: center;
+        @include tutorial-panel;
+        padding: 1em;
 
-		@media screen and (max-width: variables.$mugen-breakpoint-xl) {
-			width: 99%;
-			margin: 0 0.5%;
-			top: 200px;
-		}
+        @media screen and (max-width: variables.$mugen-breakpoint-xl) {
+            width: 99%;
+            margin: 0 0.5%;
+            top: 200px;
+        }
 
-		.orange {
-			color: coral;
-		}
+        .orange {
+            color: coral;
+        }
 
-		.blue {
-			color: deepskyblue;
-		}
+        .blue {
+            color: deepskyblue;
+        }
 
-		.kara-line-image {
-			@media screen and (max-width: variables.$mugen-breakpoint-xl) {
-				display: none;
-			}
-			position: relative;
-			img {
-				max-width: 100%;
-				border-radius: 8px;
-				box-shadow:
-					inset 4px 4px 10px rgba(0, 0, 0, 0.35),
-					inset -4px -4px 10px rgba(255, 255, 255, 0.05);
-			}
-			.caption-left {
-				text-align: left;
-				line-height: 1.5em;
-				font-weight: bold;
-				position: absolute;
-				top: 32%;
-				left: 10%;
-				width: 75%;
-			}
-			.caption-right {
-				text-align: right;
-				line-height: 1.5em;
-				font-weight: bold;
-				position: absolute;
-				top: 58%;
-				right: 15%;
-			}
-		}
-	}
+        .kara-line-image {
+            @media screen and (max-width: variables.$mugen-breakpoint-xl) {
+                display: none;
+            }
+            position: relative;
+            img {
+                max-width: 100%;
+                border-radius: neo-tokens.$neo-radius;
+                box-shadow:
+                    inset 4px 4px 10px rgba(0, 0, 0, 0.35),
+                    inset -4px -4px 10px rgba(255, 255, 255, 0.05);
+            }
+            .caption-left {
+                text-align: left;
+                line-height: 1.5em;
+                font-weight: bold;
+                position: absolute;
+                top: 32%;
+                left: 10%;
+                width: 75%;
+            }
+            .caption-right {
+                text-align: right;
+                line-height: 1.5em;
+                font-weight: bold;
+                position: absolute;
+                top: 58%;
+                right: 15%;
+            }
+        }
+    }
 
-	.header-presentation,
-	.player-presentation {
-		position: absolute;
-		@include tutorial-panel;
-		padding: 1em;
-		@media screen and (max-width: variables.$mugen-breakpoint-larger) {
-			width: 98.5%;
-		}
-		a {
-			color: lightskyblue;
-		}
-		li {
-			margin: 0.45em 0;
-			line-height: 1.35;
-			> i {
-				width: 1.6em;
-				color: #9bc5ff;
-			}
-		}
-		.ul-l1 {
-			margin-left: 1.5em;
-		}
-		.klogo {
-			display: inline-flex;
-			height: 1em;
-			width: 1.25em;
-			img {
-				height: 1em;
-				width: 1em;
-			}
-		}
-	}
+    .header-presentation,
+    .player-presentation {
+        position: absolute;
+        @include tutorial-panel;
+        padding: 1em;
+        @media screen and (max-width: variables.$mugen-breakpoint-larger) {
+            width: 98.5%;
+        }
+        a {
+            color: lightskyblue;
+        }
+        li {
+            margin: 0.45em 0;
+            line-height: 1.35;
+            > i {
+                width: 1.6em;
+                color: neo-tokens.$neo-accent;
+            }
+        }
+        .ul-l1 {
+            margin-left: 1.5em;
+        }
+        .klogo {
+            display: inline-flex;
+            height: 1em;
+            width: 1.25em;
+            img {
+                height: 1em;
+                width: 1em;
+            }
+        }
+    }
 
-	.header-presentation {
-		top: 170px;
-		left: 8px;
-		width: 49.5%;
-		@media screen and (max-width: variables.$mugen-breakpoint-larger) {
-			width: 99.75%;
-		}
-	}
+    .header-presentation {
+        top: 170px;
+        left: 8px;
+        width: 49.5%;
+        @media screen and (max-width: variables.$mugen-breakpoint-larger) {
+            width: 99.75%;
+        }
+    }
 
-	.player-presentation {
-		top: 100px;
-		margin: 0 25%;
-		width: 50%;
-		@media screen and (max-width: variables.$mugen-breakpoint-larger) {
-			margin: 0 0.75%;
-			width: 99%;
-		}
+    .player-presentation {
+        top: 100px;
+        margin: 0 25%;
+        width: 50%;
+        @media screen and (max-width: variables.$mugen-breakpoint-larger) {
+            margin: 0 0.75%;
+            width: 99%;
+        }
 
-		.center {
-			display: flex;
-			justify-content: center;
-		}
-	}
+        .center {
+            display: flex;
+            justify-content: center;
+        }
+    }
 }

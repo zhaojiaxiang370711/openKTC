@@ -1,5 +1,6 @@
 @use 'sass:color';
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
 .tags-list {
 	display: inline-flex;
@@ -8,18 +9,19 @@
 	flex-direction: column;
 	div.tags-item {
 		padding: 1em;
-		background-color: variables.$mugen-playlist-odd;
+		background-color: neo-tokens.$neo-surface-pressed;
 		transition: background-color 250ms ease;
 		cursor: pointer;
+		border-radius: neo-tokens.$neo-radius-sm;
 		&:hover,
 		&:focus {
-			background-color: color.adjust(variables.$mugen-playlist-odd, $lightness: 5%, $space: hsl);
+			background-color: color.adjust(neo-tokens.$neo-surface-pressed, $lightness: 4%, $space: hsl);
 		}
 		&.even {
-			background-color: variables.$mugen-playlist-even;
+			background-color: neo-tokens.$neo-bg;
 			&:hover,
 			&:focus {
-				background-color: color.adjust(variables.$mugen-playlist-even, $lightness: 5%, $space: hsl);
+				background-color: color.adjust(neo-tokens.$neo-bg, $lightness: 4%, $space: hsl);
 			}
 		}
 		> .title {

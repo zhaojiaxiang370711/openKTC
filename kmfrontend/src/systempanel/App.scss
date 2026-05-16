@@ -1,8 +1,10 @@
 // Minireset
+@use 'sass:color';
 @use 'minireset.css/minireset';
 
 @use '../toast';
 @use '../frontend/styles/components/overlays';
+@use '../frontend/styles/neo-tokens';
 
 .ant-layout-content {
 	padding: 1em;
@@ -27,11 +29,15 @@
 	height: auto;
 	line-height: normal;
 	padding: 1em;
-	background: #141414;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface-raised, $lightness: 4%, $space: hsl),
+		neo-tokens.$neo-surface);
+	border-bottom: neo-tokens.$neo-border;
 
 	.title {
 		font-size: 1.75em;
 		font-weight: bold;
+		color: neo-tokens.$neo-text-primary;
 	}
 	.description {
 		font-size: 1em;
@@ -47,6 +53,167 @@
 		line-height: initial;
 		white-space: pre-wrap;
 	}
+}
+
+// Neumorphic card overrides for antd
+.ant-card {
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface-raised, $lightness: 2%, $space: hsl),
+		neo-tokens.$neo-surface-pressed) !important;
+	border: neo-tokens.$neo-border !important;
+	border-radius: neo-tokens.$neo-radius !important;
+	box-shadow:
+		6px 6px 12px neo-tokens.$neo-shadow-soft,
+		-2px -2px 8px neo-tokens.$neo-highlight !important;
+}
+
+.ant-card-head {
+	border-bottom: neo-tokens.$neo-border !important;
+}
+
+// Neumorphic modal overrides
+.ant-modal-content {
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface-top, $lightness: 2%, $space: hsl),
+		neo-tokens.$neo-bg) !important;
+	border: neo-tokens.$neo-border !important;
+	border-radius: neo-tokens.$neo-radius !important;
+	box-shadow:
+		12px 12px 24px neo-tokens.$neo-shadow-dark,
+		-7px -7px 16px neo-tokens.$neo-highlight !important;
+}
+
+.ant-modal-header {
+	border-bottom: neo-tokens.$neo-border !important;
+	background: transparent !important;
+}
+
+.ant-modal-footer {
+	border-top: neo-tokens.$neo-border !important;
+	background: transparent !important;
+}
+
+// Neumorphic input overrides
+.ant-input,
+.ant-input-number,
+.ant-picker,
+.ant-select-selector {
+	background-color: neo-tokens.$neo-surface-pressed !important;
+	border: neo-tokens.$neo-border !important;
+	border-radius: neo-tokens.$neo-radius-sm !important;
+	color: neo-tokens.$neo-text-primary !important;
+	box-shadow:
+		inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+		inset -2px -2px 4px neo-tokens.$neo-highlight-soft !important;
+
+	&:focus,
+	&.ant-input-focused,
+	&.ant-picker-focused,
+	&.ant-select-focused {
+		border-color: neo-tokens.$neo-accent !important;
+		box-shadow:
+			inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+			inset -2px -2px 4px neo-tokens.$neo-highlight-soft,
+			0 0 0 2px rgba(155, 197, 255, 0.25) !important;
+	}
+}
+
+// Button overrides for system panel
+.ant-btn-primary {
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-accent, $lightness: -2%, $space: hsl),
+		color.adjust(neo-tokens.$neo-accent, $lightness: -14%, $space: hsl)) !important;
+	border: 0 !important;
+	color: white !important;
+	box-shadow:
+		4px 4px 8px rgba(8, 9, 11, 0.34),
+		-2px -2px 5px neo-tokens.$neo-highlight !important;
+
+	&:hover {
+		background: linear-gradient(145deg,
+			color.adjust(neo-tokens.$neo-accent, $lightness: 0%, $space: hsl),
+			color.adjust(neo-tokens.$neo-accent, $lightness: -10%, $space: hsl)) !important;
+	}
+}
+
+.ant-btn-danger {
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-danger, $lightness: -4%, $space: hsl),
+		color.adjust(neo-tokens.$neo-danger, $lightness: -20%, $space: hsl)) !important;
+	border: 0 !important;
+	color: white !important;
+	box-shadow:
+		4px 4px 8px rgba(8, 9, 11, 0.34),
+		-2px -2px 5px neo-tokens.$neo-highlight !important;
+}
+
+// Table overrides
+.ant-table {
+	background: transparent !important;
+	color: neo-tokens.$neo-text-primary !important;
+}
+
+.ant-table-thead > tr > th {
+	background: neo-tokens.$neo-surface-pressed !important;
+	color: neo-tokens.$neo-text-primary !important;
+	border-bottom: neo-tokens.$neo-border !important;
+}
+
+.ant-table-tbody > tr > td {
+	border-bottom: 1px solid neo-tokens.$neo-border-color !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+	background: rgba(255, 255, 255, 0.03) !important;
+}
+
+// Menu overrides
+.ant-menu {
+	background: transparent !important;
+	color: neo-tokens.$neo-text-primary !important;
+}
+
+.ant-menu-item-selected {
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-accent, $lightness: -2%, $space: hsl),
+		color.adjust(neo-tokens.$neo-accent, $lightness: -14%, $space: hsl)) !important;
+	color: white !important;
+}
+
+// Collapse overrides
+.ant-collapse {
+	background: transparent !important;
+	border: neo-tokens.$neo-border !important;
+	border-radius: neo-tokens.$neo-radius !important;
+}
+
+.ant-collapse-item {
+	border-bottom: neo-tokens.$neo-border !important;
+}
+
+.ant-collapse-header {
+	color: neo-tokens.$neo-text-primary !important;
+}
+
+.ant-collapse-content {
+	background: transparent !important;
+}
+
+// Tag overrides
+.ant-tag {
+	border-radius: neo-tokens.$neo-radius-sm !important;
+}
+
+// Dropdown
+.ant-dropdown-menu {
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface-top, $lightness: 2%, $space: hsl),
+		neo-tokens.$neo-bg) !important;
+	border: neo-tokens.$neo-border !important;
+	border-radius: neo-tokens.$neo-radius !important;
+	box-shadow:
+		6px 6px 12px neo-tokens.$neo-shadow-soft,
+		-4px -4px 8px neo-tokens.$neo-highlight !important;
 }
 
 .UI-notification-loading .ant-spin-nested-loading {
@@ -68,7 +235,7 @@
 }
 
 .ant-dropdown-menu-item.ant-dropdown-menu-item-danger {
-	color: #ff8949;
+	color: neo-tokens.$neo-danger;
 }
 
 .UI-notification-loading .ant-spin-container {
@@ -104,9 +271,8 @@
 	left: 50%;
 	transform: translateX(-50%) translateY(-50%);
 	box-shadow:
-		0 16px 24px 2px rgba(0, 0, 0, 0.14),
-		0 6px 30px 5px rgba(0, 0, 0, 0.12),
-		0 8px 10px -5px rgba(0, 0, 0, 0.3);
+		12px 12px 24px neo-tokens.$neo-shadow-dark,
+		-7px -7px 16px neo-tokens.$neo-highlight;
 }
 
 .wrap-label {

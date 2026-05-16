@@ -1,10 +1,15 @@
+@use 'sass:color';
+@use '../../styles/neo-tokens';
+
 .animate-button-container {
 	position: relative;
 }
 
 .dropdown-menu > li > div.animate-button-success {
 	position: absolute;
-	background-color: forestgreen;
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-success, $lightness: -4%, $space: hsl),
+		color.adjust(neo-tokens.$neo-success, $lightness: -20%, $space: hsl));
 	top: 0;
 	left: 0;
 	width: 100%;

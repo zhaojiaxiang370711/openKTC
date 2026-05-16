@@ -1,28 +1,44 @@
+@use 'sass:color';
 @use 'sass:map';
 @use '../../styles/variables';
+@use '../../styles/neo-tokens';
 
 @media (max-width: variables.$mugen-breakpoint-large) {
-	.karaLineButton {
-		min-height: 3em;
-		font-size: 1.25em;
+    .karaLineButton {
+        min-height: 3em;
+        font-size: 1.25em;
 
-		&.showPlaylistCommands {
-			width: 2.75em;
-		}
-	}
+        &.showPlaylistCommands {
+            width: 2.75em;
+        }
+    }
 }
 
 .karaLineButton.yellow {
-	color: map.get(variables.$mugen-colors, 'yellow');
+    color: map.get(variables.$mugen-colors, 'yellow');
 }
 
 .currentUpvote {
-	color: orangered;
+    color: orangered;
 }
 
 button.on {
-	background: #3c5c00;
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-success, $lightness: -2%, $space: hsl),
+        color.adjust(neo-tokens.$neo-success, $lightness: -18%, $space: hsl));
+    border: 0;
+    color: white;
+    box-shadow:
+        4px 4px 8px rgba(8, 9, 11, 0.34),
+        -2px -2px 5px neo-tokens.$neo-highlight;
 }
 button.off {
-	background: #880500;
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-danger, $lightness: -4%, $space: hsl),
+        color.adjust(neo-tokens.$neo-danger, $lightness: -20%, $space: hsl));
+    border: 0;
+    color: white;
+    box-shadow:
+        4px 4px 8px rgba(8, 9, 11, 0.34),
+        -2px -2px 5px neo-tokens.$neo-highlight;
 }

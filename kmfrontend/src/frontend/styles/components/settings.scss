@@ -1,6 +1,7 @@
 @use 'sass:color';
 @use 'sass:map';
 @use '../variables';
+@use '../neo-tokens';
 
 .settings-panel {
 	width: 75vw;
@@ -29,7 +30,7 @@
 	align-items: center;
 	padding: 0.75em;
 	gap: 0.75em;
-	background-color: variables.$mugen-playlist-odd;
+	background-color: neo-tokens.$neo-surface-pressed;
 
 	> label {
 		flex-grow: 1;
@@ -51,7 +52,7 @@
 			text-align: justify;
 			display: inline-block;
 			max-width: 50em;
-			color: color.scale(map.get(variables.$mugen-colors, 'yellow'), $lightness: 55%, $saturation: 10%);
+			color: neo-tokens.$neo-progress-mid;
 			@media screen and (max-width: variables.$mugen-breakpoint-large) {
 				max-width: 80%;
 			}
@@ -76,16 +77,24 @@
 		}
 
 		input[type='number'][size] {
-			width: fit-content; // Don't shrink fields with fixed size
+			width: fit-content;
 		}
 
 		input:not([type='range']) {
-			background-color: color.scale(variables.$mugen-playlist-odd, $lightness: 15%);
-			color: white;
-			border: darkgrey 1px solid;
+			background-color: neo-tokens.$neo-surface-pressed;
+			color: neo-tokens.$neo-text-primary;
+			border: neo-tokens.$neo-border;
+			border-radius: neo-tokens.$neo-radius-sm;
 			padding: 0.5em;
+			box-shadow:
+				inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+				inset -2px -2px 4px neo-tokens.$neo-highlight-soft;
 			&:focus {
-				border: white 1px solid;
+				border: solid 1px neo-tokens.$neo-accent;
+				box-shadow:
+					inset 3px 3px 6px neo-tokens.$neo-shadow-deep,
+					inset -2px -2px 4px neo-tokens.$neo-highlight-soft,
+					0 0 0 2px rgba(155, 197, 255, 0.25);
 			}
 		}
 
@@ -96,9 +105,9 @@
 }
 
 .settings-line:not(.subCategoryGroupPanel):nth-child(even) {
-	background-color: variables.$mugen-playlist-even;
+	background-color: neo-tokens.$neo-bg;
 	> div input:not([type='range']) {
-		background-color: color.scale(variables.$mugen-playlist-even, $lightness: 15%);
+		background-color: color.adjust(neo-tokens.$neo-bg, $lightness: -4%, $space: hsl);
 	}
 }
 
@@ -126,11 +135,16 @@
 	flex-direction: column;
 	align-items: flex-start;
 	justify-content: center;
-	background-color: color.scale(variables.$mugen-background, $lightness: 5%);
-	border: solid color.scale(variables.$mugen-background, $lightness: 15%);
+	background: linear-gradient(145deg,
+		color.adjust(neo-tokens.$neo-surface-raised, $lightness: 4%, $space: hsl),
+		neo-tokens.$neo-surface);
+	border: solid neo-tokens.$neo-border-color;
 	border-width: 1px 0;
 	padding: 0.5em;
 	user-select: none;
+	box-shadow:
+		3px 3px 6px neo-tokens.$neo-shadow-soft,
+		-2px -2px 4px neo-tokens.$neo-highlight;
 	&.fold .fas.fa-chevron-down {
 		display: none;
 	}
@@ -151,12 +165,11 @@
 }
 
 .settingsGroupPanel {
-	border-left: 5px solid #ffffff40;
+	border-left: 5px solid neo-tokens.$neo-border-color;
 	min-height: 20px;
 	margin-bottom: 10px;
 }
 
-// Hide settings groups that may be empty after filtering
 .settingsGroupPanel:empty {
 	display: none;
 }
@@ -171,7 +184,7 @@
 }
 
 .input-options {
-	color: #555;
+	color: neo-tokens.$neo-text-secondary;
 }
 
 .label-input-options {

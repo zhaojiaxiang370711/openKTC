@@ -1,4 +1,6 @@
+@use 'sass:color';
 @use '../../styles/variables.scss';
+@use '../../styles/neo-tokens';
 
 .radiobutton-ui {
 	display: flex;
@@ -12,17 +14,25 @@
 		flex: 1;
 		padding: 0;
 		margin: 1px;
-		border: none;
-		background: variables.$mugen-radio-btn-background;
-		color: variables.$mugen-radio-btn-color;
+		border: neo-tokens.$neo-border;
+		border-radius: neo-tokens.$neo-radius-sm;
+		background: linear-gradient(145deg,
+			color.adjust(neo-tokens.$neo-surface, $lightness: 3%, $space: hsl),
+			neo-tokens.$neo-surface-pressed);
+		color: neo-tokens.$neo-text-secondary;
 		outline: none;
+		box-shadow:
+			3px 3px 6px neo-tokens.$neo-shadow-soft,
+			-2px -2px 4px neo-tokens.$neo-highlight;
 		transition:
 			color ease 0.5s,
 			background ease 0.5s;
 		cursor: pointer;
 		&.active {
-			background: variables.$mugen-radio-btn-default-active-background;
-			color: variables.$mugen-radio-btn-default-active-color;
+			background: linear-gradient(145deg,
+				color.adjust(neo-tokens.$neo-accent, $lightness: -2%, $space: hsl),
+				color.adjust(neo-tokens.$neo-accent, $lightness: -14%, $space: hsl));
+			color: white;
 		}
 	}
 }

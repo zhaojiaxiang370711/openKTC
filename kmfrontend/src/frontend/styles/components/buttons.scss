@@ -1,322 +1,382 @@
 @use 'sass:color';
 @use '../variables';
+@use '../neo-tokens';
 
 .btn-group {
-	> .btn {
-		border-radius: 0;
-		// First button will have a left radius
-		&:first-child {
-			border-bottom-left-radius: variables.$mugen-btn-radius;
-			border-top-left-radius: variables.$mugen-btn-radius;
-		}
-		// Last button will have a right radius
-		&:last-child {
-			border-bottom-right-radius: variables.$mugen-btn-radius;
-			border-top-right-radius: variables.$mugen-btn-radius;
-		}
-	}
+    > .btn {
+        border-radius: 0;
+        &:first-child {
+            border-bottom-left-radius: neo-tokens.$neo-radius;
+            border-top-left-radius: neo-tokens.$neo-radius;
+        }
+        &:last-child {
+            border-bottom-right-radius: neo-tokens.$neo-radius;
+            border-top-right-radius: neo-tokens.$neo-radius;
+        }
+    }
 }
 
 div > a,
 h5 > a {
-	color: #99cdfa;
+    color: neo-tokens.$neo-accent;
 }
 
 .btn {
-	border: variables.$mugen-btn-border;
-	background-color: variables.$mugen-btn-background;
-	color: white;
-	display: inline-block;
-	cursor: pointer;
-	border-radius: variables.$mugen-btn-radius;
-	padding: 0.5em;
+    display: inline-block;
+    cursor: pointer;
+    padding: 0.5em 0.85em;
+    border: none;
+    outline: none;
+    user-select: none;
+    color: neo-tokens.$neo-text-primary;
+    font-weight: 700;
+    font-family: inherit;
+    font-size: 1rem;
+    background: neo-tokens.$neo-surface;
+    border: neo-tokens.$neo-border;
+    border-radius: neo-tokens.$neo-radius;
+    box-shadow:
+        4px 4px 8px neo-tokens.$neo-shadow-soft,
+        -3px -3px 6px neo-tokens.$neo-highlight;
+    transition:
+        box-shadow neo-tokens.$neo-transition,
+        transform neo-tokens.$neo-transition,
+        color neo-tokens.$neo-transition,
+        background-color neo-tokens.$neo-transition;
+    &:hover {
+        transform: translateY(-1px);
+        box-shadow:
+            7px 7px 14px neo-tokens.$neo-shadow-dark,
+            -5px -5px 10px neo-tokens.$neo-highlight;
+        color: white;
+    }
+    &:active {
+        transform: translateY(0);
+        box-shadow:
+            inset 3px 3px 7px neo-tokens.$neo-shadow-deep,
+            inset -3px -3px 7px neo-tokens.$neo-highlight-soft;
+    }
 }
 
 .btn:disabled {
-	background-color: color.scale(variables.$mugen-btn-background, $lightness: 20%, $space: hsl);
-	color: gray;
-	cursor: not-allowed;
-	&:hover {
-		background-color: color.scale(variables.$mugen-btn-background, $lightness: 20%, $space: hsl);
-		color: gray;
-		cursor: not-allowed;
-	}
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 3px 3px 6px neo-tokens.$neo-shadow-soft,
+        -2px -2px 4px neo-tokens.$neo-highlight;
+    &:hover {
+        opacity: 0.45;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: 3px 3px 6px neo-tokens.$neo-shadow-soft,
+            -2px -2px 4px neo-tokens.$neo-highlight;
+        color: neo-tokens.$neo-text-primary;
+    }
 }
 
 .btn-default {
-	background-color: variables.$mugen-btn-background;
-	color: #eee;
+    background: neo-tokens.$neo-surface;
+    border: neo-tokens.$neo-border;
+    color: neo-tokens.$neo-text-primary;
 }
 .btn-default:hover {
-	background-color: color.adjust(variables.$mugen-btn-background, $lightness: 5%, $space: hsl);
+    background: neo-tokens.$neo-surface-raised;
 }
 
 .btn-default:active:focus,
 .btn-default:focus {
-	background-color: variables.$mugen-btn-background;
+    background: neo-tokens.$neo-surface;
 }
 
 .btn-danger,
 .btn-danger:focus:active,
 .btn-danger:focus {
-	background-color: variables.$mugen-btn-danger-background;
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-danger, $lightness: -4%, $space: hsl),
+        color.adjust(neo-tokens.$neo-danger, $lightness: -18%, $space: hsl));
+    border: 0;
+    color: white;
+    font-weight: 800;
+    box-shadow:
+        8px 8px 16px rgba(8, 9, 11, 0.38),
+        -5px -5px 12px neo-tokens.$neo-highlight;
 }
 .btn-danger:hover {
-	background-color: color.adjust(variables.$mugen-btn-danger-background, $lightness: 5%, $space: hsl);
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-danger, $lightness: 2%, $space: hsl),
+        color.adjust(neo-tokens.$neo-danger, $lightness: -12%, $space: hsl));
 }
 
 .btn-danger-low:hover {
-	background-color: #793230;
-	color: white;
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-danger, $lightness: -12%, $space: hsl),
+        color.adjust(neo-tokens.$neo-danger, $lightness: -28%, $space: hsl));
+    color: white;
 }
 
 .btn-danger-low:active {
-	background-color: #773b3b;
-	color: white;
+    background: color.adjust(neo-tokens.$neo-danger, $lightness: -22%, $space: hsl);
+    color: white;
 }
 
 .btn-primary,
 .btn-primary:active:focus,
 .btn-primary:focus {
-	color: white;
-	background-color: variables.$mugen-btn-primary-background;
+    color: #0d1117;
+    font-weight: 800;
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-accent, $lightness: -8%, $space: hsl),
+        color.adjust(neo-tokens.$neo-accent, $lightness: -22%, $space: hsl));
+    border: 0;
+    box-shadow:
+        8px 8px 16px rgba(8, 9, 11, 0.38),
+        -5px -5px 12px neo-tokens.$neo-highlight;
 }
 
 .btn-primary:hover {
-	background-color: color.adjust(variables.$mugen-btn-primary-background, $lightness: 5%, $space: hsl);
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-accent, $lightness: -2%, $space: hsl),
+        color.adjust(neo-tokens.$neo-accent, $lightness: -16%, $space: hsl));
 }
 
 .btn-success,
 .btn-success:active:focus,
 .btn-success:focus {
-	color: white;
-	background-color: variables.$mugen-btn-success-background;
+    color: white;
+    font-weight: 800;
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-success, $lightness: -2%, $space: hsl),
+        color.adjust(neo-tokens.$neo-success, $lightness: -16%, $space: hsl));
+    border: 0;
+    box-shadow:
+        8px 8px 16px rgba(8, 9, 11, 0.38),
+        -5px -5px 12px neo-tokens.$neo-highlight;
 }
 
 .btn-success:hover {
-	background-color: color.adjust(variables.$mugen-btn-success-background, $lightness: 5%, $space: hsl);
+    background: linear-gradient(145deg,
+        color.adjust(neo-tokens.$neo-success, $lightness: 4%, $space: hsl),
+        color.adjust(neo-tokens.$neo-success, $lightness: -10%, $space: hsl));
 }
 
 .btn-dark,
 .btn-dark:focus {
-	background-color: #1e2124;
-	border: solid #595959;
-	border-left-width: 1px;
-	color: white;
+    background: neo-tokens.$neo-surface-pressed;
+    border: neo-tokens.$neo-border;
+    color: white;
+    box-shadow:
+        inset 4px 4px 8px neo-tokens.$neo-shadow-deep,
+        inset -3px -3px 6px neo-tokens.$neo-highlight-soft;
 }
 .btn-dark:hover {
-	background-color: #292929;
-	color: white;
+    background: neo-tokens.$neo-surface;
+    color: white;
+    box-shadow:
+        5px 5px 10px neo-tokens.$neo-shadow-dark,
+        -3px -3px 7px neo-tokens.$neo-highlight;
 }
 .btn-dark:active:focus {
-	background-color: #444;
-	color: white;
+    background: neo-tokens.$neo-surface-pressed;
+    color: white;
 }
 
 .btn-action:hover {
-	background-color: #292929;
-	color: white;
+    background: neo-tokens.$neo-surface-raised;
+    color: white;
 }
 
 .btn-big {
-	font-size: 4em;
-	padding: 0.25em;
+    font-size: 4em;
+    padding: 0.25em;
 }
 
 .btn-large-container {
-	margin-left: 0.5em;
-	.title {
-		font-size: 1.5em;
-		font-weight: bold;
-	}
+    margin-left: 0.5em;
+    .title {
+        font-size: 1.5em;
+        font-weight: bold;
+    }
 }
 
 .btn-tile-group {
-	border: variables.$mugen-btn-border;
-	margin: -2px -1px; // Remove 1px borders from mini buttons
-	display: flex;
-	flex-direction: column;
+    margin: -2px -1px;
+    display: flex;
+    flex-direction: column;
 
-	.btn-tile {
-		flex-grow: 1;
-		border-radius: 0 !important;
-
-		border-top: variables.$mugen-btn-border !important;
-		border-bottom: variables.$mugen-btn-border !important;
-		font-size: 1em !important;
-	}
+    .btn-tile {
+        flex-grow: 1;
+        border-radius: 0 !important;
+    }
 }
 
 .btn-select-group {
-	margin-left: 1em;
-	display: grid;
-	grid-template-columns: 1fr 2fr;
-	grid-column-gap: 0.5em;
-	.list-label {
-		&:first-child {
-			border-bottom: variables.$mugen-btn-border;
-		}
-		font-size: 1.2em;
-		padding-top: 0.2em;
-	}
+    margin-left: 1em;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-column-gap: 0.5em;
+    .list-label {
+        &:first-child {
+            border-bottom: neo-tokens.$neo-border;
+        }
+        font-size: 1.2em;
+        padding-top: 0.2em;
+    }
 
-	@media (max-width: variables.$mugen-breakpoint-xl) {
-		display: none;
-	}
+    @media (max-width: variables.$mugen-breakpoint-xl) {
+        display: none;
+    }
 }
 
 .volumeButton,
 .displayModifierButtons,
 .messageButton {
-	order: 90;
+    order: 90;
 }
 
 .klogo {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	img {
-		height: 2em;
-		width: 2em;
-	}
-	&:after {
-		content: '';
-		display: inline-block;
-		position: relative;
-		top: 0.25em;
-		border-color: currentColor transparent transparent;
-		border-width: 0.25em;
-		border-style: solid;
-	}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+        height: 2em;
+        width: 2em;
+    }
+    &:after {
+        content: '';
+        display: inline-block;
+        position: relative;
+        top: 0.25em;
+        border-color: currentColor transparent transparent;
+        border-width: 0.25em;
+        border-style: solid;
+    }
 }
 
 .volumeButton {
-	input[type='range'] {
-		-webkit-appearance: none;
-		margin: 0;
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		width: calc(100% - 2px); // Compensate 2px of border, 1px on each side
-		margin-left: 1px;
-		margin-right: 1px;
-	}
+    input[type='range'] {
+        -webkit-appearance: none;
+        margin: 0;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: calc(100% - 2px);
+        margin-left: 1px;
+        margin-right: 1px;
+    }
 }
 
 .subtitleButton {
-	> .fas,
-	.fa-stack {
-		display: none;
-	}
-	&.hideSubs {
-		> *:first-child {
-			display: inline-block;
-		}
-	}
-	&.showSubs {
-		> *:last-child {
-			display: unset;
-		}
-	}
+    > .fas,
+    .fa-stack {
+        display: none;
+    }
+    &.hideSubs {
+        > *:first-child {
+            display: inline-block;
+        }
+    }
+    &.showSubs {
+        > *:last-child {
+            display: unset;
+        }
+    }
 }
 
 .splitValueButton {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	flex-wrap: nowrap;
-	cursor: default;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    cursor: default;
 
-	&:hover {
-		background-color: #1e2124;
-	}
+    &:hover {
+        background-color: neo-tokens.$neo-surface-pressed;
+    }
 
-	.buttons-group {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: 0 4px;
-		padding-top: 8px;
-		width: 100%;
+    .buttons-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 4px;
+        padding-top: 8px;
+        width: 100%;
 
-		button {
-			height: 100%;
-			background-color: transparent;
-			color: white;
-			cursor: pointer;
-			border: none;
-		}
+        button {
+            height: 100%;
+            background-color: transparent;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
 
-		.button-filled {
-			background-color: #25292c;
-			min-width: 15px;
-			border-radius: 3px;
-			flex-grow: 1;
-		}
-	}
+        .button-filled {
+            background-color: neo-tokens.$neo-surface;
+            min-width: 15px;
+            border-radius: 3px;
+            flex-grow: 1;
+        }
+    }
 
-	.mirrored-horiz {
-		// Mirror the icon instead of using the pro-icon
-		-moz-transform: scale(-1, 1);
-		-webkit-transform: scale(-1, 1);
-		-o-transform: scale(-1, 1);
-		-ms-transform: scale(-1, 1);
-		transform: scale(-1, 1);
-	}
-	.mirrored-vert {
-		// Mirror the icon instead of using the pro-icon
-		-moz-transform: scale(1, -1);
-		-webkit-transform: scale(1, -1);
-		-o-transform: scale(1, -1);
-		-ms-transform: scale(1, -1);
-		transform: scale(1, -1);
-	}
+    .mirrored-horiz {
+        -moz-transform: scale(-1, 1);
+        -webkit-transform: scale(-1, 1);
+        -o-transform: scale(-1, 1);
+        -ms-transform: scale(-1, 1);
+        transform: scale(-1, 1);
+    }
+    .mirrored-vert {
+        -moz-transform: scale(1, -1);
+        -webkit-transform: scale(1, -1);
+        -o-transform: scale(1, -1);
+        -ms-transform: scale(1, -1);
+        transform: scale(1, -1);
+    }
 }
 
 .buttonsMobileMenu,
 .buttonsMobileMenuSmaller {
-	display: none;
+    display: none;
 }
 
 @media (max-width: variables.$mugen-breakpoint-small) {
-	.KmAppWrapperDecorator:not(.chibi) {
-		.messageButton,
-		.displayModifierButtons,
-		.rewindButton {
-			display: none;
-		}
+    .KmAppWrapperDecorator:not(.chibi) {
+        .messageButton,
+        .displayModifierButtons,
+        .rewindButton {
+            display: none;
+        }
 
-		.buttonsMobileMenu {
-			display: block;
-		}
-	}
+        .buttonsMobileMenu {
+            display: block;
+        }
+    }
 }
 
 @media (max-width: variables.$mugen-breakpoint-large) {
-	.KmAppWrapperDecorator {
-		.backPlaylistsButton {
-			display: none;
-		}
-	}
+    .KmAppWrapperDecorator {
+        .backPlaylistsButton {
+            display: none;
+        }
+    }
 }
 
 @media (max-width: variables.$mugen-breakpoint-medium) {
-	.KmAppWrapperDecorator:not(.chibi) {
-		.pitchControl,
-		.speedControl {
-			display: none;
-		}
-	}
+    .KmAppWrapperDecorator:not(.chibi) {
+        .pitchControl,
+        .speedControl {
+            display: none;
+        }
+    }
 }
 
 @media (max-width: variables.$mugen-breakpoint-smaller) {
-	.stopButton,
-	.volumeButton {
-		display: none;
-	}
+    .stopButton,
+    .volumeButton {
+        display: none;
+    }
 
-	.buttonsMobileMenuSmaller {
-		display: block;
-	}
+    .buttonsMobileMenuSmaller {
+        display: block;
+    }
 }

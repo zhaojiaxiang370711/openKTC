@@ -1,8 +1,9 @@
+@use '../../styles/neo-tokens';
 #playlistModal {
 	.error {
 		font-weight: bold;
 		font-size: large;
-		color: orangered;
+		color: neo-tokens.$neo-danger;
 		margin: 0.5em;
 	}
 
