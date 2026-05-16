@@ -3,14 +3,15 @@ import { APIMessage } from '../../lib/services/frontend.js';
 import { getConfig } from '../../lib/utils/config.js';
 import { check } from '../../lib/utils/validators.js';
 import { SocketIOApp } from '../../lib/utils/ws.js';
-import { initPlayer, isPlayerRunning, playerMessage, playPlayer, sendCommand } from '../../services/player.js';
+import { legacyPlaybackRuntime } from '../../runtime/legacyPlaybackRuntimeInstance.js';
+import { isPlayerRunning, playerMessage } from '../../services/player.js';
 import { runChecklist } from '../middlewares.js';
 
 export default function playerController(router: SocketIOApp) {
 	router.route(WS_CMD.PLAY, async (socket, req) => {
 		await runChecklist(socket, req, 'guest', 'limited');
 		try {
-			await playPlayer(true, req.token.username);
+			await legacyPlaybackRuntime.playCurrent(req.token.username);
 		} catch (err) {
 			throw { code: err.code || 500, message: APIMessage(err.message) };
 		}
@@ -39,7 +40,7 @@ export default function playerController(router: SocketIOApp) {
 	router.route(WS_CMD.SEND_PLAYER_COMMAND, async (socket, req) => {
 		await runChecklist(socket, req, getConfig().Frontend.PublicPlayerControls ? 'guest' : 'admin');
 		try {
-			const msg = await sendCommand(req.body.command, req.body.options);
+			const msg = await legacyPlaybackRuntime.sendPlayerCommand(req.body.command, req.body.options);
 			return { code: 200, message: APIMessage(msg) };
 		} catch (err) {
 			throw { code: err.code || 500, message: APIMessage(err.message) };
@@ -51,7 +52,7 @@ export default function playerController(router: SocketIOApp) {
 			if (isPlayerRunning()) {
 				throw { code: 409 };
 			} else {
-				await initPlayer();
+				await legacyPlaybackRuntime.restart();
 			}
 		} catch (err) {
 			throw { code: 500 };

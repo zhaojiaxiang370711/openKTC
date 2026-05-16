@@ -5,7 +5,7 @@ import { Dispatch } from 'react';
 import { User } from '../../../../src/lib/types/user';
 import { Config } from '../../../../src/types/config';
 import { PublicState, Version } from '../../../../src/types/state';
-import { langSupport } from '../../utils/isoLanguages';
+import { getDayjsLocaleFromCode, langSupport } from '../../utils/isoLanguages';
 import { commandBackend } from '../../utils/socket';
 import { LogoutUser } from '../types/auth';
 import { Settings, SettingsFailure, SettingsSuccess } from '../types/settings';
@@ -19,6 +19,7 @@ import 'dayjs/locale/it';
 import 'dayjs/locale/pl';
 import 'dayjs/locale/pt';
 import 'dayjs/locale/ta';
+import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -48,11 +49,12 @@ export async function setSettings(
 				for (const kara of favorites) {
 					favoritesSet.add(kara.kid);
 				}
-				const newLanguage = user.language && user.type < 2 ? user.language : langSupport;
+				const defaultLanguage = res.config.App?.Language || langSupport;
+				const newLanguage = user.language && user.type < 2 ? user.language : defaultLanguage;
 				i18next.changeLanguage(newLanguage);
-				dayjs.locale(newLanguage);
+				dayjs.locale(getDayjsLocaleFromCode(newLanguage));
 				if (!user.language && user.type < 2) {
-					user.language = langSupport;
+					user.language = defaultLanguage;
 					try {
 						await commandBackend(WS_CMD.EDIT_MY_ACCOUNT, user);
 					} catch (_) {
@@ -74,8 +76,9 @@ export async function setSettings(
 				logout(dispatch as unknown as Dispatch<SettingsSuccess | SettingsFailure | LogoutUser>);
 			}
 		} else {
-			i18next.changeLanguage(langSupport);
-			dayjs.locale(langSupport);
+			const defaultLanguage = res.config.App?.Language || langSupport;
+			i18next.changeLanguage(defaultLanguage);
+			dayjs.locale(getDayjsLocaleFromCode(defaultLanguage));
 			dispatch({
 				type: Settings.SETTINGS_SUCCESS,
 				payload: { state: res.state, config: res.config, user: {}, favorites: new Set(), version: res.version },

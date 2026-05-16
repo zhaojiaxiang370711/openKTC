@@ -3,6 +3,7 @@ import { Component } from 'react';
 import Config from './Config';
 
 const propertiesToDisplay = [
+	'App.Language',
 	'App.QuickStart',
 	'Online.RemoteUsers.Enabled',
 	'Online.RemoteUsers.DefaultHost',

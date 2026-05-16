@@ -27,6 +27,8 @@ import { getBackgroundAndMusic } from '../../services/backgrounds.js';
 import { getPromoMessage, next } from '../../services/player.js';
 import { getSingleMedia } from '../../services/playlistMedias.js';
 import { getRepo } from '../../services/repo.js';
+import { createPlaylistMediaPlayPlan, createSongPlayPlan } from '../../runtime/playPlanBuilder.js';
+import { clearCurrentPlayPlan, setCurrentPlayPlan } from '../../runtime/playerSnapshotProjection.js';
 import { BackgroundType } from '../../types/backgrounds.js';
 import { MpvCommand } from '../../types/mpvIPC.js';
 import { PlayerState, SongModifiers } from '../../types/player.js';
@@ -604,6 +606,7 @@ export class Players {
 			playerState.playerStatus = 'stop';
 			playerState.currentSong = null;
 			playerState.currentMedia = null;
+			clearCurrentPlayPlan();
 			playerState._playing = false;
 			playerState.playing = false;
 			playerState.currentVideoTrack = 1;
@@ -826,9 +829,17 @@ export class Players {
 		}
 		// Load all those files into mpv and let's go!
 		try {
+			const playPlan = createSongPlayPlan({
+				song,
+				mediaPath: mediaFile,
+				subtitlePath: subFile,
+				mpvOptions: options,
+				start,
+			});
 			playerState.currentSong = song;
 			playerState.mediaType = 'song';
 			playerState.currentMedia = null;
+			setCurrentPlayPlan(playPlan);
 			if (this.messages) {
 				this.messages.removeMessages(['poll', 'pauseScreen', 'quizRules']);
 				if (!getState().quiz.running) this.displaySongInfo(song.infos, -1, false, song.warnings);
@@ -902,10 +913,17 @@ export class Players {
 				logger.debug('No subtitles to load (not found for media)', { service });
 			}
 			try {
+				const playPlan = createPlaylistMediaPlayPlan({
+					media,
+					mediaType,
+					subtitlePath: subFile,
+					mpvOptions: options,
+				});
 				playerState.currentSong = null;
 				playerState.mediaType = mediaType;
 				playerState.currentMedia = media;
 				playerState.currentVideoTrack = 1;
+				setCurrentPlayPlan(playPlan);
 				await retry(() => this.exec({ command: ['loadfile', media.filename, 'replace', '0', options] }), {
 					retries: 3,
 					onFailedAttempt: error => {

@@ -1469,9 +1469,11 @@
 		"PRIMARY_DIRECTORY": "Primary directory",
 		"ADD_DIRECTORY": "Add a directory",
 		"ADD_FILE": "Add a file",
-		"REPOSITORIES_PAGES": "Repositories page",
-		"PROPERTIES": {
-			"APP_QUICKSTART": "Quick application start",
+			"REPOSITORIES_PAGES": "Repositories page",
+			"PROPERTIES": {
+				"APP_LANGUAGE": "Application language",
+				"APP_LANGUAGE_TOOLTIP": "Language used by the player, operator pages, and newly created local users.",
+				"APP_QUICKSTART": "Quick application start",
 			"APP_QUICKSTART_TOOLTIP": "This disables data verification. You will have to generate your database in case of modification manually from the system panel -> database page.",
 			"ONLINE_ERRORTRACKING": "Send error and crash reports (via sentry.io)",
 			"PLAYER_KEYBOARDMEDIASHORTCUTS": "Control the player with keyboard media keys",

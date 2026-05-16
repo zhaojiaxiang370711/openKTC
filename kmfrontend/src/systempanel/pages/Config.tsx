@@ -10,6 +10,7 @@ import FoldersElement from '../components/FoldersElement';
 import Title from '../components/Title';
 import { WS_CMD } from '../../utils/ws';
 import { PlayerCommand } from '../../../../src/types/player';
+import { getLanguagesInLangFromCode, supportedLanguages } from '../../utils/isoLanguages';
 
 interface ConfigProps {
 	properties?: string[];
@@ -120,6 +121,16 @@ class Config extends Component<ConfigProps, ConfigState> {
 								label: i18next.t('CONFIG.PROPERTIES.PLAYER_HARDWAREDECODING_OPTIONS.FORCE'),
 							},
 						]}
+					/>
+				) : record.key === 'App.Language' ? (
+					<Select
+						style={{ width: '100%', maxWidth: '700px' }}
+						onChange={value => this.saveSetting(record.key, value)}
+						value={record.value}
+						options={supportedLanguages.map(lang => ({
+							value: lang,
+							label: getLanguagesInLangFromCode(lang) || lang,
+						}))}
 					/>
 				) : record.key === 'System.Repositories' ? (
 					<label>

@@ -12,6 +12,7 @@ import pl from '../locales/pl.json';
 import ta from '../locales/ta.json';
 import br from '../locales/br.json';
 import ru from '../locales/ru.json';
+import zhHans from '../locales/zh-Hans.json';
 
 i18n
 	// use react-i18next
@@ -21,6 +22,7 @@ i18n
 	// for all options read: https://www.i18next.com/overview/configuration-options
 	.init({
 		load: 'languageOnly',
+		lng: 'zh-Hans',
 		fallbackLng: {
 			br: ['fr'],
 			default: ['en'],
@@ -61,6 +63,12 @@ i18n
 			},
 			ru: {
 				translation: ru,
+			},
+			zh: {
+				translation: zhHans,
+			},
+			'zh-Hans': {
+				translation: zhHans,
 			},
 		},
 	});

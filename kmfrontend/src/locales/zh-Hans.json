@@ -296,5 +296,62 @@
 	"TOOLTIP_CLOSEPARENT": "关闭",
 	"KARA_DETAIL": {
 		"ADDED": "添加了 "
+	},
+	"CONFIG": {
+		"PROPERTY": "设置项",
+		"VALUE": "值",
+		"BACKUP_CONFIG_FILE": "备份配置文件",
+		"MESSAGE": "修改设置后按回车保存。部分设置不可编辑，尝试修改时会返回错误。",
+		"SAVE": "刷新",
+		"SELECT": "选择",
+		"BACK": "返回",
+		"CHOOSE_FILE": "选择文件",
+		"CHOOSE_DIRECTORY": "选择目录",
+		"PRIMARY_DIRECTORY": "主目录",
+		"ADD_DIRECTORY": "添加目录",
+		"ADD_FILE": "添加文件",
+		"REPOSITORIES_PAGES": "仓库页面",
+		"PROPERTIES": {
+			"APP_LANGUAGE": "应用语言",
+			"APP_LANGUAGE_TOOLTIP": "播放器、管理页面和新建本地用户默认使用的语言。",
+			"APP_QUICKSTART": "快速启动应用",
+			"APP_QUICKSTART_TOOLTIP": "禁用数据校验。修改歌库后需要在系统面板的数据库页面手动生成数据库。",
+			"ONLINE_ERRORTRACKING": "发送错误和崩溃报告",
+			"PLAYER_KEYBOARDMEDIASHORTCUTS": "使用键盘媒体键控制播放器",
+			"PLAYER_KEYBOARDMEDIASHORTCUTS_TOOLTIP": "如果希望这些按键控制其他应用，请关闭此项。",
+			"PLAYER_HARDWAREDECODING": "视频硬件解码",
+			"PLAYER_HARDWAREDECODING_TOOLTIP": "控制播放器硬件加速。部分设备可能播放异常，遇到问题时请选择“禁用”。“自动”最稳，“强制”风险最高。",
+			"PLAYER_HARDWAREDECODING_OPTIONS": {
+				"AUTOSAFE": "自动（推荐）",
+				"NO": "禁用（仅软件解码）",
+				"FORCE": "强制硬件加速（实验性）"
+			},
+			"ONLINE_UPDATES_MEDIAS_JINGLES": "自动更新过场音效",
+			"ONLINE_UPDATES_MEDIAS_INTROS": "自动更新开场媒体",
+			"ONLINE_UPDATES_MEDIAS_OUTROS": "自动更新结束媒体",
+			"ONLINE_UPDATES_MEDIAS_ENCORES": "自动更新返场媒体",
+			"ONLINE_UPDATES_MEDIAS_SPONSORS": "自动更新赞助媒体",
+			"ONLINE_REMOTEUSERS_ENABLED": "允许在线用户注册和登录",
+			"ONLINE_REMOTEUSERS_DEFAULTHOST": "在线用户默认实例",
+			"ONLINE_FETCHPOPULARSONGS": "从在线仓库获取热门歌曲",
+			"ONLINE_FETCHPOPULARSONGS_TOOLTIP": "关闭后，热门歌曲将从本机 Karaoke Mugen 记录中计算。",
+			"ONLINE_DISCORD_DISPLAYACTIVITY": "在 Discord 个人资料中显示 Karaoke Mugen 状态"
+		}
+	},
+	"HEADERS": {
+		"SYSTEM_PREFERENCES": {
+			"TITLE": "系统偏好设置",
+			"TITLEMAC": "系统偏好设置",
+			"DESCRIPTION": "调整常用应用设置。"
+		},
+		"CONFIGURATION": {
+			"TITLE": "配置",
+			"DESCRIPTION": "查看和编辑完整配置。"
+		}
+	},
+	"SETTINGS": {
+		"PLAYER": {
+			"PLAYER_LANGUAGE": "消息和播放器语言"
+		}
 	}
 }

@@ -1,0 +1,9 @@
+[package]
+name = "km-devctl"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "km-devctl"
+path = "src/main.rs"
+

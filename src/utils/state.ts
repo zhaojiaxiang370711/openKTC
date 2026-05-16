@@ -8,6 +8,7 @@ import { getConfig } from '../lib/utils/config.js';
 import { supportedFiles } from '../lib/utils/constants.js';
 import { emit } from '../lib/utils/pubsub.js';
 import { emitWS } from '../lib/utils/ws.js';
+import { updatePlayerSnapshot } from '../runtime/playerSnapshotProjection.js';
 // Types
 import { GameState } from '../types/quiz.js';
 import { PublicPlayerState, PublicState, State } from '../types/state.js';
@@ -121,6 +122,14 @@ function emitPlayerState(part: RecursivePartial<State>) {
 		}
 	}
 	if (Object.keys(toEmit).length !== 0) {
+		updatePlayerSnapshot({
+			...state.player,
+			currentSessionID: state.currentSessionID,
+			currentRequester: state.currentRequester,
+			stopping: state.stopping,
+			streamerPause: state.streamerPause,
+			defaultLocale: state.defaultLocale,
+		});
 		emitWS('playerStatus', toEmit);
 	}
 }

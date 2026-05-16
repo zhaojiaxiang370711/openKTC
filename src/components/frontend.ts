@@ -28,6 +28,7 @@ import userController from '../controllers/frontend/user.js';
 import { resolvedPath, resolvedPathRepos } from '../lib/utils/config.js';
 import logger, { profile } from '../lib/utils/logger.js';
 import { initWS, SocketIOApp } from '../lib/utils/ws.js';
+import { getRuntimeHealth } from '../runtime/healthcheck.js';
 import sentry from '../utils/sentry.js';
 import { getState } from '../utils/state.js';
 import playlistsOnlineController from '../controllers/frontend/playlistsOnline.js';
@@ -105,6 +106,11 @@ export default function initFrontend(): number {
 		// HTTP standards are important.
 		app.use('/coffee', (_req, res) => {
 			res.status(418).json();
+		});
+
+		app.get('/health', async (_req, res) => {
+			const health = await getRuntimeHealth();
+			res.status(health.ok ? 200 : 503).json(health);
 		});
 
 		app.use('/', express.static(resolve(state.resourcePath, 'kmfrontend/dist'), { dotfiles: 'allow' }));

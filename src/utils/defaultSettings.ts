@@ -7,6 +7,7 @@ import { app } from 'electron';
 import { Repository } from '../lib/types/repo.js';
 import { bools, hostnameRegexp } from '../lib/utils/constants.js';
 import { Config, DBConfig } from '../types/config.js';
+import { supportedLanguages } from './constants.js';
 
 export const dbConfig: DBConfig = {
 	RestoreNeeded: false,
@@ -28,6 +29,7 @@ export const defaults: Config = {
 		FirstRun: true,
 		InstanceID: 'Change me',
 		JwtSecret: 'Change me',
+		Language: 'zh-Hans',
 	},
 	Online: {
 		MediasHost: null,
@@ -313,6 +315,7 @@ export const endOfPlaylistActions = ['random', 'random_fallback', 'play_fallback
 /** Config constraints. */
 export const configConstraints = {
 	'App.FirstRun': { inclusion: bools },
+	'App.Language': { inclusion: supportedLanguages },
 	// 'App.InstanceID': {presence: true, format: uuidRegexp}, // Broken on regular installations since InstanceID is stored in database. We'll implement this in KM 10.0 aka KMX
 	'Online.ErrorTracking': { boolUndefinedValidator: true },
 	'Online.RemoteAccess.Enabled': { inclusion: bools },

@@ -1,6 +1,5 @@
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
-import electron from 'electron';
 import { build, context } from 'esbuild';
 import { execa } from 'execa';
 import { rimraf } from 'rimraf';

@@ -10,6 +10,7 @@ import pl from '@karaokemugen/i18n-iso-languages/langs/pl.json';
 import ta from '@karaokemugen/i18n-iso-languages/langs/ta.json';
 import br from '@karaokemugen/i18n-iso-languages/langs/br.json';
 import ru from '@karaokemugen/i18n-iso-languages/langs/ru.json';
+import zh from '@karaokemugen/i18n-iso-languages/langs/zh.json';
 import countries from 'i18n-iso-countries';
 import countries_de from 'i18n-iso-countries/langs/de.json';
 import countries_en from 'i18n-iso-countries/langs/en.json';
@@ -22,6 +23,7 @@ import countries_pl from 'i18n-iso-countries/langs/pl.json';
 import countries_ta from 'i18n-iso-countries/langs/ta.json';
 import countries_br from 'i18n-iso-countries/langs/br.json';
 import countries_ru from 'i18n-iso-countries/langs/ru.json';
+import countries_zh from 'i18n-iso-countries/langs/zh.json';
 
 import i18next from 'i18next';
 
@@ -38,6 +40,7 @@ countries.registerLocale(countries_pl);
 countries.registerLocale(countries_ta);
 countries.registerLocale(countries_br);
 countries.registerLocale(countries_ru);
+countries.registerLocale(countries_zh);
 
 registerLocale(fr);
 registerLocale(en);
@@ -50,18 +53,33 @@ registerLocale(pl);
 registerLocale(ta);
 registerLocale(br);
 registerLocale(ru);
+registerLocale(zh);
 
-export const supportedLanguages = ['en', 'fr', 'es', 'id', 'pt', 'de', 'it', 'pl', 'ta', 'br', 'ru'];
-const navigatorLanguage: string = navigator.languages[0].substring(0, 2);
-export const langSupport = supportedLanguages.includes(navigatorLanguage) ? navigatorLanguage : 'en';
+export const supportedLanguages = ['zh-Hans', 'en', 'fr', 'es', 'id', 'pt', 'de', 'it', 'pl', 'ta', 'br', 'ru'];
+
+function normalizeSupportedLanguage(code?: string): string {
+	const normalized = code?.replace('_', '-').toLowerCase();
+	if (!normalized) return 'zh-Hans';
+	if (normalized.startsWith('zh')) return 'zh-Hans';
+	const shortCode = normalized.substring(0, 2);
+	return supportedLanguages.includes(shortCode) ? shortCode : 'zh-Hans';
+}
+
+function toIsoLocale(code?: string): string {
+	return normalizeSupportedLanguage(code) === 'zh-Hans' ? 'zh' : normalizeSupportedLanguage(code);
+}
+
+const navigatorLanguage: string = navigator.languages?.[0] || navigator.language;
+export const langSupport = normalizeSupportedLanguage(navigatorLanguage);
 
 export const langWithRomanization = nonLatinLanguages;
 
 export function getListLanguagesInLocale(userLang: string): { value: string; label: string }[] {
 	const result = [];
-	const langs = Object.values(getNames(userLang));
+	const isoLocale = toIsoLocale(userLang);
+	const langs = Object.values(getNames(isoLocale));
 	for (const langInLocale of langs) {
-		result.push({ value: getAlpha3BCode(langInLocale, userLang), label: langInLocale });
+		result.push({ value: getAlpha3BCode(langInLocale, isoLocale), label: langInLocale });
 	}
 	result.push({ value: 'qro', label: i18next.t('LANGUAGES.QRO') });
 	return result;
@@ -69,27 +87,35 @@ export function getListLanguagesInLocale(userLang: string): { value: string; lab
 
 export function getLanguagesInLocaleFromCode(code: string, userLang: string) {
 	if (code === 'qro') return i18next.t('LANGUAGES.QRO');
-	return getName(code, userLang);
+	if (code === 'zh-Hans') return getName('zh', toIsoLocale(userLang));
+	return getName(code, toIsoLocale(userLang));
 }
 
 export function getLanguagesInLangFromCode(code: string) {
+	if (code === 'zh-Hans') return getName('zh', 'zh');
 	return getName(code, code);
 }
 
 export function getLanguageIn3B(code) {
-	return alpha2ToAlpha3B(code);
+	const normalized = normalizeSupportedLanguage(code);
+	return normalized === 'zh-Hans' ? alpha2ToAlpha3B('zh') : alpha2ToAlpha3B(normalized);
+}
+
+export function getDayjsLocaleFromCode(code?: string): string {
+	const normalized = normalizeSupportedLanguage(code);
+	return normalized === 'zh-Hans' ? 'zh-cn' : normalized;
 }
 
 export function listCountries(userLang: string): { value: string; label: string }[] {
 	const listCountries = [];
-	for (const [key, value] of Object.entries(countries.getNames(userLang))) {
+	for (const [key, value] of Object.entries(countries.getNames(toIsoLocale(userLang)))) {
 		listCountries.push({ value: key, label: value });
 	}
 	return listCountries;
 }
 
 export function getCountryName(code: string, userLang: string): string | undefined {
-	for (const [key, value] of Object.entries(countries.getNames(userLang || langSupport))) {
+	for (const [key, value] of Object.entries(countries.getNames(toIsoLocale(userLang || langSupport)))) {
 		if (key === code) {
 			return value as string;
 		}
