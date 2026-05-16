@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 import { EventEmitter } from 'events';
 import { createInterface, Interface } from 'readline';
 
-import { PlaybackCommandKind } from '../contracts/playback.js';
+import { PlaybackCommandKind, PlayPlan } from '../contracts/playback.js';
 import { RuntimeCommandError, RuntimeCommandResult } from '../contracts/runtime.js';
 
 export interface RustPlaybackRuntimeOptions {
@@ -114,6 +114,26 @@ export class RustPlaybackRuntimeClient extends EventEmitter {
 
 		this.child?.stdin.write(`${JSON.stringify({ requestId, kind, payload })}\n`);
 		return result;
+	}
+
+	ping(options: { requestId?: string; timeoutMs?: number } = {}) {
+		return this.dispatch('ping', undefined, options);
+	}
+
+	loadPlan(plan: PlayPlan, options: { requestId?: string; timeoutMs?: number } = {}) {
+		return this.dispatch('loadPlan', plan, options);
+	}
+
+	play(options: { requestId?: string; timeoutMs?: number } = {}) {
+		return this.dispatch('play', undefined, options);
+	}
+
+	pause(options: { requestId?: string; timeoutMs?: number } = {}) {
+		return this.dispatch('pause', undefined, options);
+	}
+
+	stopPlayback(options: { requestId?: string; timeoutMs?: number } = {}) {
+		return this.dispatch('stop', undefined, options);
 	}
 
 	stop() {

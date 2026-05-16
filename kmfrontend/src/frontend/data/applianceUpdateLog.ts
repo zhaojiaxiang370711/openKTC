@@ -21,6 +21,27 @@ type ApplianceUpdateEntry = {
 
 const entries: ApplianceUpdateEntry[] = [
 	{
+		date: '2026-05-16T14:35:00+08:00',
+		version: 'appliance-0.9',
+		type: 'appliance',
+		title: {
+			'zh-Hans': 'PlayPlan 到 Rust runtime 的闭环',
+			en: 'PlayPlan loop into Rust runtime',
+		},
+		changes: {
+			improved: [
+				{
+					'zh-Hans': '新增 dev:runtime-mpv-loadplan-check，生成本地 WAV 后通过真实 mpv IPC 验证 loadPlan、play、pause、stop。',
+					en: 'Added dev:runtime-mpv-loadplan-check to generate a local WAV and verify loadPlan, play, pause, and stop through real mpv IPC.',
+				},
+				{
+					'zh-Hans': 'TypeScript IPC client 新增 loadPlan/play/pause/stopPlayback helper，并加入默认关闭的 Rust playback shadow flag。',
+					en: 'Added loadPlan/play/pause/stopPlayback helpers to the TypeScript IPC client plus a disabled-by-default Rust playback shadow flag.',
+				},
+			],
+		},
+	},
+	{
 		date: '2026-05-16T14:10:00+08:00',
 		version: 'appliance-0.8',
 		type: 'appliance',

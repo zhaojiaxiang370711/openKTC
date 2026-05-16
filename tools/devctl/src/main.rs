@@ -41,6 +41,7 @@ fn main() -> ExitCode {
         "test" => test(&ctx),
         "runtime-check" => runtime_check(&ctx),
         "runtime-mpv-check" => runtime_mpv_check(&ctx),
+        "runtime-mpv-loadplan-check" => runtime_mpv_loadplan_check(&ctx),
         "health" => health(
             args.next()
                 .as_deref()
@@ -120,6 +121,8 @@ Usage:
   yarn dev:test                Run typecheck and unit tests
   yarn dev:runtime-check       Build and smoke-test the Rust playback runtime
   yarn dev:runtime-mpv-check   Smoke-test the Rust runtime with a real mpv IPC process
+  yarn dev:runtime-mpv-loadplan-check
+                               Smoke-test Rust runtime loadPlan with a local media file
   yarn dev:health [url]        Fetch /health from a running instance
   yarn dev:snapshot [url]      Print a local appliance diagnostic snapshot
   yarn dev:logs [lines]        Print the tail of the latest app log
@@ -303,14 +306,18 @@ fn test(ctx: &Context) -> Result<()> {
 }
 
 fn runtime_check(ctx: &Context) -> Result<()> {
-    runtime_smoke(ctx, false)
+    runtime_smoke(ctx, false, false)
 }
 
 fn runtime_mpv_check(ctx: &Context) -> Result<()> {
-    runtime_smoke(ctx, true)
+    runtime_smoke(ctx, true, false)
 }
 
-fn runtime_smoke(ctx: &Context, mpv: bool) -> Result<()> {
+fn runtime_mpv_loadplan_check(ctx: &Context) -> Result<()> {
+    runtime_smoke(ctx, true, true)
+}
+
+fn runtime_smoke(ctx: &Context, mpv: bool, load_plan: bool) -> Result<()> {
     run(
         "cargo",
         &["check", "--manifest-path", "tools/runtime/Cargo.toml"],
@@ -340,6 +347,12 @@ fn runtime_smoke(ctx: &Context, mpv: bool) -> Result<()> {
         command.env("OPENKTV_RUNTIME_MPV_ARGS", "--vo=null --ao=null");
     }
 
+    let smoke_media = if load_plan {
+        Some(write_runtime_smoke_wav(ctx)?)
+    } else {
+        None
+    };
+
     let mut child = command.spawn()?;
 
     {
@@ -350,6 +363,20 @@ fn runtime_smoke(ctx: &Context, mpv: bool) -> Result<()> {
             stdin.write_all(
                 br#"{"requestId":"devctl-volume","kind":"setVolume","payload":{"volume":50}}"#,
             )?;
+            stdin.write_all(b"\n")?;
+        }
+        if let Some(media_path) = smoke_media.as_ref() {
+            let load_plan = format!(
+                r#"{{"requestId":"devctl-loadplan","kind":"loadPlan","payload":{{"id":"devctl-smoke","mediaType":"song","mediaPath":"{}","mpvOptions":{{}},"displayInfo":"OpenKTV runtime smoke","createdAt":"devctl"}}}}"#,
+                json_escape(&media_path.display().to_string())
+            );
+            stdin.write_all(load_plan.as_bytes())?;
+            stdin.write_all(b"\n")?;
+            stdin.write_all(br#"{"requestId":"devctl-play","kind":"play"}"#)?;
+            stdin.write_all(b"\n")?;
+            stdin.write_all(br#"{"requestId":"devctl-pause","kind":"pause"}"#)?;
+            stdin.write_all(b"\n")?;
+            stdin.write_all(br#"{"requestId":"devctl-stop","kind":"stop"}"#)?;
             stdin.write_all(b"\n")?;
         }
     }
@@ -380,7 +407,57 @@ fn runtime_smoke(ctx: &Context, mpv: bool) -> Result<()> {
             "mpv runtime smoke test did not produce mpv backend and volume ack events".into(),
         );
     }
+    if load_plan
+        && (!output.contains(r#""requestId":"devctl-loadplan""#)
+            || !output.contains(r#""currentPlanId":"devctl-smoke""#)
+            || !output.contains(r#""requestId":"devctl-stop""#))
+    {
+        return Err(
+            "mpv runtime loadPlan smoke test did not load and stop the local media plan".into(),
+        );
+    }
     Ok(())
+}
+
+fn write_runtime_smoke_wav(ctx: &Context) -> Result<PathBuf> {
+    let path = ctx.root.join("app/run/openktv-runtime-smoke.wav");
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent)?;
+    }
+
+    let sample_rate = 8000u32;
+    let seconds = 1u32;
+    let channels = 1u16;
+    let bits_per_sample = 16u16;
+    let byte_rate = sample_rate * channels as u32 * bits_per_sample as u32 / 8;
+    let block_align = channels * bits_per_sample / 8;
+    let data_size = sample_rate * seconds * block_align as u32;
+    let riff_size = 36 + data_size;
+
+    let mut wav = Vec::with_capacity((44 + data_size) as usize);
+    wav.extend_from_slice(b"RIFF");
+    wav.extend_from_slice(&riff_size.to_le_bytes());
+    wav.extend_from_slice(b"WAVEfmt ");
+    wav.extend_from_slice(&16u32.to_le_bytes());
+    wav.extend_from_slice(&1u16.to_le_bytes());
+    wav.extend_from_slice(&channels.to_le_bytes());
+    wav.extend_from_slice(&sample_rate.to_le_bytes());
+    wav.extend_from_slice(&byte_rate.to_le_bytes());
+    wav.extend_from_slice(&block_align.to_le_bytes());
+    wav.extend_from_slice(&bits_per_sample.to_le_bytes());
+    wav.extend_from_slice(b"data");
+    wav.extend_from_slice(&data_size.to_le_bytes());
+    wav.resize((44 + data_size) as usize, 0);
+    fs::write(&path, wav)?;
+    Ok(path)
+}
+
+fn json_escape(value: &str) -> String {
+    value
+        .replace('\\', "\\\\")
+        .replace('"', "\\\"")
+        .replace('\n', "\\n")
+        .replace('\r', "\\r")
 }
 
 fn health(url: &str) -> Result<()> {

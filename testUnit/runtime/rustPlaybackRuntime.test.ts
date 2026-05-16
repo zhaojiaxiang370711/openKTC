@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { PlayPlan } from '../../src/contracts/playback.js';
 import { RustPlaybackRuntimeClient } from '../../src/runtime/rustPlaybackRuntime.js';
 
 const fakeRuntimeScript = `
@@ -32,6 +33,31 @@ describe('RustPlaybackRuntimeClient', () => {
 				kind: 'play',
 				received: {
 					requester: 'tester',
+				},
+			});
+		} finally {
+			client.stop();
+		}
+	});
+
+	it('loads a PlayPlan through the typed helper', async () => {
+		const client = createFakeClient();
+		try {
+			const plan: PlayPlan = {
+				id: 'plan-1',
+				mediaType: 'song',
+				mediaPath: '/tmp/openktv-smoke.wav',
+				mpvOptions: {},
+				createdAt: '2026-05-16T00:00:00.000Z',
+			};
+			const result = await client.loadPlan(plan);
+
+			expect(result.ok).toBe(true);
+			expect(result.data).toMatchObject({
+				kind: 'loadPlan',
+				received: {
+					id: 'plan-1',
+					mediaPath: '/tmp/openktv-smoke.wav',
 				},
 			});
 		} finally {
