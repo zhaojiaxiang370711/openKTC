@@ -1,6 +1,6 @@
-# Appliance Runtime Refactor
+# OpenKTV Appliance Runtime Refactor
 
-This branch incrementally moves Karaoke Mugen toward a low-latency Ubuntu living-room appliance architecture.
+This branch incrementally moves the local OpenKTV fork of Karaoke Mugen toward a low-latency Ubuntu living-room appliance architecture.
 
 ## Baseline
 
@@ -26,6 +26,8 @@ Dependency install note: `register-scheme` reports a Yarn build warning in this 
 - Rust `tools/devctl` helper for deployment diagnostics, local PostgreSQL setup, builds, tests, health checks, and dev startup.
 - Chinese appliance default: `App.Language` now defaults to `zh-Hans`, the system preferences page exposes an application language selector, and the frontend registers the existing Simplified Chinese locale.
 - Rust diagnostic helpers for appliance snapshots and latest-log inspection.
+- Local project name is `openktv`; the compatibility layer still preserves upstream Karaoke Mugen WebSocket/API behavior.
+- NAS media plan: mount `smb://xfn.local/nas_hdd/` to a local filesystem path and point repository media folders at that mount, so downloads and playback both use the NAS-backed files.
 
 ## Developer CLI
 
@@ -37,6 +39,7 @@ yarn dev:test
 yarn dev:health
 yarn dev:snapshot
 yarn dev:logs
+yarn dev:nas
 yarn dev:start-headless
 yarn dev:frontend
 ```
@@ -44,6 +47,8 @@ yarn dev:frontend
 `yarn dev:setup-db` creates a local PostgreSQL database/user and writes `app/config.yml`, which is ignored by git because this checkout is portable. The CLI is implemented in Rust with no third-party crate dependencies so it can remain a stable appliance/debugging entrypoint outside the TypeScript runtime.
 
 `yarn dev:snapshot` prints branch/revision, key tool versions, PostgreSQL cluster state, relevant local processes, `/health`, and the newest app log path. `yarn dev:logs [lines]` tails the newest file in `app/logs`.
+
+`yarn dev:nas` checks the Feiniu NAS media convention (`smb://xfn.local/nas_hdd/` mounted at `app/media/nas_hdd`) and prints whether the local mount path is actually mounted and writable.
 
 ## Next Execution Steps
 

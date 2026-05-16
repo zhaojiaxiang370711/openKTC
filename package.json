@@ -1,10 +1,11 @@
 {
-  "name": "karaokemugen-app",
+  "name": "openktv",
   "version": "9.0.44-next",
   "versionName": "Tomoyo Tapageuse",
-  "description": "Karaoke playlist manager / player",
+  "description": "OpenKTV appliance karaoke manager / player",
   "bin": {
-    "karaokemugen": "./dist/src/index.js"
+    "karaokemugen": "./dist/src/index.js",
+    "openktv": "./dist/src/index.js"
   },
   "type": "module",
   "main": "dist/index.mjs",
@@ -23,6 +24,7 @@
     "dev:health": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- health",
     "dev:snapshot": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- snapshot",
     "dev:logs": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- logs",
+    "dev:nas": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- nas-media",
     "dev:run": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- run",
     "dev:stop": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- stop",
     "dev:restart": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- restart",
@@ -50,7 +52,7 @@
   "homepage": "https://karaokes.moe",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/karaokemugen/code/karaokemugen-app.git"
+    "url": "https://github.com/zhaojiaxiang370711/openKTC.git"
   },
   "keywords": [
     "karaoke",
@@ -61,7 +63,7 @@
     "electron"
   ],
   "bugs": {
-    "url": "https://gitlab.com/karaokemugen/code/karaokemugen-app/issues",
+    "url": "https://github.com/zhaojiaxiang370711/openKTC/issues",
     "email": "mugen@karaokes.moe"
   },
   "author": "Guillaume Lebigot <axel@teri-chan.net> (http://www.meido-rando.net)",
@@ -209,20 +211,20 @@
     "x11": "^2.3.0"
   },
   "build": {
-    "appId": "KaraokeMugen",
+    "appId": "OpenKTV",
     "afterSign": "build/notarize.cjs",
     "npmRebuild": "false",
     "fileAssociations": [
       {
         "ext": "kmplaylist",
-        "name": "Karaoke Mugen Playlist",
-        "description": "Karaoke Mugen Playlist",
+        "name": "OpenKTV Playlist",
+        "description": "OpenKTV Playlist",
         "role": "Editor"
       },
       {
         "ext": "kmfavorites",
-        "name": "Karaoke Mugen Favorites",
-        "description": "Karaoke Mugen Favorites",
+        "name": "OpenKTV Favorites",
+        "description": "OpenKTV Favorites",
         "role": "Editor"
       }
     ],
@@ -247,7 +249,7 @@
         {
           "x": 800,
           "y": 208,
-          "name": "Karaoke Mugen.app"
+          "name": "OpenKTV.app"
         },
         {
           "x": 1000,
@@ -325,8 +327,8 @@
           ]
         }
       ],
-      "vendor": "Karaoke Mugen Team",
-      "executableName": "karaokemugen",
+      "vendor": "OpenKTV",
+      "executableName": "openktv",
       "category": "AudioVideo",
       "synopsis": "Karaoke manager and player",
       "publish": {
@@ -334,8 +336,8 @@
         "url": "https://mugen.karaokes.moe/downloads/"
       }
     },
-    "productName": "Karaoke Mugen",
-    "copyright": "© 2017-2025 Karaoke Mugen Team",
+    "productName": "OpenKTV",
+    "copyright": "© 2017-2025 Karaoke Mugen Team; OpenKTV appliance fork",
     "extraResources": [
       "migrations/**",
       "locales/*",

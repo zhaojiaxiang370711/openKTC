@@ -21,6 +21,27 @@ type ApplianceUpdateEntry = {
 
 const entries: ApplianceUpdateEntry[] = [
 	{
+		date: '2026-05-16T12:20:00+08:00',
+		version: 'appliance-0.5',
+		type: 'appliance',
+		title: {
+			'zh-Hans': 'OpenKTV 命名和 NAS 媒体目录',
+			en: 'OpenKTV naming and NAS media directory',
+		},
+		changes: {
+			improved: [
+				{
+					'zh-Hans': '本地项目命名改为 OpenKTV，保留 Karaoke Mugen 上游协议和客户端兼容性。',
+					en: 'Renamed the local project to OpenKTV while preserving Karaoke Mugen upstream protocol and client compatibility.',
+				},
+				{
+					'zh-Hans': '新增飞牛 NAS 媒体目录约定：将 smb://xfn.local/nas_hdd/ 挂载为本机目录后作为下载和播放媒体根。',
+					en: 'Added the Feiniu NAS media convention: mount smb://xfn.local/nas_hdd/ locally and use it as the download/playback media root.',
+				},
+			],
+		},
+	},
+	{
 		date: '2026-05-16T11:55:00+08:00',
 		version: 'appliance-0.4',
 		type: 'appliance',

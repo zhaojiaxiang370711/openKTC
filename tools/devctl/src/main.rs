@@ -65,6 +65,7 @@ fn main() -> ExitCode {
             };
             logs(&ctx, lines)
         }
+        "nas-media" | "nas" => nas_media(&ctx),
         "run" | "start-detached" => start_detached(&ctx),
         "stop" => stop_detached(&ctx),
         "restart" => restart_detached(&ctx),
@@ -108,7 +109,7 @@ impl Context {
 
 fn help() {
     println!(
-        "Karaoke Mugen development helper
+        "OpenKTV development helper
 
 Usage:
   yarn dev:doctor              Check local runtime, build artifacts, and system dependencies
@@ -118,6 +119,7 @@ Usage:
   yarn dev:health [url]        Fetch /health from a running instance
   yarn dev:snapshot [url]      Print a local appliance diagnostic snapshot
   yarn dev:logs [lines]        Print the tail of the latest app log
+  yarn dev:nas                 Check the Feiniu SMB media mount
   yarn dev:run                 Build and start the app detached in appliance dev mode
   yarn dev:stop                Stop the detached app and mpv runtime
   yarn dev:restart             Stop, build, and start detached again
@@ -299,7 +301,7 @@ fn health(url: &str) -> Result<()> {
 }
 
 fn snapshot(ctx: &Context, url: &str) -> Result<()> {
-    println!("Karaoke Mugen appliance snapshot");
+    println!("OpenKTV appliance snapshot");
     println!("root: {}", ctx.root.display());
     println!(
         "branch: {}",
@@ -326,7 +328,7 @@ fn snapshot(ctx: &Context, url: &str) -> Result<()> {
         "pgrep",
         &[
             "-af",
-            "(electron|mpv|node .*karaokemugen|node .*dist/index|km-devctl)",
+            "(electron|mpv|node .*karaokemugen|node .*openktv|node .*dist/index|km-devctl|openktv-devctl)",
         ],
         &ctx.root,
     );
@@ -368,7 +370,7 @@ fn logs(ctx: &Context, lines: usize) -> Result<()> {
 fn start_detached(ctx: &Context) -> Result<()> {
     if let Some(pid) = read_pid(ctx)? {
         if process_alive(pid) {
-            println!("Karaoke Mugen is already running with pid {pid}");
+            println!("OpenKTV is already running with pid {pid}");
             return status(ctx);
         }
     }
@@ -404,7 +406,7 @@ fn start_detached(ctx: &Context) -> Result<()> {
     let child = command.spawn()?;
     fs::write(pid_path(ctx), format!("{}\n", child.id()))?;
     println!(
-        "Started Karaoke Mugen detached with pid {}. Log: {}",
+        "Started OpenKTV detached with pid {}. Log: {}",
         child.id(),
         log_path.display()
     );
@@ -428,7 +430,7 @@ fn stop_detached(ctx: &Context) -> Result<()> {
     if pid_path.exists() {
         fs::remove_file(pid_path)?;
     }
-    println!("Stopped Karaoke Mugen detached runtime");
+    println!("Stopped OpenKTV detached runtime");
     Ok(())
 }
 
@@ -452,6 +454,57 @@ fn status(ctx: &Context) -> Result<()> {
         Err(err) => println!("health unavailable: {err}"),
     }
     Ok(())
+}
+
+fn nas_media(ctx: &Context) -> Result<()> {
+    let smb_url =
+        env::var("OPENKTV_NAS_SMB").unwrap_or_else(|_| "smb://xfn.local/nas_hdd/".to_string());
+    let mount_path = env::var("OPENKTV_NAS_MOUNT")
+        .map(PathBuf::from)
+        .unwrap_or_else(|_| ctx.root.join("app/media/nas_hdd"));
+
+    fs::create_dir_all(mount_path.join("kara.moe/medias"))?;
+    fs::create_dir_all(mount_path.join("My Custom Songs/medias"))?;
+
+    println!("OpenKTV NAS media");
+    println!("smb: {}", smb_url);
+    println!("mount: {}", mount_path.display());
+    println!("exists: {}", mount_path.exists());
+    println!("mounted: {}", path_is_mount_target(ctx, &mount_path));
+    println!("writable: {}", path_is_writable(&mount_path));
+    println!("\nExpected repository media paths:");
+    println!("{}", mount_path.join("kara.moe/medias").display());
+    println!("{}", mount_path.join("My Custom Songs/medias").display());
+    Ok(())
+}
+
+fn path_is_mount_target(ctx: &Context, path: &Path) -> bool {
+    let target = capture_optional(
+        "findmnt",
+        &["-T", &path.display().to_string(), "-n", "-o", "TARGET"],
+        &ctx.root,
+    );
+    target
+        .lines()
+        .next()
+        .map(|line| Path::new(line.trim()) == path)
+        .unwrap_or(false)
+}
+
+fn path_is_writable(path: &Path) -> bool {
+    let test_file = path.join(".openktv-write-test");
+    match fs::OpenOptions::new()
+        .create(true)
+        .write(true)
+        .truncate(true)
+        .open(&test_file)
+    {
+        Ok(_) => {
+            let _ = fs::remove_file(test_file);
+            true
+        }
+        Err(_) => false,
+    }
 }
 
 struct HttpResponse {

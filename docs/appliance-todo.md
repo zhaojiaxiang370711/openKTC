@@ -1,6 +1,6 @@
-# Karaoke Mugen Appliance TODO
+# OpenKTV Appliance TODO
 
-本分支目标：把 Karaoke Mugen 增量重构成 Ubuntu 客厅机优先、低延迟、可诊断、可恢复的 KTV appliance。第一阶段保留现有 Electron/Node/React/Socket.IO 功能和外部 WebSocket 命令兼容，新增稳定边界后再逐步替换内部实现。
+本分支目标：把本地 OpenKTV fork 增量重构成 Ubuntu 客厅机优先、低延迟、可诊断、可恢复的 KTV appliance。第一阶段保留现有 Karaoke Mugen Electron/Node/React/Socket.IO 功能和外部 WebSocket 命令兼容，新增稳定边界后再逐步替换内部实现。
 
 ## 已完成
 
@@ -32,11 +32,14 @@
   - `dev:health`
   - `dev:snapshot`
   - `dev:logs`
+  - `dev:nas`
   - `dev:run`
   - `dev:stop`
   - `dev:restart`
   - `dev:status`
 - 新增 `LegacyPlaybackRuntimeAdapter`，把旧播放器服务调用和 command bus 包装从 WebSocket controller 中抽出，为 Phase 3 的真实 `PlaybackRuntime` 替换预留边界。
+- 本地项目名改为 `openktv`，保留上游兼容行为。
+- 建立 NAS 媒体目录约定：`smb://xfn.local/nas_hdd/` 需要挂载到本机路径后再作为下载和播放媒体根使用。
 - 本地 appliance 默认语言改为简体中文：
   - `App.Language` 默认 `zh-Hans`
   - 前端注册 `zh-Hans` locale
