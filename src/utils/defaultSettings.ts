@@ -68,7 +68,7 @@ export const defaults: Config = {
 		AllowUserCreation: true,
 		RequireSecurityCodeForNewAccounts: false,
 		Mode: 2,
-		PublicPlayerControls: false,
+		PublicPlayerControls: true,
 		ShowAvatarsOnPlaylist: true,
 		WelcomeMessage: '',
 		Library: {

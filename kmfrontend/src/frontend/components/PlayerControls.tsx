@@ -6,7 +6,7 @@ import { PublicPlayerState } from '../../../../src/types/state';
 import { showModal } from '../../store/actions/modal';
 import GlobalContext from '../../store/context';
 import { commandBackend, getSocket } from '../../utils/socket';
-import { is_touch_device, isNonStandardPlaylist } from '../../utils/tools';
+import { displayMessage, is_touch_device, isNonStandardPlaylist } from '../../utils/tools';
 import PlayCurrentModal from './modals/PlayCurrentModal';
 import { WS_CMD } from '../../utils/ws';
 
@@ -14,18 +14,49 @@ interface IProps {
 	currentPlaylist: PlaylistElem;
 	statusPlayer: PublicPlayerState;
 	scope: 'admin' | 'public' | 'chibi';
-	putPlayerCommando: (event: any) => void;
+	putPlayerCommando: (event: any) => Promise<unknown> | unknown;
 }
 
 function PlayerControls(props: IProps) {
 	const context = useContext(GlobalContext);
 	const [gameContinue, setGameContinue] = useState(false);
+	const [pendingCommand, setPendingCommand] = useState<string>();
+
+	const currentSong = props.statusPlayer?.currentSong as CurrentSong;
+	const playlistCount = props.currentPlaylist?.karacount;
+	const hasPlaylistCount = typeof playlistCount === 'number';
+	const hasPlayableQueue = (playlistCount ?? 0) > 0 || !!currentSong;
+	const isStopped = !props.statusPlayer || props.statusPlayer.playerStatus === 'stop';
+	const canStop = !!props.statusPlayer && !isStopped;
+	const canPlay = !props.statusPlayer || !props.currentPlaylist || hasPlayableQueue || props.statusPlayer?.playerStatus === 'pause';
+	const canPrevious = !!currentSong && currentSong.pos > 1;
+	const canNext = !!currentSong && (!hasPlaylistCount || currentSong.pos < playlistCount);
+
+	const commandClass = (base: string, disabled: boolean, command: string) =>
+		`${base}${disabled ? ' disabled' : ''}${pendingCommand === command ? ' pending' : ''}`;
+
+	const runCommand = async (event: any, disabled = false) => {
+		const command = event.currentTarget.getAttribute('data-namecommand');
+		if (disabled || pendingCommand) return;
+		setPendingCommand(command);
+		try {
+			await props.putPlayerCommando(event);
+		} catch (err) {
+			const code = err instanceof Error ? err.message : undefined;
+			displayMessage('warning', i18next.t(code ? `ERROR_CODES.${code}` : 'ERROR_CODES.COMMAND_SEND_ERROR'));
+		} finally {
+			setPendingCommand(undefined);
+		}
+	};
 
 	const play = (event: any) => {
+		const namecommand = event.currentTarget.getAttribute('data-namecommand');
+		if ((namecommand === 'play' && !canPlay) || pendingCommand) return;
 		if (
+			namecommand === 'play' &&
 			props.scope === 'admin' &&
 			props.currentPlaylist &&
-			(!props.statusPlayer || props.statusPlayer?.playerStatus === 'stop') &&
+			isStopped &&
 			context.globalState.frontendContext.playlistInfoLeft.plaid !== props.currentPlaylist?.plaid &&
 			context.globalState.frontendContext.playlistInfoRight.plaid !== props.currentPlaylist?.plaid &&
 			(!isNonStandardPlaylist(context.globalState.frontendContext.playlistInfoLeft.plaid) ||
@@ -43,7 +74,7 @@ function PlayerControls(props: IProps) {
 				/>
 			);
 		} else {
-			props.putPlayerCommando(event);
+			runCommand(event);
 		}
 	};
 
@@ -69,35 +100,60 @@ function PlayerControls(props: IProps) {
 			{props.statusPlayer?.stopping ||
 			props.statusPlayer?.mediaType !== 'song' ||
 			context?.globalState.settings.data.config?.Karaoke.ClassicMode ? (
-				<div className="red" data-namecommand="stopNow" onClick={props.putPlayerCommando}>
+				<div
+					className={commandClass('red', !canStop, 'stopNow')}
+					data-namecommand="stopNow"
+					aria-disabled={!canStop}
+					onClick={event => runCommand(event, !canStop)}
+				>
 					<i className="fas fa-stop fa-2x" />
 					{is_touch_device() ? '' : i18next.t('PLAYERS_CONTROLS.STOP_NOW_SHORT')}
 				</div>
 			) : (
-				<div className="red" data-namecommand="stopAfter" onClick={props.putPlayerCommando}>
+				<div
+					className={commandClass('red', !canStop, 'stopAfter')}
+					data-namecommand="stopAfter"
+					aria-disabled={!canStop}
+					onClick={event => runCommand(event, !canStop)}
+				>
 					<i className="fas fa-stop fa-2x" />
 					{is_touch_device() ? '' : i18next.t('PLAYERS_CONTROLS.STOP_AFTER_SHORT')}
 				</div>
 			)}
-			{(props.statusPlayer?.currentSong as CurrentSong)?.pos !== 1 ? (
-				<div className="white" data-namecommand="prev" onClick={props.putPlayerCommando}>
+			{canPrevious ? (
+				<div
+					className={commandClass('white', !canPrevious, 'prev')}
+					data-namecommand="prev"
+					aria-disabled={!canPrevious}
+					onClick={event => runCommand(event, !canPrevious)}
+				>
 					<i className="fas fa-fast-backward fa-2x" />
 					{is_touch_device() ? '' : i18next.t('PLAYERS_CONTROLS.PREVIOUS_SONG_SHORT')}
 				</div>
 			) : null}
 			{props.statusPlayer?.playerStatus === 'play' ? (
-				<div className="blue" data-namecommand="pause" onClick={play}>
+				<div className={commandClass('blue', false, 'pause')} data-namecommand="pause" onClick={play}>
 					<i className="fas fa-pause fa-2x" />
 					{is_touch_device() ? '' : i18next.t('PLAYERS_CONTROLS.PAUSE')}
 				</div>
 			) : (
-				<div className="blue" data-namecommand="play" onClick={play}>
+				<div
+					className={commandClass('blue', !canPlay, 'play')}
+					data-namecommand="play"
+					aria-disabled={!canPlay}
+					onClick={play}
+				>
 					<i className="fas fa-play fa-2x" />
 					{is_touch_device() ? '' : i18next.t('PLAYERS_CONTROLS.PLAY')}
 				</div>
 			)}
-			{(props.statusPlayer?.currentSong as CurrentSong)?.pos !== props.currentPlaylist?.karacount ? (
-				<div data-namecommand="skip" className="white" onClick={props.putPlayerCommando}>
+			{canNext ? (
+				<div
+					data-namecommand="skip"
+					className={commandClass('white', !canNext, 'skip')}
+					aria-disabled={!canNext}
+					onClick={event => runCommand(event, !canNext)}
+				>
 					<i className="fas fa-fast-forward fa-2x" />
 					{is_touch_device() ? '' : i18next.t('PLAYERS_CONTROLS.NEXT_SONG_SHORT')}
 				</div>
@@ -112,7 +168,8 @@ function PlayerControls(props: IProps) {
 					title={i18next.t('PLAYERS_CONTROLS.STOP_NOW')}
 					data-namecommand="stopNow"
 					className="btn btn-danger stopButton"
-					onClick={props.putPlayerCommando}
+					onClick={event => runCommand(event, !canStop)}
+					disabled={!canStop || !!pendingCommand}
 				>
 					<i className="fas fa-stop" />
 				</button>
@@ -121,7 +178,8 @@ function PlayerControls(props: IProps) {
 					title={i18next.t('PLAYERS_CONTROLS.STOP_AFTER')}
 					data-namecommand="stopAfter"
 					className="btn stopButton"
-					onClick={props.putPlayerCommando}
+					onClick={event => runCommand(event, !canStop)}
+					disabled={!canStop || !!pendingCommand}
 				>
 					<i className="fas fa-stop" />
 				</button>
@@ -130,8 +188,8 @@ function PlayerControls(props: IProps) {
 				title={i18next.t('PLAYERS_CONTROLS.PREVIOUS_SONG')}
 				data-namecommand="prev"
 				className="btn btn-default"
-				onClick={props.putPlayerCommando}
-				disabled={(props.statusPlayer?.currentSong as CurrentSong)?.pos === 1}
+				onClick={event => runCommand(event, !canPrevious)}
+				disabled={!canPrevious || !!pendingCommand}
 			>
 				<i className="fas fa-fast-backward" />
 			</button>
@@ -141,6 +199,7 @@ function PlayerControls(props: IProps) {
 					data-namecommand="pause"
 					className="btn btn-primary"
 					onClick={play}
+					disabled={!!pendingCommand}
 				>
 					<i className="fas fa-pause" />
 				</button>
@@ -150,6 +209,7 @@ function PlayerControls(props: IProps) {
 					data-namecommand="play"
 					className="btn btn-primary"
 					onClick={play}
+					disabled={!canPlay || !!pendingCommand}
 				>
 					<i className="fas fa-play" />
 				</button>
@@ -158,8 +218,8 @@ function PlayerControls(props: IProps) {
 				title={i18next.t('PLAYERS_CONTROLS.NEXT_SONG')}
 				data-namecommand="skip"
 				className="btn btn-default"
-				onClick={props.putPlayerCommando}
-				disabled={(props.statusPlayer?.currentSong as CurrentSong)?.pos === props.currentPlaylist?.karacount}
+				onClick={event => runCommand(event, !canNext)}
+				disabled={!canNext || !!pendingCommand}
 			>
 				<i className="fas fa-fast-forward" />
 			</button>

@@ -38,7 +38,8 @@ export class lavfiGenerator {
 				qrCode = this.genLavfiQRCode(needThirdSplit);
 			}
 
-			const parts = [audio];
+			const parts: string[] = [];
+			if (audio) parts.push(audio);
 			if (shouldDisplayAvatar) parts.push(avatar + (shouldDisplayQRcode ? '[avatar_out]' : '[vo]'));
 			if (shouldDisplayQRcode) parts.push(qrCode + '[vo]');
 			if (!shouldDisplayQRcode && !shouldDisplayAvatar) parts.push('[vid1]null[vo]');

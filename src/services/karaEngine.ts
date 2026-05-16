@@ -264,7 +264,8 @@ export async function playCurrentSong(now: boolean) {
 				}
 			} else {
 				logger.warn('Stopping karaoke due to error', { service });
-				stopPlayer();
+				await stopPlayer();
+				throw err;
 			}
 		} finally {
 			profile('playCurrentSong');

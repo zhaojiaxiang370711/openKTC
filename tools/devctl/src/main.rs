@@ -658,6 +658,11 @@ fn start_detached(ctx: &Context) -> Result<()> {
             return status(ctx);
         }
     }
+    if let Some(pid) = find_running_app_pid()? {
+        write_pid(ctx, pid)?;
+        println!("OpenKTV is already running with pid {pid}");
+        return status(ctx);
+    }
 
     doctor(ctx)?;
     build(ctx)?;
@@ -671,6 +676,7 @@ fn start_detached(ctx: &Context) -> Result<()> {
     let stderr = stdout.try_clone()?;
     let electron = electron_binary(ctx);
     let fallback_display = fallback_display();
+    let fallback_xauthority = fallback_xauthority();
 
     let mut command = if command_available("setsid") {
         let mut command = Command::new("setsid");
@@ -690,12 +696,20 @@ fn start_detached(ctx: &Context) -> Result<()> {
     if let Some(display) = fallback_display.as_deref() {
         command.env("DISPLAY", display);
     }
+    if let Some(xauthority) = fallback_xauthority.as_deref() {
+        command.env("XAUTHORITY", xauthority);
+    }
 
     let child = command.spawn()?;
-    fs::write(pid_path(ctx), format!("{}\n", child.id()))?;
+    let pid = wait_for_pid_matching(
+        "node_modules/electron/dist/electron . --cli",
+        Duration::from_secs(5),
+    )
+    .unwrap_or_else(|_| child.id());
+    write_pid(ctx, pid)?;
     println!(
         "Started OpenKTV detached with pid {}. Log: {}",
-        child.id(),
+        pid,
         log_path.display()
     );
     Ok(())
@@ -730,8 +744,22 @@ fn restart_detached(ctx: &Context) -> Result<()> {
 fn status(ctx: &Context) -> Result<()> {
     match read_pid(ctx)? {
         Some(pid) if process_alive(pid) => println!("detached pid: {pid} (running)"),
-        Some(pid) => println!("detached pid: {pid} (not running)"),
-        None => println!("detached pid: none"),
+        Some(pid) => {
+            if let Some(actual_pid) = find_running_app_pid()? {
+                write_pid(ctx, actual_pid)?;
+                println!("detached pid: {actual_pid} (running; refreshed stale pid {pid})");
+            } else {
+                println!("detached pid: {pid} (not running)");
+            }
+        }
+        None => {
+            if let Some(actual_pid) = find_running_app_pid()? {
+                write_pid(ctx, actual_pid)?;
+                println!("detached pid: {actual_pid} (running; refreshed missing pid file)");
+            } else {
+                println!("detached pid: none");
+            }
+        }
     }
 
     match fetch_http("http://localhost:1337/health") {
@@ -834,6 +862,10 @@ fn start_headless(ctx: &Context) -> Result<()> {
         envs.retain(|(key, _)| key != "DISPLAY");
         envs.push(("DISPLAY".to_string(), display));
     }
+    if let Some(xauthority) = fallback_xauthority() {
+        envs.retain(|(key, _)| key != "XAUTHORITY");
+        envs.push(("XAUTHORITY".to_string(), xauthority.display().to_string()));
+    }
     run_path(&electron, &[".", "--cli"], &ctx.root, Some(&envs))?;
     Ok(())
 }
@@ -872,6 +904,27 @@ fn fallback_display() -> Option<String> {
     })
 }
 
+fn fallback_xauthority() -> Option<PathBuf> {
+    if env::var_os("XAUTHORITY").is_some() {
+        return None;
+    }
+    let entries = fs::read_dir("/run/user").ok()?;
+    for entry in entries.flatten() {
+        let user_dir = entry.path();
+        let auth_entries = fs::read_dir(user_dir).ok()?;
+        for auth_entry in auth_entries.flatten() {
+            let path = auth_entry.path();
+            let Some(name) = path.file_name().and_then(|value| value.to_str()) else {
+                continue;
+            };
+            if name.starts_with(".mutter-Xwaylandauth.") {
+                return Some(path);
+            }
+        }
+    }
+    None
+}
+
 fn read_pid(ctx: &Context) -> Result<Option<u32>> {
     let path = pid_path(ctx);
     if !path.exists() {
@@ -881,9 +934,24 @@ fn read_pid(ctx: &Context) -> Result<Option<u32>> {
     Ok(content.trim().parse::<u32>().ok())
 }
 
+fn write_pid(ctx: &Context, pid: u32) -> Result<()> {
+    fs::write(pid_path(ctx), format!("{pid}\n"))?;
+    Ok(())
+}
+
+fn find_running_app_pid() -> Result<Option<u32>> {
+    Ok(
+        pids_matching("node_modules/electron/dist/electron . --cli")?
+            .into_iter()
+            .find(|pid| process_alive(*pid)),
+    )
+}
+
 fn process_alive(pid: u32) -> bool {
     Command::new("kill")
         .args(["-0", &pid.to_string()])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .status()
         .map(|status| status.success())
         .unwrap_or(false)
@@ -1011,6 +1079,8 @@ fn pids_matching(pattern: &str) -> Result<Vec<u32>> {
 fn command_available(command: &str) -> bool {
     Command::new("sh")
         .args(["-lc", &format!("command -v {command} >/dev/null 2>&1")])
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .status()
         .map(|status| status.success())
         .unwrap_or(false)

@@ -1787,6 +1787,7 @@ export async function getCurrentSong(): Promise<CurrentSong> {
 		};
 	} catch (err) {
 		logger.error('Error selecting current song to play', { service, obj: err });
+		throw err;
 	} finally {
 		profile('getCurrentSong');
 	}

@@ -799,7 +799,6 @@ export class Players {
 			options['sub-file'] = subFile;
 			options.sid = '1';
 		} else {
-			options['sub-file'] = '';
 			options.sid = 'no';
 		}
 		let id3tags: Tags;
