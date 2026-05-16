@@ -21,6 +21,8 @@
     "dev:setup-db": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- setup-db",
     "dev:build": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- build",
     "dev:test": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- test",
+    "dev:runtime": "cargo run --quiet --manifest-path tools/runtime/Cargo.toml",
+    "dev:runtime-check": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- runtime-check",
     "dev:health": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- health",
     "dev:snapshot": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- snapshot",
     "dev:logs": "cargo run --quiet --manifest-path tools/devctl/Cargo.toml -- logs",

@@ -39,6 +39,7 @@ fn main() -> ExitCode {
         "setup-db" => setup_db(&ctx),
         "build" => build(&ctx),
         "test" => test(&ctx),
+        "runtime-check" => runtime_check(&ctx),
         "health" => health(
             args.next()
                 .as_deref()
@@ -116,6 +117,7 @@ Usage:
   yarn dev:setup-db            Create local PostgreSQL user/db and app/config.yml
   yarn dev:build               Build backend and frontend
   yarn dev:test                Run typecheck and unit tests
+  yarn dev:runtime-check       Build and smoke-test the Rust playback runtime
   yarn dev:health [url]        Fetch /health from a running instance
   yarn dev:snapshot [url]      Print a local appliance diagnostic snapshot
   yarn dev:logs [lines]        Print the tail of the latest app log
@@ -275,14 +277,74 @@ System:
 }
 
 fn build(ctx: &Context) -> Result<()> {
+    run(
+        "cargo",
+        &["build", "--manifest-path", "tools/runtime/Cargo.toml"],
+        &ctx.root,
+        None,
+    )?;
     run_yarn(&["build"], &ctx.root)?;
     run_yarn(&["buildkmfrontend"], &ctx.root)?;
     Ok(())
 }
 
 fn test(ctx: &Context) -> Result<()> {
+    run(
+        "cargo",
+        &["check", "--manifest-path", "tools/runtime/Cargo.toml"],
+        &ctx.root,
+        None,
+    )?;
     run_yarn(&["typecheck"], &ctx.root)?;
     run_yarn(&["test:unit"], &ctx.root)?;
+    Ok(())
+}
+
+fn runtime_check(ctx: &Context) -> Result<()> {
+    run(
+        "cargo",
+        &["check", "--manifest-path", "tools/runtime/Cargo.toml"],
+        &ctx.root,
+        None,
+    )?;
+
+    let mut child = Command::new("cargo")
+        .args([
+            "run",
+            "--quiet",
+            "--manifest-path",
+            "tools/runtime/Cargo.toml",
+        ])
+        .current_dir(&ctx.root)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::inherit())
+        .spawn()?;
+
+    {
+        let stdin = child.stdin.as_mut().ok_or("runtime stdin unavailable")?;
+        stdin.write_all(br#"{"requestId":"devctl-ping","kind":"ping"}"#)?;
+        stdin.write_all(b"\n")?;
+    }
+    drop(child.stdin.take());
+
+    let mut output = String::new();
+    child
+        .stdout
+        .as_mut()
+        .ok_or("runtime stdout unavailable")?
+        .read_to_string(&mut output)?;
+    let status = child.wait()?;
+    print_block(output.clone());
+
+    if !status.success() {
+        return Err(format!("runtime smoke test failed with status {status}").into());
+    }
+    if !output.contains(r#""type":"runtimeReady""#)
+        || !output.contains(r#""requestId":"devctl-ping""#)
+    {
+        return Err("runtime smoke test did not produce ready and ping ack events".into());
+    }
     Ok(())
 }
 
@@ -457,8 +519,8 @@ fn status(ctx: &Context) -> Result<()> {
 }
 
 fn nas_media(ctx: &Context) -> Result<()> {
-    let smb_url = env::var("OPENKTV_NAS_SMB")
-        .unwrap_or_else(|_| "smb://192.168.0.109/nas_hdd/".to_string());
+    let smb_url =
+        env::var("OPENKTV_NAS_SMB").unwrap_or_else(|_| "smb://192.168.0.109/nas_hdd/".to_string());
     let mount_path = env::var("OPENKTV_NAS_MOUNT")
         .map(PathBuf::from)
         .unwrap_or_else(|_| ctx.root.join("app/media/nas_hdd"));

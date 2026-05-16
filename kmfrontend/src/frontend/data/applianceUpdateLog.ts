@@ -21,6 +21,27 @@ type ApplianceUpdateEntry = {
 
 const entries: ApplianceUpdateEntry[] = [
 	{
+		date: '2026-05-16T13:40:00+08:00',
+		version: 'appliance-0.7',
+		type: 'appliance',
+		title: {
+			'zh-Hans': 'Rust 播放 runtime 骨架',
+			en: 'Rust playback runtime skeleton',
+		},
+		changes: {
+			improved: [
+				{
+					'zh-Hans': '新增 openktv-runtime Rust 进程骨架，先提供 JSONL 命令确认、状态事件和播放器 snapshot 雏形。',
+					en: 'Added the openktv-runtime Rust process skeleton with JSONL command acknowledgements, state events, and a first player snapshot shape.',
+				},
+				{
+					'zh-Hans': '新增 TypeScript IPC client 和单元测试，为后续把 mpv 生命周期迁移到 Rust 进程做准备。',
+					en: 'Added a TypeScript IPC client and unit tests to prepare for moving mpv lifecycle ownership into the Rust process.',
+				},
+			],
+		},
+	},
+	{
 		date: '2026-05-16T13:05:00+08:00',
 		version: 'appliance-0.6',
 		type: 'appliance',

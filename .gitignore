@@ -50,6 +50,7 @@ postgrator.json
 .env
 .eslintcache
 tools/devctl/target/
+tools/runtime/target/
 
 # Flatpak
 .flatpak-builder
