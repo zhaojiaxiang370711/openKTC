@@ -37,7 +37,11 @@ function WelcomePageArticle(props: IProps) {
 		>
 			<div className="article-header">
 				<b>{props.article.title}</b>
-				<a href={props.article.link}>{props.article.dateStr}</a>
+				{props.article.link ? (
+					<a href={props.article.link}>{props.article.dateStr}</a>
+				) : (
+					<span>{props.article.dateStr}</span>
+				)}
 			</div>
 			<div className="article-body" ref={containerRef}>
 				<div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(props.article.html) }} ref={bodyRef} />

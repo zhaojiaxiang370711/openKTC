@@ -337,7 +337,8 @@
 		"ACTIVE_SESSION": "Active Session: ",
 		"EDIT_SESSION": "Edit session",
 		"COLLECTIONS": "COLLECTIONS",
-		"NEWS": "News"
+		"NEWS": "Update log",
+		"UPDATE_LOG_SUBTITLE": "Local builds, bug fixes, and refactor progress."
 	},
 	"CHECKED": "Selected:",
 	"LOGOUT": "Log out",

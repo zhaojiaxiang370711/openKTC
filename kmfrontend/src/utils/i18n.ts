@@ -1,17 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import de from '../locales/de.json';
 import en from '../locales/en.json';
-import es from '../locales/es.json';
-import fr from '../locales/fr.json';
-import id from '../locales/id.json';
-import it from '../locales/it.json';
-import pt from '../locales/pt.json';
-import pl from '../locales/pl.json';
-import ta from '../locales/ta.json';
-import br from '../locales/br.json';
-import ru from '../locales/ru.json';
 import zhHans from '../locales/zh-Hans.json';
 
 i18n
@@ -23,46 +13,14 @@ i18n
 	.init({
 		load: 'languageOnly',
 		lng: 'zh-Hans',
-		fallbackLng: {
-			br: ['fr'],
-			default: ['en'],
-		},
+		fallbackLng: ['en'],
+		supportedLngs: ['zh', 'zh-Hans', 'en'],
 		interpolation: {
 			escapeValue: false, // not needed for react as it escapes by default
 		},
 		resources: {
 			en: {
 				translation: en,
-			},
-			fr: {
-				translation: fr,
-			},
-			es: {
-				translation: es,
-			},
-			id: {
-				translation: id,
-			},
-			pt: {
-				translation: pt,
-			},
-			de: {
-				translation: de,
-			},
-			it: {
-				translation: it,
-			},
-			pl: {
-				translation: pl,
-			},
-			ta: {
-				translation: ta,
-			},
-			br: {
-				translation: br,
-			},
-			ru: {
-				translation: ru,
 			},
 			zh: {
 				translation: zhHans,

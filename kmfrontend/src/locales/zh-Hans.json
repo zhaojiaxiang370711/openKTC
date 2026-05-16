@@ -151,7 +151,8 @@
 		"ACTIVE_SESSION": "当前场次：",
 		"EDIT_SESSION": "编辑场次",
 		"COLLECTIONS": "收藏集",
-		"NEWS": "新闻"
+		"NEWS": "更新记录",
+		"UPDATE_LOG_SUBTITLE": "记录本地构建、Bug 修复和重构进度。"
 	},
 	"HOME_BUTTON": "主页",
 	"OPTIONS": "选项",

@@ -5,23 +5,22 @@ import i18next from 'i18next';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import dayjs from 'dayjs';
 import type { DBTag } from '../../../../src/lib/types/database/tag';
 import type { DBKaraTag } from '../../../../src/lib/types/database/kara';
 import type { DBStats } from '../../../../src/types/database/database';
 import type { DBDownload } from '../../../../src/types/database/download';
-import type { Feed } from '../../../../src/types/feeds';
 import type { Repository } from '../../../../src/lib/types/repo';
 import type { Session } from '../../../../src/types/session';
 import TasksEvent from '../../TasksEvent';
 import logo from '../../assets/Logo-final-fond-transparent.png';
+import { buildApplianceUpdateNews } from '../data/applianceUpdateLog';
 import { logout } from '../../store/actions/auth';
 import { showModal } from '../../store/actions/modal';
 import GlobalContext from '../../store/context';
 import { useLocalSearch } from '../../utils/hooks';
+import { normalizeSupportedLanguage } from '../../utils/isoLanguages';
 import { commandBackend, getSocket } from '../../utils/socket';
 import { displayMessage, secondsTimeSpanToHMS } from '../../utils/tools';
-import { News } from '../types/news';
 import { RemoteStatusData } from '../types/remote';
 import WelcomePageArticle from './WelcomePageArticle';
 import Autocomplete from './generic/Autocomplete';
@@ -35,10 +34,8 @@ function WelcomePage() {
 	const context = useContext(GlobalContext);
 	const navigate = useNavigate();
 
-	const [news, setNews] = useState<News[]>([]);
 	const [sessions, setSessions] = useState<Session[]>([]);
 	const [activeSession, setActiveSession] = useState<Session>();
-	const [catchphrase, setCatchphrase] = useState('');
 	const [repositories, setRepositories] = useState<Repository[]>([]);
 	const [collections, setCollections] = useState<DBTag[]>([]);
 	const [stats, setStats] = useState<DBStats>();
@@ -127,91 +124,6 @@ function WelcomePage() {
 		}
 	};
 
-	const getCatchphrase = async () => {
-		const res = await commandBackend(WS_CMD.GET_CATCHPHRASE);
-		setCatchphrase(res);
-	};
-
-	const getNewsFeed = async () => {
-		try {
-			const data: Feed[] = await commandBackend(WS_CMD.GET_NEWS_FEED, undefined, undefined, 300000);
-			const repos = data.filter(d => d.name.startsWith('repo'));
-			const appli = data.find(d => d.name === 'git_app');
-			const mast = data.find(d => d.name === 'mastodon');
-			const system = data.find(d => d.name === 'system');
-			const news: News[] = [];
-			for (const base of repos) {
-				if (base?.body) {
-					base.body = JSON.parse(base.body);
-					if (base.body.feed.entry[0].summary?._text) {
-						// Gitlab's feed doesn't report date anymore so we have to calculate it. We name base tags with the previous month as in 'the situation at the end of this month'. So when we have a tagname of 202410, the date it's created is actually 2024-11-01.
-						const date = base.body.feed.entry[0].title._text;
-						const year = date.substring(0, 4);
-						const month = date.substring(4);
-						const dateObj = new Date(`${year}-${month}-01`);
-						const realDate = new Date(dateObj.setMonth(dateObj.getMonth() + 1));
-						news.push({
-							html: base.body.feed.entry[0].summary._text,
-							date,
-							dateStr: dayjs(realDate).format('L LTS'),
-							title:
-								i18next.t('WELCOME_PAGE.BASE_UPDATE') +
-								' : ' +
-								base.body.feed.title._text +
-								(base.body.feed.entry[0].summary._text
-									? ' - ' + base.body.feed.entry[0].summary._text
-									: ''),
-							link: (base.body.feed.entry[0].link._attributes.href as string)
-								.replace('tags', 'raw')
-								.concat('/CHANGELOG.md'),
-							type: 'base',
-						});
-					}
-				}
-			}
-
-			if (appli?.body) {
-				appli.body = JSON.parse(appli.body);
-				news.push({
-					html: appli.body.feed.entry[0].content._text,
-					date: appli.body.feed.entry[0].updated._text,
-					dateStr: dayjs(appli.body.feed.entry[0].updated._text).format('L LTS'),
-					title: i18next.t('WELCOME_PAGE.APP_UPDATE') + ' : ' + appli.body.feed.entry[0].title._text,
-					link: appli.body.feed.entry[0].link._attributes.href,
-					type: 'app',
-				});
-			}
-
-			if (mast?.body) {
-				mast.body = JSON.parse(mast.body);
-				const max = mast.body.rss.channel.item.length > 3 ? 3 : mast.body.rss.channel.item.length;
-				for (let i = 0; i < max; i++) {
-					news.push({
-						html: mast.body.rss.channel.item[i].description._text,
-						date: mast.body.rss.channel.item[i].pubDate._text,
-						dateStr: dayjs(mast.body.rss.channel.item[i].pubDate._text).format('L LTS'),
-						title: i18next.t('WELCOME_PAGE.MASTODON_UPDATE'),
-						link: mast.body.rss.channel.item[i].link._text,
-						type: 'mast',
-					});
-				}
-			}
-			if (system?.body) {
-				for (const message of JSON.parse(system.body)) {
-					news.push(message);
-				}
-			}
-			news.sort((a, b) => {
-				const dateA = new Date(a.date);
-				const dateB = new Date(b.date);
-				return dateA < dateB ? 1 : dateA > dateB ? -1 : 0;
-			});
-			setNews(news);
-		} catch (_) {
-			// error already display
-		}
-	};
-
 	const toggleProfileModal = () => {
 		showModal(context.globalDispatch, <ProfilModal scope="admin" />);
 	};
@@ -268,8 +180,6 @@ function WelcomePage() {
 
 	useEffect(() => {
 		displayModal();
-		getCatchphrase();
-		getNewsFeed();
 		getSessions();
 		getRepositories();
 		getCollections();
@@ -290,6 +200,12 @@ function WelcomePage() {
 			}),
 		[sessions]
 	);
+	const language = normalizeSupportedLanguage(
+		context.globalState.settings.data.user?.language ||
+			context.globalState.settings.data.config.App?.Language ||
+			i18next.language
+	);
+	const news = useMemo(() => buildApplianceUpdateNews(language), [language]);
 	const [sessionQuery, setSessionQuery] = useState('');
 	const queriedList = useLocalSearch(sessionsList, sessionQuery);
 	return (
@@ -531,7 +447,7 @@ function WelcomePage() {
 					<section className="feed-panel">
 						<header>
 							<div className="feed-panel-title">{i18next.t('WELCOME_PAGE.NEWS')}</div>
-							<p>{catchphrase}</p>
+							<p>{i18next.t('WELCOME_PAGE.UPDATE_LOG_SUBTITLE')}</p>
 						</header>
 						<div>
 							{news.map((article, index) => {

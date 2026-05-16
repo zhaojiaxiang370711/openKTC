@@ -43,7 +43,8 @@
 	}
 
 	.article-header {
-		a {
+		a,
+		span {
 			float: right;
 		}
 	}
@@ -59,6 +60,9 @@
 		border-color: variables.$mugen-article-mastodon-border;
 	}
 	&[data-type='app'] {
+		border-color: variables.$mugen-article-application-border;
+	}
+	&[data-type='appliance'] {
 		border-color: variables.$mugen-article-application-border;
 	}
 	&[data-type='base'] {

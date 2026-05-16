@@ -5,20 +5,12 @@ import { Dispatch } from 'react';
 import { User } from '../../../../src/lib/types/user';
 import { Config } from '../../../../src/types/config';
 import { PublicState, Version } from '../../../../src/types/state';
-import { getDayjsLocaleFromCode, langSupport } from '../../utils/isoLanguages';
+import { getDayjsLocaleFromCode, langSupport, normalizeSupportedLanguage } from '../../utils/isoLanguages';
 import { commandBackend } from '../../utils/socket';
 import { LogoutUser } from '../types/auth';
 import { Settings, SettingsFailure, SettingsSuccess } from '../types/settings';
 import { logout } from './auth';
-import 'dayjs/locale/de';
 import 'dayjs/locale/en';
-import 'dayjs/locale/es';
-import 'dayjs/locale/fr';
-import 'dayjs/locale/id';
-import 'dayjs/locale/it';
-import 'dayjs/locale/pl';
-import 'dayjs/locale/pt';
-import 'dayjs/locale/ta';
 import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
@@ -49,8 +41,10 @@ export async function setSettings(
 				for (const kara of favorites) {
 					favoritesSet.add(kara.kid);
 				}
-				const defaultLanguage = res.config.App?.Language || langSupport;
-				const newLanguage = user.language && user.type < 2 ? user.language : defaultLanguage;
+				const defaultLanguage = normalizeSupportedLanguage(res.config.App?.Language || langSupport);
+				const newLanguage = normalizeSupportedLanguage(
+					user.language && user.type < 2 ? user.language : defaultLanguage
+				);
 				i18next.changeLanguage(newLanguage);
 				dayjs.locale(getDayjsLocaleFromCode(newLanguage));
 				if (!user.language && user.type < 2) {
@@ -76,7 +70,7 @@ export async function setSettings(
 				logout(dispatch as unknown as Dispatch<SettingsSuccess | SettingsFailure | LogoutUser>);
 			}
 		} else {
-			const defaultLanguage = res.config.App?.Language || langSupport;
+			const defaultLanguage = normalizeSupportedLanguage(res.config.App?.Language || langSupport);
 			i18next.changeLanguage(defaultLanguage);
 			dayjs.locale(getDayjsLocaleFromCode(defaultLanguage));
 			dispatch({
