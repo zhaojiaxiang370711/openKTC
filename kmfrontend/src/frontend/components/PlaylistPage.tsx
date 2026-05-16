@@ -47,79 +47,86 @@ export default function PlaylistPage() {
 
 	return (
 		<div className="chibi-playlist" onClick={m => requestFullScreen(m.currentTarget)}>
-			<PlayerBox
-				mode="playlist"
-				currentVisible={false}
-				onKaraChange={kid => {
-					if (kid) {
-						updatePlaylist();
-					}
-				}}
-			/>
-			<h3 className="following">
-				{i18next.t('PUBLIC_HOMEPAGE.NEXT')} <i className="fas fa-chevron-right" />
-			</h3>
-			<ul>
-				{playlist.map(kara => {
-					let serieText = '';
-					if (kara.series?.length > 0) {
-						serieText =
-							kara.series
-								.map(e => getTagInLocale(context?.globalState.settings.data, e).i18n)
-								.join(', ') + (kara.series.length > 3 ? '...' : '');
-					} else if (kara.singergroups?.length > 0) {
-						serieText =
-							kara.singergroups
-								.slice(0, 3)
-								.map(e => e.name)
-								.join(', ') + (kara.singers.length > 3 ? '...' : '');
-					} else if (kara.singers) {
-						serieText =
-							kara.singers
-								.slice(0, 3)
-								.map(e => e.name)
-								.join(', ') + (kara.singers.length > 3 ? '...' : '');
-					}
-					const songtypeText = sortAndHideTags(kara.songtypes, 'public')
-						.map(e => (e.short ? +e.short : e.name))
-						.join(' ');
-					const songorderText = kara.songorder > 0 ? ' ' + kara.songorder : '';
-					const karaVersions = (() => {
-						// Tags in the header
-						const typeData = tagTypes['VERSIONS'];
-						if (kara.versions) {
-							return sortAndHideTags(kara[typeData.karajson], 'public').map(tag => {
-								return (
-									<div
-										key={tag.tid}
-										className={`tag inline ${typeData.color}`}
-										title={getTagInLocale(context.globalState.settings.data, tag).i18n}
-									>
-										{getTagInLocale(context.globalState.settings.data, tag).i18n}
-									</div>
-								);
-							});
-						} else {
-							return null;
+			<section className="now-panel">
+				<PlayerBox
+					mode="playlist"
+					currentVisible={false}
+					onKaraChange={kid => {
+						if (kid) {
+							updatePlaylist();
 						}
-					})();
-					return (
-						<li className="following-li" key={kara.kid}>
-							<div className="title">
-								<span className="title">
-									{getTitleInLocale(
-										context.globalState.settings.data,
-										kara.titles,
-										kara.titles_default_language
-									)}
-								</span>{' '}
-								{karaVersions}
-							</div>
-							<div className="series">{`${serieText}${serieText ? ' - ' : null}${songtypeText} ${songorderText}`}</div>
-						</li>
-					);
-				})}
-			</ul>
+					}}
+				/>
+			</section>
+			<section className="following-panel">
+				<h3 className="following">
+					{i18next.t('PUBLIC_HOMEPAGE.NEXT')} <i className="fas fa-chevron-right" />
+				</h3>
+				<ul>
+					{playlist.map((kara, index) => {
+						let serieText = '';
+						if (kara.series?.length > 0) {
+							serieText =
+								kara.series
+									.map(e => getTagInLocale(context?.globalState.settings.data, e).i18n)
+									.join(', ') + (kara.series.length > 3 ? '...' : '');
+						} else if (kara.singergroups?.length > 0) {
+							serieText =
+								kara.singergroups
+									.slice(0, 3)
+									.map(e => e.name)
+									.join(', ') + (kara.singers.length > 3 ? '...' : '');
+						} else if (kara.singers) {
+							serieText =
+								kara.singers
+									.slice(0, 3)
+									.map(e => e.name)
+									.join(', ') + (kara.singers.length > 3 ? '...' : '');
+						}
+						const songtypeText = sortAndHideTags(kara.songtypes, 'public')
+							.map(e => (e.short ? +e.short : e.name))
+							.join(' ');
+						const songorderText = kara.songorder > 0 ? ' ' + kara.songorder : '';
+						const karaVersions = (() => {
+							// Tags in the header
+							const typeData = tagTypes['VERSIONS'];
+							if (kara.versions) {
+								return sortAndHideTags(kara[typeData.karajson], 'public').map(tag => {
+									return (
+										<div
+											key={tag.tid}
+											className={`tag inline ${typeData.color}`}
+											title={getTagInLocale(context.globalState.settings.data, tag).i18n}
+										>
+											{getTagInLocale(context.globalState.settings.data, tag).i18n}
+										</div>
+									);
+								});
+							} else {
+								return null;
+							}
+						})();
+						return (
+							<li className="following-li" key={kara.kid}>
+								<div className="queue-position">{index + 1}</div>
+								<div className="queue-content">
+									<div className="title">
+										<span className="title">
+											{getTitleInLocale(
+												context.globalState.settings.data,
+												kara.titles,
+												kara.titles_default_language
+											)}
+										</span>{' '}
+										{karaVersions}
+									</div>
+									<div className="series">{`${serieText}${serieText ? ' - ' : null}${songtypeText} ${songorderText}`}</div>
+								</div>
+							</li>
+						);
+					})}
+				</ul>
+			</section>
 		</div>
 	);
 }

@@ -198,6 +198,11 @@
 		"EXPLORE": "Explore",
 		"OTHERS": "Others…",
 		"GET_LUCKY": "Get lucky",
+		"REQUEST_GUIDE": {
+			"SEARCH": "Find a song",
+			"ADD": "Add it",
+			"SING": "Sing when called"
+		},
 		"REQUESTED_KARAOKES": "Most requested songs",
 		"NEW_KARAOKES": "New songs",
 		"KARA_VERSIONS": "This song is available in {{length}} versions, choose the one you want to add.",
@@ -309,6 +314,21 @@
 		"SHOW_VIDEO": "Show video preview",
 		"HIDE_VIDEO": "Close video preview",
 		"TIME_BEFORE_PLAY": "Airing in {{time}} ({{date}})",
+		"REQUEST_STEP": {
+			"ADD_TITLE": "Next: add it to the queue",
+			"ADD_BODY": "Use the main button below to send this song to the waiting list. Playback follows the current queue.",
+			"ADD_BUTTON": "Add to queue",
+			"QUEUED_TITLE": "Queued for you",
+			"QUEUED_BODY": "No need to add it again. If it has reached playback, it appears as the current song instead of an incoming song.",
+			"WAITING_TITLE": "This song is already queued",
+			"WAITING_BODY": "It is waiting for playback or operator review. You can open the current queue to follow it.",
+			"VOTE_TITLE": "Next: vote for this song",
+			"VOTE_BODY": "Someone already requested it. Voting helps move the same song up without adding a duplicate.",
+			"BROWSE_ONLY_TITLE": "Browsing only right now",
+			"BROWSE_ONLY_BODY": "Public requests are not open. To play it immediately, add it from the operator screen.",
+			"MY_QUEUE_LINK": "My incoming songs",
+			"CURRENT_QUEUE_LINK": "Current queue"
+		},
 		"LYRICS": "Lyrics",
 		"UPVOTE_NUMBER": "Upvotes",
 		"SPONSOR": "Sponsors",
@@ -2343,6 +2363,9 @@
 		}
 	},
 	"PLAYLIST": {
-		"NO_SONG": "no song found"
+		"NO_SONG": "no song found",
+		"NO_INCOMING_TITLE": "No incoming songs",
+		"NO_INCOMING_BODY": "This view only shows your songs after the current playback position. If the song you requested is already playing or is the current song, it will not appear here.",
+		"CURRENT_QUEUE": "Open current queue"
 	}
 }

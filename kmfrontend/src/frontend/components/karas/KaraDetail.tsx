@@ -3,7 +3,7 @@ import './KaraDetail.scss';
 import i18next from 'i18next';
 import { Fragment, MouseEvent, ReactNode, useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { ASSLine } from '../../../../../src/lib/types/ass';
 import { DBKara, lastplayed_ago } from '../../../../../src/lib/types/database/kara';
@@ -47,6 +47,15 @@ interface IProps {
 		timeRemaining: number;
 	};
 }
+
+type PublicRequestStep = {
+	className: string;
+	icon: string;
+	title: string;
+	body: string;
+	link?: string;
+	linkLabel?: string;
+};
 
 export default function KaraDetail(props: IProps) {
 	const context = useContext(GlobalContext);
@@ -239,6 +248,94 @@ export default function KaraDetail(props: IProps) {
 
 	if (kara) {
 		const [karaTags, karaBlockTags] = computeTagsElements(kara, props.scope, context.globalState.settings.data);
+		const frontendMode = context.globalState.settings.data.config?.Frontend?.Mode;
+		const allowPublicDuplicates = context.globalState.settings.data.config.Playlist.AllowPublicDuplicates;
+		const inCurrentPlaylist = kara.plaid === context.globalState.settings.data.state.currentPlaid;
+		const inPublicPlaylist = kara.plaid === context.globalState.settings.data.state.publicPlaid;
+		const alreadyRequestedByUser = kara.my_public_plc_id?.length > 0;
+		const alreadyInPublicQueue = kara.public_plc_id?.length > 0;
+		const canAddKara =
+			!isAdmin &&
+			frontendMode === 2 &&
+			!inCurrentPlaylist &&
+			!inPublicPlaylist &&
+			(!alreadyInPublicQueue || allowPublicDuplicates === 'allowed');
+		const canUpvoteKara =
+			!isAdmin &&
+			frontendMode === 2 &&
+			!canAddKara &&
+			!alreadyRequestedByUser &&
+			allowPublicDuplicates === 'upvotes';
+		const requestStep: PublicRequestStep | null = (() => {
+			if (isAdmin) return null;
+			if (frontendMode !== 2) {
+				return {
+					className: 'browse-only',
+					icon: 'eye',
+					title: 'KARA_DETAIL.REQUEST_STEP.BROWSE_ONLY_TITLE',
+					body: 'KARA_DETAIL.REQUEST_STEP.BROWSE_ONLY_BODY',
+				};
+			}
+			if (inCurrentPlaylist || alreadyRequestedByUser) {
+				return {
+					className: 'queued',
+					icon: 'check',
+					title: 'KARA_DETAIL.REQUEST_STEP.QUEUED_TITLE',
+					body: 'KARA_DETAIL.REQUEST_STEP.QUEUED_BODY',
+					link: '/public/playlist/current/me',
+					linkLabel: 'KARA_DETAIL.REQUEST_STEP.MY_QUEUE_LINK',
+				};
+			}
+			if (canUpvoteKara) {
+				return {
+					className: 'vote',
+					icon: 'thumbs-up',
+					title: 'KARA_DETAIL.REQUEST_STEP.VOTE_TITLE',
+					body: 'KARA_DETAIL.REQUEST_STEP.VOTE_BODY',
+				};
+			}
+			if (canAddKara) {
+				return {
+					className: 'ready',
+					icon: 'plus',
+					title: 'KARA_DETAIL.REQUEST_STEP.ADD_TITLE',
+					body: 'KARA_DETAIL.REQUEST_STEP.ADD_BODY',
+				};
+			}
+			if (inPublicPlaylist || alreadyInPublicQueue) {
+				return {
+					className: 'waiting',
+					icon: 'hourglass-half',
+					title: 'KARA_DETAIL.REQUEST_STEP.WAITING_TITLE',
+					body: 'KARA_DETAIL.REQUEST_STEP.WAITING_BODY',
+					link: '/public/playlist/current',
+					linkLabel: 'KARA_DETAIL.REQUEST_STEP.CURRENT_QUEUE_LINK',
+				};
+			}
+			return {
+				className: 'waiting',
+				icon: 'hourglass-half',
+				title: 'KARA_DETAIL.REQUEST_STEP.WAITING_TITLE',
+				body: 'KARA_DETAIL.REQUEST_STEP.WAITING_BODY',
+			};
+		})();
+		const publicRequestStep = requestStep ? (
+			<div className={`public-request-step ${requestStep.className}`}>
+				<div className="step-icon">
+					<i className={`fas fa-${requestStep.icon}`} />
+				</div>
+				<div className="step-copy">
+					<strong>{i18next.t(requestStep.title)}</strong>
+					<span>{i18next.t(requestStep.body)}</span>
+				</div>
+				{requestStep.link && requestStep.linkLabel ? (
+					<Link className="step-link" to={requestStep.link}>
+						{i18next.t(requestStep.linkLabel)}
+						<i className="fas fa-chevron-right" />
+					</Link>
+				) : null}
+			</div>
+		) : null;
 
 		const playTime = kara.time_before_play > 0 ? new Date(Date.now() + kara.time_before_play * 1000) : null;
 		const details = (
@@ -325,7 +422,15 @@ export default function KaraDetail(props: IProps) {
 			</>
 		);
 
-		const addKaraButton = <AddKaraButton kara={kara} scope={props.scope} />;
+		const addKaraButton = (
+			<AddKaraButton
+				kara={kara}
+				scope={props.scope}
+				className="primary-request"
+				labelKey="KARA_DETAIL.REQUEST_STEP.ADD_BUTTON"
+				onAdded={getKaraDetail}
+			/>
+		);
 
 		const makeFavButton = <MakeFavButton kid={kara.kid} />;
 
@@ -461,19 +566,12 @@ export default function KaraDetail(props: IProps) {
 				<>
 					{placeHeader(header)}
 					<div className="detailsKara">
+						{publicRequestStep}
 						<div className="centerButtons">
 							{context.globalState.auth.data.role === 'guest' ? null : makeFavButton}
-							{!isAdmin &&
-							context?.globalState.settings.data.config?.Frontend?.Mode === 2 &&
-							kara.plaid !== context.globalState.settings.data.state.publicPlaid &&
-							kara.plaid !== context.globalState.settings.data.state.currentPlaid &&
-							(!kara?.public_plc_id ||
-								!kara?.public_plc_id[0] ||
-								context.globalState.settings.data.config.Playlist.AllowPublicDuplicates ===
-									'allowed') ? (
+							{canAddKara ? (
 								addKaraButton
-							) : kara.my_public_plc_id.length === 0 &&
-							  context.globalState.settings.data.config.Playlist.AllowPublicDuplicates === 'upvotes' ? (
+							) : canUpvoteKara ? (
 								<UpvoteKaraButton kara={kara} wide={true} updateKara={getKaraDetail} />
 							) : null}
 							{showVideoButton}

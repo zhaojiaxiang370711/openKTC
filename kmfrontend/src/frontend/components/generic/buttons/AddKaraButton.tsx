@@ -10,6 +10,9 @@ import { WS_CMD } from '../../../../utils/ws';
 interface Props {
 	kara: DBKara;
 	scope: 'admin' | 'public';
+	className?: string;
+	labelKey?: string;
+	onAdded?: () => void;
 }
 
 export default function AddKaraButton(props: Props) {
@@ -26,12 +29,17 @@ export default function AddKaraButton(props: Props) {
 			// already display
 		}
 		PLCCallback(response, context, props.kara, props.scope);
+		if (response?.plc) props.onAdded?.();
 	};
 
 	return (
-		<button type="button" onClick={addKara} className="btn btn-action">
+		<button
+			type="button"
+			onClick={addKara}
+			className={['btn btn-action', props.className].filter(Boolean).join(' ')}
+		>
 			<i className="fas fa-plus" />
-			<span>{i18next.t('TOOLTIP_ADDKARA')}</span>
+			<span>{i18next.t(props.labelKey ?? 'TOOLTIP_ADDKARA')}</span>
 		</button>
 	);
 }

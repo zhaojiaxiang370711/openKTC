@@ -248,7 +248,7 @@ function PlayerBox(props: IProps) {
 	return (
 		<div
 			onClick={props.currentVisible ? () => navigate('/public/playlist/current') : undefined}
-			className={`player-box${props.mode === 'fixed' ? ' fixed' : ''}`}
+			className={`player-box mode-${props.mode}${props.mode === 'fixed' ? ' fixed' : ''}`}
 			style={{
 				['--img' as any]: img,
 				display:

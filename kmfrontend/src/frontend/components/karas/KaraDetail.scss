@@ -1,6 +1,12 @@
 @use 'sass:color';
+@use 'sass:map';
 @use '../../styles/variables';
 @use '../../styles/components/blurred-bg';
+
+$neo-base: #34373b;
+$neo-surface: #3c4045;
+$neo-highlight: rgba(255, 255, 255, 0.07);
+$neo-shadow: rgba(9, 10, 12, 0.46);
 
 .modal-content.detailsKara {
 	overflow: auto;
@@ -70,11 +76,102 @@
 .detailsKara {
 	margin: 1em;
 
+	.public-request-step {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		gap: 0.85rem;
+		align-items: center;
+		margin: 0 0 1rem;
+		padding: 0.9rem;
+		background: linear-gradient(145deg, color.adjust($neo-surface, $lightness: 4%, $space: hsl), $neo-base);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		border-radius: 8px;
+		box-shadow:
+			10px 10px 22px $neo-shadow,
+			-7px -7px 16px $neo-highlight;
+
+		.step-icon {
+			display: grid;
+			place-items: center;
+			width: 2.8rem;
+			aspect-ratio: 1;
+			border-radius: 8px;
+			background: rgba(255, 255, 255, 0.045);
+			box-shadow:
+				inset 4px 4px 10px rgba(8, 9, 11, 0.48),
+				inset -4px -4px 10px rgba(255, 255, 255, 0.055);
+
+			i {
+				margin: 0;
+				font-size: 1.15rem;
+			}
+		}
+
+		.step-copy {
+			display: grid;
+			gap: 0.25rem;
+			min-width: 0;
+
+			strong {
+				font-size: 1.12rem;
+				line-height: 1.2;
+			}
+
+			span {
+				color: rgba(255, 255, 255, 0.72);
+				line-height: 1.35;
+			}
+		}
+
+		.step-link {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 0.35rem;
+			min-height: 2.5rem;
+			padding: 0.55rem 0.75rem;
+			border-radius: 8px;
+			color: white;
+			background: rgba(255, 255, 255, 0.075);
+			text-decoration: none;
+			font-weight: 800;
+			white-space: nowrap;
+
+			i {
+				margin: 0;
+			}
+		}
+
+		&.ready .step-icon,
+		&.queued .step-icon {
+			color: color.adjust(map.get(variables.$mugen-colors, 'green'), $lightness: 34%, $space: hsl);
+		}
+
+		&.waiting .step-icon,
+		&.browse-only .step-icon {
+			color: color.adjust(map.get(variables.$mugen-colors, 'blue'), $lightness: 30%, $space: hsl);
+		}
+
+		&.vote .step-icon {
+			color: color.adjust(map.get(variables.$mugen-colors, 'yellow'), $lightness: 22%, $space: hsl);
+		}
+
+		@media screen and (max-width: variables.$mugen-breakpoint-small) {
+			grid-template-columns: auto minmax(0, 1fr);
+
+			.step-link {
+				grid-column: 1 / -1;
+				width: 100%;
+			}
+		}
+	}
+
 	.centerButtons {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		justify-content: center;
+		flex-wrap: wrap;
 
 		button {
 			margin: 0.25em;
@@ -82,6 +179,31 @@
 
 			span {
 				margin-left: 0.5em;
+			}
+
+			&.primary-request {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				gap: 0.55rem;
+				min-height: 3rem;
+				padding: 0.7rem 1rem;
+				background: linear-gradient(
+					145deg,
+					color.adjust(map.get(variables.$mugen-colors, 'green'), $lightness: 8%, $space: hsl),
+					color.adjust(map.get(variables.$mugen-colors, 'green'), $lightness: -10%, $space: hsl)
+				);
+				border: 0;
+				border-radius: 8px;
+				box-shadow:
+					8px 8px 16px rgba(8, 9, 11, 0.38),
+					-5px -5px 12px rgba(255, 255, 255, 0.07);
+				font-weight: 900;
+
+				i,
+				span {
+					margin: 0;
+				}
 			}
 		}
 	}

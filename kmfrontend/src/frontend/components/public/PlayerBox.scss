@@ -3,15 +3,32 @@
 @use '../../styles/variables';
 @use '../../styles/components/blurred-bg';
 
+$neo-base: #34373b;
+$neo-surface: #3c4045;
+$neo-highlight: rgba(255, 255, 255, 0.07);
+$neo-shadow: rgba(9, 10, 12, 0.5);
+
+@mixin neo-raised($radius: 8px) {
+	background:
+		linear-gradient(145deg, color.adjust($neo-surface, $lightness: 4%, $space: hsl), $neo-base);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	border-radius: $radius;
+	box-shadow:
+		12px 12px 24px $neo-shadow,
+		-8px -8px 18px $neo-highlight;
+}
+
 .player-box {
 	margin: 1em 0;
-	padding: 1em;
+	padding: 1rem;
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
 	position: relative;
 	align-items: stretch;
 	cursor: pointer;
+	overflow: hidden;
+	@include neo-raised;
 	&.quiz {
 		cursor: unset;
 	}
@@ -23,7 +40,13 @@
 		left: 0;
 		width: 100%;
 		padding: 0.5em 0.5em 1em;
-		background-color: variables.$mugen-background;
+		background: rgba(52, 55, 59, 0.96);
+		border-radius: 0;
+		border-left: 0;
+		border-right: 0;
+		box-shadow:
+			0 -10px 24px rgba(0, 0, 0, 0.34),
+			inset 0 1px 0 rgba(255, 255, 255, 0.08);
 		z-index: 99;
 		&::before {
 			border-radius: 0;
@@ -36,22 +59,43 @@
 	@include blurred-bg.blurred-bg;
 	&::before {
 		z-index: 0;
-		border-radius: 15px;
+		border-radius: inherit;
+		opacity: 0.38;
+		filter: blur(14px) contrast(72%) brightness(68%) saturate(90%);
+		transform: scale(1.04);
+	}
+	&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		border-radius: inherit;
+		background:
+			radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 36%),
+			linear-gradient(145deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.18));
+		pointer-events: none;
 	}
 	&:hover > .first > p.next,
 	> .first > p.next:focus {
 		color: aliceblue;
-		transform: scale(1.25);
+		transform: translateX(0.25rem);
 	}
 	> .first {
-		font-size: 1.25em;
-		font-weight: lighter;
-		@include variables.shadow;
+		font-size: 1rem;
+		font-weight: 900;
 		display: flex;
+		align-items: center;
+		margin-bottom: 0.75rem;
+		color: rgba(255, 255, 255, 0.76);
 		p:first-child {
 			flex-grow: 1;
+			text-transform: uppercase;
+			letter-spacing: 0;
 		}
 		p.next {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.35rem;
 			transition:
 				color,
 				transform ease 100ms,
@@ -72,13 +116,16 @@
 			}
 		}
 		.song {
-			font-size: 2em;
-			font-weight: bold;
-			@include variables.shadow;
+			font-size: clamp(1.65rem, 3vw, 2.35rem);
+			font-weight: 900;
+			line-height: 1.05;
+			margin: 0;
+			text-wrap: balance;
 		}
 		.series {
-			font-size: 1.25em;
-			@include variables.shadow;
+			font-size: 1.05rem;
+			color: rgba(255, 255, 255, 0.72);
+			margin-top: 0.4rem;
 		}
 		&.inline {
 			.song {
@@ -99,14 +146,17 @@
 		margin-bottom: 0.5em;
 		> div {
 			width: min-content;
-			@include variables.shadow;
+			color: rgba(255, 255, 255, 0.76);
+			font-variant-numeric: tabular-nums;
 		}
 	}
 	.progress-bar-container {
-		background-color: black;
-		opacity: 0.5;
-		height: 1em;
-		border-radius: 15px;
+		background-color: rgba(15, 16, 18, 0.62);
+		height: 0.9em;
+		border-radius: 999px;
+		box-shadow:
+			inset 4px 4px 10px rgba(0, 0, 0, 0.55),
+			inset -3px -3px 8px rgba(255, 255, 255, 0.055);
 		> .progress-bar {
 			height: 100%;
 			transition: width linear 0.5s;
@@ -115,8 +165,10 @@
 					width linear 1s,
 					background-color ease 0.5s;
 			}
-			background-color: white;
+			background:
+				linear-gradient(90deg, #9bc5ff, #f4c56a 58%, #f29b74);
 			border-radius: inherit;
+			box-shadow: 0 0 16px rgba(155, 197, 255, 0.34);
 		}
 	}
 	&.fixed {
@@ -137,13 +189,21 @@
 		}
 	}
 	.favorites {
-		background-color: color.adjust(map.get(variables.$mugen-colors, 'yellow'), $lightness: -10%, $space: hsl);
+		background:
+			linear-gradient(
+				145deg,
+				color.adjust(map.get(variables.$mugen-colors, 'yellow'), $lightness: 6%, $space: hsl),
+				color.adjust(map.get(variables.$mugen-colors, 'yellow'), $lightness: -16%, $space: hsl)
+			);
 		width: max-content;
 		margin: 0.5em 0;
-		text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
-		box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+		box-shadow:
+			7px 7px 14px rgba(0, 0, 0, 0.32),
+			-4px -4px 10px rgba(255, 255, 255, 0.08);
 		transition: background-color 200ms linear;
 		border: 0;
+		border-radius: 8px;
+		font-weight: 900;
 		> i {
 			margin-right: 0.25em;
 		}

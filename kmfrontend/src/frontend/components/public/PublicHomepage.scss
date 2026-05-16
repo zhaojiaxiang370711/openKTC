@@ -1,91 +1,201 @@
 @use 'sass:color';
 @use '../../styles/variables';
 
+$neo-base: #34373b;
+$neo-surface: #3c4045;
+$neo-surface-pressed: #2f3236;
+$neo-highlight: rgba(255, 255, 255, 0.07);
+$neo-shadow: rgba(11, 12, 14, 0.48);
+$neo-soft-shadow: rgba(10, 11, 13, 0.35);
+
+@mixin neo-raised($radius: 8px) {
+	background:
+		linear-gradient(145deg, color.adjust($neo-surface, $lightness: 4%, $space: hsl), $neo-base);
+	border: 1px solid rgba(255, 255, 255, 0.06);
+	border-radius: $radius;
+	box-shadow:
+		10px 10px 22px $neo-shadow,
+		-8px -8px 18px $neo-highlight;
+}
+
+@mixin neo-pressed($radius: 8px) {
+	background: $neo-surface-pressed;
+	border-radius: $radius;
+	box-shadow:
+		inset 6px 6px 14px rgba(10, 11, 13, 0.55),
+		inset -6px -6px 14px rgba(255, 255, 255, 0.055);
+}
+
 .public-homepage {
-	display: flex;
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.8fr);
+	gap: 1.25rem;
+	align-items: start;
 	@media screen and (max-width: variables.$mugen-breakpoint-large) {
-		display: unset;
+		display: block;
 	}
 	> .public-homepage-wrapper {
-		flex-grow: 1;
+		min-width: 0;
 	}
 	> .lyrics-box:last-child {
-		margin-left: 1%;
-		flex-basis: 45%;
-		flex-grow: 0;
-		flex-shrink: 0;
+		@include neo-raised;
+		padding: 0.75rem;
 		@media screen and (max-width: variables.$mugen-breakpoint-large) {
 			display: none;
+		}
+		> .lyrics {
+			@include neo-pressed;
+			margin: 0;
 		}
 	}
 }
 
-.home-actions {
-	display: flex;
-	flex-flow: row wrap;
-	align-items: flex-start;
-	> .subtitle {
-		width: 100%;
-		font-size: 2em;
-		text-align: start;
-		margin: 0.5em 0;
-		@media screen and (max-width: variables.$mugen-breakpoint-large) {
-			text-align: unset;
+.request-guide {
+	@include neo-pressed;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.5rem;
+	margin: 1rem 0;
+	padding: 0.65rem;
+	> span {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.45rem;
+		min-height: 2.5rem;
+		padding: 0.45rem 0.5rem;
+		text-align: center;
+		border-radius: 8px;
+		background: rgba(255, 255, 255, 0.035);
+		color: rgba(255, 255, 255, 0.88);
+		font-weight: 700;
+		> i {
+			color: #9bc5ff;
 		}
 	}
-	> .action {
-		width: 50%;
+	@media screen and (max-width: variables.$mugen-breakpoint-smaller) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.home-actions {
+	display: grid;
+	gap: 1rem;
+	> .subtitle {
+		width: 100%;
+		font-size: 1.35rem;
 		text-align: start;
-		@media screen and (max-width: variables.$mugen-breakpoint-large) {
-			width: 100%;
+		margin: 0.35rem 0 -0.25rem;
+		color: rgba(255, 255, 255, 0.82);
+		font-weight: 900;
+	}
+
+	.action-cluster {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.75rem;
+		@media screen and (max-width: variables.$mugen-breakpoint-small) {
+			grid-template-columns: 1fr;
 		}
-		> i {
-			margin-right: 0.25em;
+		&.discovery {
+			grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
 		}
-		flex-shrink: 0;
+		&.explore {
+			grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+		}
+	}
+
+	.action {
+		@include neo-raised;
+		display: flex;
+		align-items: center;
+		gap: 0.6rem;
+		min-height: 4.25rem;
+		text-align: start;
 		background: none;
 		border: none;
 		cursor: pointer;
-		color: unset;
+		color: rgba(255, 255, 255, 0.92);
 		text-decoration: unset;
-		font-size: 1.25em;
-		margin: 0.5em 0;
-		padding: 0;
-		transition: color ease-out 200ms;
+		font-size: 1.1rem;
+		font-weight: 900;
+		margin: 0;
+		padding: 0.85rem 1rem;
+		transition:
+			box-shadow ease 160ms,
+			transform ease 160ms,
+			color ease 160ms,
+			background-color ease 160ms;
 		font-family: inherit;
+		> i,
+		> [class^='icon-'] {
+			width: 1.45rem;
+			text-align: center;
+			font-size: 1.15rem;
+			flex: 0 0 auto;
+		}
 		@each $name, $color in variables.$mugen-colors {
 			@if $name != 'black' {
 				&.#{$name} {
-					&:hover,
-					&:focus {
-						color: color.adjust($color, $lightness: 25%, $saturation: 10%, $space: hsl);
-					}
 					&.big {
-						color: color.adjust($color, $lightness: 10%, $saturation: 20%, $space: hsl);
+						color: color.adjust($color, $lightness: 24%, $saturation: 10%, $space: hsl);
 					}
 					> i {
-						color: color.adjust($color, $lightness: 10%, $saturation: 20%, $space: hsl);
+						color: color.adjust($color, $lightness: 24%, $saturation: 8%, $space: hsl);
 					}
 				}
 			}
 		}
 		&.big {
 			width: 100%;
-			font-size: 1.75em;
+			font-size: 1.35rem;
+			grid-column: 1 / -1;
 		}
-		&:last-child {
-			margin-bottom: 3em;
+		&:hover,
+		&:focus {
+			color: white;
+			transform: translateY(-1px);
+			box-shadow:
+				13px 13px 26px rgba(10, 11, 13, 0.55),
+				-9px -9px 19px rgba(255, 255, 255, 0.08);
+		}
+		&:active {
+			transform: translateY(0);
+			box-shadow:
+				inset 5px 5px 12px rgba(10, 11, 13, 0.5),
+				inset -5px -5px 12px rgba(255, 255, 255, 0.055);
 		}
 	}
 }
 
 .hello-bar {
-	> span:first-child {
-		font-size: 2em;
-		font-weight: bold;
+	@include neo-raised;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1rem 1.15rem;
+	margin-bottom: 1em;
+	> .hello-title {
+		font-size: 1.75rem;
+		font-weight: 900;
+		line-height: 1.1;
 	}
-	> div.warning {
+	> .hello-meta {
+		display: grid;
+		gap: 0.2rem;
+		max-width: 42rem;
+		color: rgba(255, 255, 255, 0.74);
+		text-align: right;
+	}
+	.warning {
 		color: goldenrod;
 	}
-	margin-bottom: 1em;
+	@media screen and (max-width: variables.$mugen-breakpoint-medium) {
+		align-items: flex-start;
+		flex-direction: column;
+		> .hello-meta {
+			text-align: left;
+		}
+	}
 }

@@ -4,6 +4,7 @@ import i18next from 'i18next';
 import { debounce } from 'lodash';
 import { Fragment, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { DragDropContext, Draggable, DraggableProvided, Droppable, DropResult } from '@hello-pangea/dnd';
+import { Link } from 'react-router-dom';
 import { ListRange, Virtuoso } from 'react-virtuoso';
 
 import type { DownloadedStatus } from '../../../../../src/lib/types/database/download';
@@ -377,7 +378,24 @@ function Playlist(props: IProps) {
 						)}
 					</div>
 				) : (
-					<div className="list-group-item empty">{i18next.t('PLAYLIST.NO_SONG')}</div>
+					<div className={`list-group-item empty${props.searchType === 'incoming' ? ' incoming-empty' : ''}`}>
+						{props.searchType === 'incoming' ? (
+							<>
+								<i className="fas fa-music" />
+								<strong>{i18next.t('PLAYLIST.NO_INCOMING_TITLE')}</strong>
+								<span>{i18next.t('PLAYLIST.NO_INCOMING_BODY')}</span>
+								<Link
+									className="btn btn-default"
+									to={`/public/playlist/${context.globalState.settings.data.state.currentPlaid}`}
+								>
+									<i className="fas fa-list" />
+									{i18next.t('PLAYLIST.CURRENT_QUEUE')}
+								</Link>
+							</>
+						) : (
+							i18next.t('PLAYLIST.NO_SONG')
+						)}
+					</div>
 				)}
 			</>
 		);

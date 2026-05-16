@@ -43,32 +43,34 @@ function PublicHomepage(props: IProps) {
 	return (
 		<>
 			<div className="hello-bar">
-				<span>
+				<span className="hello-title">
 					{i18next.t('PUBLIC_HOMEPAGE.HELLO', { name: context.globalState.settings.data.user.nickname })}
 				</span>
-				<div className="warning">
-					{context?.globalState.settings.data.config?.Frontend?.Mode === 1
-						? i18next.t('PUBLIC_HOMEPAGE.RESTRICTED_DESCRIPTION')
-						: null}
-				</div>
-				<div>
-					{context?.globalState.settings.data.config?.Frontend?.Mode === 2 &&
-					context?.globalState.settings.data.config?.Karaoke?.Quota.Type === 1
-						? i18next.t('PUBLIC_HOMEPAGE.QUOTA_KARA_DESCRIPTION', {
-								count: context.globalState.settings.data.config?.Karaoke?.Quota?.Songs,
-							})
-						: null}
-				</div>
-				<div>
-					{context?.globalState.settings.data.config?.Frontend?.Mode === 2 &&
-					context?.globalState.settings.data.config?.Karaoke?.Quota.Type === 2
-						? i18next.t('PUBLIC_HOMEPAGE.QUOTA_TIME_DESCRIPTION', {
-								time: secondsTimeSpanToHMS(
-									context.globalState.settings.data.config?.Karaoke?.Quota?.Time,
-									'ms'
-								),
-							})
-						: null}
+				<div className="hello-meta">
+					<div className="warning">
+						{context?.globalState.settings.data.config?.Frontend?.Mode === 1
+							? i18next.t('PUBLIC_HOMEPAGE.RESTRICTED_DESCRIPTION')
+							: null}
+					</div>
+					<div>
+						{context?.globalState.settings.data.config?.Frontend?.Mode === 2 &&
+						context?.globalState.settings.data.config?.Karaoke?.Quota.Type === 1
+							? i18next.t('PUBLIC_HOMEPAGE.QUOTA_KARA_DESCRIPTION', {
+									count: context.globalState.settings.data.config?.Karaoke?.Quota?.Songs,
+								})
+							: null}
+					</div>
+					<div>
+						{context?.globalState.settings.data.config?.Frontend?.Mode === 2 &&
+						context?.globalState.settings.data.config?.Karaoke?.Quota.Type === 2
+							? i18next.t('PUBLIC_HOMEPAGE.QUOTA_TIME_DESCRIPTION', {
+									time: secondsTimeSpanToHMS(
+										context.globalState.settings.data.config?.Karaoke?.Quota?.Time,
+										'ms'
+									),
+								})
+							: null}
+					</div>
 				</div>
 			</div>
 			<div className="public-homepage">
@@ -79,99 +81,116 @@ function PublicHomepage(props: IProps) {
 						onKaraChange={kid => setCurrentKid(kid)}
 					/>
 					{is_touch_device() ? <LyricsBox kid={currentKid} mobile /> : null}
+					<div className="request-guide">
+						<span>
+							<i className="fas fa-search" /> {i18next.t('PUBLIC_HOMEPAGE.REQUEST_GUIDE.SEARCH')}
+						</span>
+						<span>
+							<i className="fas fa-plus" /> {i18next.t('PUBLIC_HOMEPAGE.REQUEST_GUIDE.ADD')}
+						</span>
+						<span>
+							<i className="fas fa-music" /> {i18next.t('PUBLIC_HOMEPAGE.REQUEST_GUIDE.SING')}
+						</span>
+					</div>
 					<div className="home-actions">
-						{props.activePoll ? (
-							<button className="action yellow big" onClick={() => props.openPoll()}>
-								<i className="fas fa-chart-line" /> {i18next.t('PUBLIC_HOMEPAGE.OPEN_POLL')}
-							</button>
-						) : null}
-						{props.currentVisible ? (
-							<Link className="action green" to="/public/playlist/current">
-								<i className="fas fa-play-circle" /> {i18next.t('PUBLIC_HOMEPAGE.CURRENT')}
-							</Link>
-						) : null}
-						{props.currentVisible ? (
-							<Link className="action purple" to="/public/playlist/current/me">
-								<i className="fas fa-user" /> {i18next.t('PUBLIC_HOMEPAGE.MY_INCOMING_SONGS')}
-							</Link>
-						) : null}
-						{props.publicVisible &&
-						context.globalState.settings.data.state.currentPlaid !==
-							context.globalState.settings.data.state.publicPlaid ? (
-							<Link className="action orange" to="/public/playlist/public">
-								<i className="fas fa-tasks" /> {i18next.t('PUBLIC_HOMEPAGE.PUBLIC_SUGGESTIONS')}
-							</Link>
-						) : null}
-						{context?.globalState.auth.data.role !== 'guest' ? (
-							<Link className="action yellow" to="/public/favorites">
-								<i className="fas fa-star" /> {i18next.t('PUBLIC_HOMEPAGE.FAVORITES')}
-							</Link>
-						) : null}
+						<div className="action-cluster primary">
+							{props.activePoll ? (
+								<button className="action yellow big" onClick={() => props.openPoll()}>
+									<i className="fas fa-chart-line" /> {i18next.t('PUBLIC_HOMEPAGE.OPEN_POLL')}
+								</button>
+							) : null}
+							{props.currentVisible ? (
+								<Link className="action green" to="/public/playlist/current">
+									<i className="fas fa-play-circle" /> {i18next.t('PUBLIC_HOMEPAGE.CURRENT')}
+								</Link>
+							) : null}
+							{props.currentVisible ? (
+								<Link className="action purple" to="/public/playlist/current/me">
+									<i className="fas fa-user" /> {i18next.t('PUBLIC_HOMEPAGE.MY_INCOMING_SONGS')}
+								</Link>
+							) : null}
+							{props.publicVisible &&
+							context.globalState.settings.data.state.currentPlaid !==
+								context.globalState.settings.data.state.publicPlaid ? (
+								<Link className="action orange" to="/public/playlist/public">
+									<i className="fas fa-tasks" /> {i18next.t('PUBLIC_HOMEPAGE.PUBLIC_SUGGESTIONS')}
+								</Link>
+							) : null}
+							{context?.globalState.auth.data.role !== 'guest' ? (
+								<Link className="action yellow" to="/public/favorites">
+									<i className="fas fa-star" /> {i18next.t('PUBLIC_HOMEPAGE.FAVORITES')}
+								</Link>
+							) : null}
+						</div>
 						{context?.globalState.settings.data.config?.Frontend?.Mode !== 0 ? (
 							<>
-								<Link className="action blue" to="/public/search">
-									<i className="fas fa-search" /> {i18next.t('PUBLIC_HOMEPAGE.SONG_SEARCH')}
-								</Link>
-								<button className="action green" onClick={getLucky}>
-									<i className={`fas fa-dice${diceAnimation ? ' fa-beat' : ''}`} />{' '}
-									{i18next.t('PUBLIC_HOMEPAGE.GET_LUCKY')}
-								</button>
-								<Link className="action purple" to="/public/search/recent">
-									<i className="fas fa-clock" /> {i18next.t('PUBLIC_HOMEPAGE.NEW_KARAOKES')}
-								</Link>
-								<Link className="action orange" to="/public/search/requested">
-									<i className="fas fa-fire" /> {i18next.t('PUBLIC_HOMEPAGE.REQUESTED_KARAOKES')}
-								</Link>
-								{context?.globalState.settings.data.user.anime_list_to_fetch ? (
-									<Link className="action yellow" to="/public/animelist">
-										<i
-											className={`icon-${context?.globalState.settings.data.user.anime_list_to_fetch}`}
-										/>{' '}
-										{i18next.t('PUBLIC_HOMEPAGE.ANIME_LIST')}
+								<div className="action-cluster discovery">
+									<Link className="action blue" to="/public/search">
+										<i className="fas fa-search" /> {i18next.t('PUBLIC_HOMEPAGE.SONG_SEARCH')}
 									</Link>
-								) : null}
+									<button className="action green" onClick={getLucky}>
+										<i className={`fas fa-dice${diceAnimation ? ' fa-beat' : ''}`} />{' '}
+										{i18next.t('PUBLIC_HOMEPAGE.GET_LUCKY')}
+									</button>
+									<Link className="action purple" to="/public/search/recent">
+										<i className="fas fa-clock" /> {i18next.t('PUBLIC_HOMEPAGE.NEW_KARAOKES')}
+									</Link>
+									<Link className="action orange" to="/public/search/requested">
+										<i className="fas fa-fire" /> {i18next.t('PUBLIC_HOMEPAGE.REQUESTED_KARAOKES')}
+									</Link>
+									{context?.globalState.settings.data.user.anime_list_to_fetch ? (
+										<Link className="action yellow" to="/public/animelist">
+											<i
+												className={`icon-${context?.globalState.settings.data.user.anime_list_to_fetch}`}
+											/>{' '}
+											{i18next.t('PUBLIC_HOMEPAGE.ANIME_LIST')}
+										</Link>
+									) : null}
+								</div>
 								<h3 className="subtitle">{i18next.t('PUBLIC_HOMEPAGE.EXPLORE')}</h3>
-								{Object.keys(tagTypes).map(type => {
-									if ([1, 2, 4, 5].includes(tagTypes[type].type)) {
-										return (
-											<Link
-												className={`action ${tagTypes[type].color}`}
-												to={`/public/tags/${tagTypes[type].type}`}
-												key={`tag-${tagTypes[type].type}`}
-											>
-												<i className={`fas fa-${tagTypes[type].icon}`} />{' '}
-												{i18next.t(`TAG_TYPES.${type}_other`)}
-											</Link>
-										);
-									}
-									return undefined;
-								})}
-								<Link className="action" to={`/public/tags/${YEARS.type}`}>
-									<i className={`fas fa-${YEARS.icon}`} /> {i18next.t('DETAILS.YEAR')}
-								</Link>
-								<button className="action" onClick={() => setOthersMenu(!othersMenu)}>
-									<i className={othersMenu ? 'fa fa-arrow-up' : 'fa fa-arrow-down'} />
-									{i18next.t('PUBLIC_HOMEPAGE.OTHERS')}
-								</button>
-								{othersMenu ? (
-									<>
-										{Object.keys(tagTypes).map(type => {
-											if (![1, 2, 4, 5, 16].includes(tagTypes[type].type)) {
-												return (
-													<Link
-														className={`action ${tagTypes[type].color}`}
-														to={`/public/tags/${tagTypes[type].type}`}
-														key={`tag-${tagTypes[type].type}`}
-													>
-														<i className={`fas fa-${tagTypes[type].icon}`} />{' '}
-														{i18next.t(`TAG_TYPES.${type}_other`)}
-													</Link>
-												);
-											}
-											return undefined;
-										})}
-									</>
-								) : null}
+								<div className="action-cluster explore">
+									{Object.keys(tagTypes).map(type => {
+										if ([1, 2, 4, 5].includes(tagTypes[type].type)) {
+											return (
+												<Link
+													className={`action ${tagTypes[type].color}`}
+													to={`/public/tags/${tagTypes[type].type}`}
+													key={`tag-${tagTypes[type].type}`}
+												>
+													<i className={`fas fa-${tagTypes[type].icon}`} />{' '}
+													{i18next.t(`TAG_TYPES.${type}_other`)}
+												</Link>
+											);
+										}
+										return undefined;
+									})}
+									<Link className="action" to={`/public/tags/${YEARS.type}`}>
+										<i className={`fas fa-${YEARS.icon}`} /> {i18next.t('DETAILS.YEAR')}
+									</Link>
+									<button className="action" onClick={() => setOthersMenu(!othersMenu)}>
+										<i className={othersMenu ? 'fa fa-arrow-up' : 'fa fa-arrow-down'} />
+										{i18next.t('PUBLIC_HOMEPAGE.OTHERS')}
+									</button>
+									{othersMenu ? (
+										<>
+											{Object.keys(tagTypes).map(type => {
+												if (![1, 2, 4, 5, 16].includes(tagTypes[type].type)) {
+													return (
+														<Link
+															className={`action ${tagTypes[type].color}`}
+															to={`/public/tags/${tagTypes[type].type}`}
+															key={`tag-${tagTypes[type].type}`}
+														>
+															<i className={`fas fa-${tagTypes[type].icon}`} />{' '}
+															{i18next.t(`TAG_TYPES.${type}_other`)}
+														</Link>
+													);
+												}
+												return undefined;
+											})}
+										</>
+									) : null}
+								</div>
 							</>
 						) : null}
 					</div>

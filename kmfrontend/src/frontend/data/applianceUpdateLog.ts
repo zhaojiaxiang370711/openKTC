@@ -21,6 +21,101 @@ type ApplianceUpdateEntry = {
 
 const entries: ApplianceUpdateEntry[] = [
 	{
+		date: '2026-05-16T17:35:00+08:00',
+		version: 'appliance-0.15',
+		type: 'appliance',
+		title: {
+			'zh-Hans': '修复播放控制按钮状态',
+			en: 'Fixed playback control button states',
+		},
+		changes: {
+			fixed: [
+				{
+					'zh-Hans':
+						'播放失败或没有当前歌曲时，现在会把错误返回给页面，不会再表现成点击播放但无反馈。',
+					en: 'Playback failures or missing current songs now return an error to the page instead of looking like a no-op.',
+				},
+				{
+					'zh-Hans':
+						'播放、停止、上一曲、下一曲按钮现在按当前队列和播放状态启用，避免在没有下一首或没有队列时发出无效命令。',
+					en: 'Play, stop, previous, and next controls now enable according to queue and playback state, avoiding invalid commands when there is no next song or no queue.',
+				},
+				{
+					'zh-Hans':
+						'修复公共页面播放器状态尚未同步完成时，播放/暂停按钮可能被前端拦截导致点击无反应的问题。',
+					en: 'Fixed public play/pause controls being blocked before the player state finished syncing.',
+				},
+			],
+			improved: [
+				{
+					'zh-Hans': '本地 appliance 默认打开公共点歌页播放器控制按钮。',
+					en: 'Enabled public request-page player controls by default for the local appliance.',
+				},
+			],
+		},
+	},
+	{
+		date: '2026-05-16T17:05:00+08:00',
+		version: 'appliance-0.14',
+		type: 'appliance',
+		title: {
+			'zh-Hans': '修复本地 MV 播放失败',
+			en: 'Fixed local MV playback failure',
+		},
+		changes: {
+			fixed: [
+				{
+					'zh-Hans':
+						'修复没有 loudnorm/字幕/叠加信息的本地视频生成空 lavfi filter，导致 mpv 报错后没有声音和画面的问题。',
+					en: 'Fixed local videos without loudnorm, subtitles, or overlays generating an empty lavfi filter that made mpv fail with no audio or video.',
+				},
+			],
+		},
+	},
+	{
+		date: '2026-05-16T16:40:00+08:00',
+		version: 'appliance-0.13',
+		type: 'appliance',
+		title: {
+			'zh-Hans': '点歌详情页下一步提示',
+			en: 'Request detail next-step hint',
+		},
+		changes: {
+			improved: [
+				{
+					'zh-Hans':
+						'歌曲详情页现在会明确提示“加入队列、已加入、投票或仅浏览”的下一步，并把加入队列按钮强化为主操作。',
+					en: 'Song detail pages now clearly show whether to add, wait, vote, or browse only, with Add to queue promoted as the primary action.',
+				},
+				{
+					'zh-Hans': '“我的待播歌曲”为空时会解释当前歌曲不会出现在待播列表，并提供跳转到当前队列的按钮。',
+					en: 'The empty My incoming songs view now explains that the current song is not listed there and links to the current queue.',
+				},
+			],
+		},
+	},
+	{
+		date: '2026-05-16T16:10:00+08:00',
+		version: 'appliance-0.12',
+		type: 'appliance',
+		title: {
+			'zh-Hans': '点歌播放页新拟态改版',
+			en: 'Neumorphic request and playback refresh',
+		},
+		changes: {
+			improved: [
+				{
+					'zh-Hans': '公共点歌首页采用新拟态面板、分组操作和三步点歌提示，手机与桌面布局更清晰。',
+					en: 'Refreshed the public request homepage with neumorphic panels, grouped actions, and a three-step request hint for clearer mobile and desktop use.',
+				},
+				{
+					'zh-Hans': '播放器卡片、待播队列和教程遮罩改为更柔和的凸起/内嵌视觉，并补齐简体中文教程文案。',
+					en: 'Updated the player card, upcoming queue, and tutorial overlay with softer raised/inset surfaces and completed the Simplified Chinese tutorial copy.',
+				},
+			],
+		},
+	},
+	{
 		date: '2026-05-16T15:05:00+08:00',
 		version: 'appliance-0.11',
 		type: 'appliance',
@@ -35,17 +130,23 @@ const entries: ApplianceUpdateEntry[] = [
 					en: 'Rust mpv IPC now waits for the matching request_id response, avoiding false command failures from asynchronous mpv events.',
 				},
 				{
-					'zh-Hans': 'devctl 启动前检查不再因为 dist 构建产物暂时不存在而阻止 dev:run/dev:restart，构建步骤会重新生成它们。',
+					'zh-Hans':
+						'devctl 启动前检查不再因为 dist 构建产物暂时不存在而阻止 dev:run/dev:restart，构建步骤会重新生成它们。',
 					en: 'devctl preflight no longer blocks dev:run/dev:restart when dist artifacts are temporarily missing; the build step regenerates them.',
 				},
 				{
-					'zh-Hans': 'devctl detached 启动现在会在没有 DISPLAY 时自动使用本机 X11 显示器，例如 :0。',
-					en: 'devctl detached startup now falls back to a local X11 display such as :0 when DISPLAY is missing.',
+					'zh-Hans': 'devctl detached 启动现在会在没有 DISPLAY 时自动使用本机 X11 显示器和 Xauthority 文件。',
+					en: 'devctl detached startup now falls back to the local X11 display and Xauthority file when DISPLAY is missing.',
+				},
+				{
+					'zh-Hans': 'dev:status 现在会在 pid 文件过期时从进程表找回真实 Electron 主进程并刷新 pid。',
+					en: 'dev:status now recovers the real Electron main process from the process table and refreshes stale pid files.',
 				},
 			],
 			improved: [
 				{
-					'zh-Hans': 'Rust 播放 runtime 现在会在测试 mpv 退出后进入 Recovering，自动重建 mpv supervisor，并发出 runtimeRecovered。',
+					'zh-Hans':
+						'Rust 播放 runtime 现在会在测试 mpv 退出后进入 Recovering，自动重建 mpv supervisor，并发出 runtimeRecovered。',
 					en: 'The Rust playback runtime now enters Recovering after the test mpv exits, rebuilds the mpv supervisor, and emits runtimeRecovered.',
 				},
 				{
@@ -70,7 +171,8 @@ const entries: ApplianceUpdateEntry[] = [
 					en: 'Rust loadPlan now carries mpvOptions and subtitle paths, making it closer to the legacy player load parameters.',
 				},
 				{
-					'zh-Hans': '开启 OPENKTV_RUST_PLAYBACK_SHADOW=1 后，旧播放器解析出的真实 PlayPlan 会镜像到 Rust runtime，旧播放器仍然是真相源。',
+					'zh-Hans':
+						'开启 OPENKTV_RUST_PLAYBACK_SHADOW=1 后，旧播放器解析出的真实 PlayPlan 会镜像到 Rust runtime，旧播放器仍然是真相源。',
 					en: 'With OPENKTV_RUST_PLAYBACK_SHADOW=1, real PlayPlans resolved by the legacy player are mirrored into the Rust runtime while legacy playback remains the source of truth.',
 				},
 			],
@@ -87,11 +189,13 @@ const entries: ApplianceUpdateEntry[] = [
 		changes: {
 			improved: [
 				{
-					'zh-Hans': '新增 dev:runtime-mpv-loadplan-check，生成本地 WAV 后通过真实 mpv IPC 验证 loadPlan、play、pause、stop。',
+					'zh-Hans':
+						'新增 dev:runtime-mpv-loadplan-check，生成本地 WAV 后通过真实 mpv IPC 验证 loadPlan、play、pause、stop。',
 					en: 'Added dev:runtime-mpv-loadplan-check to generate a local WAV and verify loadPlan, play, pause, and stop through real mpv IPC.',
 				},
 				{
-					'zh-Hans': 'TypeScript IPC client 新增 loadPlan/play/pause/stopPlayback helper，并加入默认关闭的 Rust playback shadow flag。',
+					'zh-Hans':
+						'TypeScript IPC client 新增 loadPlan/play/pause/stopPlayback helper，并加入默认关闭的 Rust playback shadow flag。',
 					en: 'Added loadPlan/play/pause/stopPlayback helpers to the TypeScript IPC client plus a disabled-by-default Rust playback shadow flag.',
 				},
 			],
@@ -108,7 +212,8 @@ const entries: ApplianceUpdateEntry[] = [
 		changes: {
 			improved: [
 				{
-					'zh-Hans': 'openktv-runtime 新增可选 --mpv backend，可以启动真实 mpv idle 进程并通过 IPC 确认基础播放控制命令。',
+					'zh-Hans':
+						'openktv-runtime 新增可选 --mpv backend，可以启动真实 mpv idle 进程并通过 IPC 确认基础播放控制命令。',
 					en: 'openktv-runtime now has an optional --mpv backend that starts a real idle mpv process and acknowledges basic playback controls through IPC.',
 				},
 				{
@@ -129,7 +234,8 @@ const entries: ApplianceUpdateEntry[] = [
 		changes: {
 			improved: [
 				{
-					'zh-Hans': '新增 openktv-runtime Rust 进程骨架，先提供 JSONL 命令确认、状态事件和播放器 snapshot 雏形。',
+					'zh-Hans':
+						'新增 openktv-runtime Rust 进程骨架，先提供 JSONL 命令确认、状态事件和播放器 snapshot 雏形。',
 					en: 'Added the openktv-runtime Rust process skeleton with JSONL command acknowledgements, state events, and a first player snapshot shape.',
 				},
 				{
@@ -150,8 +256,9 @@ const entries: ApplianceUpdateEntry[] = [
 		changes: {
 			improved: [
 				{
-					'zh-Hans': '将飞牛 NAS 默认地址固定为 smb://192.168.0.109/nas_hdd/，xfn.local 仅作为局域网别名保留。',
-					en: 'Pinned the Feiniu NAS default address to smb://192.168.0.109/nas_hdd/ while keeping xfn.local as a LAN alias.',
+					'zh-Hans':
+						'将飞牛 NAS 默认媒体根固定为 smb://192.168.0.109/nas_hdd/，SSD 共享作为导入源复制进 HDD 歌库。',
+					en: 'Pinned the Feiniu NAS media root to smb://192.168.0.109/nas_hdd/ and treat the SSD share as an import source copied into the HDD library.',
 				},
 				{
 					'zh-Hans': '本机媒体挂载点使用私有凭据文件接入 NAS，避免把账号密码写入仓库配置。',
@@ -246,7 +353,8 @@ const entries: ApplianceUpdateEntry[] = [
 		changes: {
 			improved: [
 				{
-					'zh-Hans': '新增 contracts、command bus、PlayerSnapshot、PlayPlanBuilder、播放器状态机和 healthcheck 基础设施。',
+					'zh-Hans':
+						'新增 contracts、command bus、PlayerSnapshot、PlayPlanBuilder、播放器状态机和 healthcheck 基础设施。',
 					en: 'Added contracts, command bus, PlayerSnapshot, PlayPlanBuilder, player state machine, and healthcheck foundations.',
 				},
 				{

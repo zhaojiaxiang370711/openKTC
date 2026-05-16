@@ -384,6 +384,11 @@
 		"EXPLORE": "浏览",
 		"OTHERS": "其他…",
 		"GET_LUCKY": "获得好运",
+		"REQUEST_GUIDE": {
+			"SEARCH": "找歌",
+			"ADD": "加入队列",
+			"SING": "等候开唱"
+		},
 		"REQUESTED_KARAOKES": "点播次数最多的歌曲",
 		"RESTRICTED_DESCRIPTION": "卡拉OK限制模式开启，无法添加歌曲。",
 		"QUOTA_KARA_DESCRIPTION_one": "您只能推荐 {{count}} 首歌曲。主持人接受或拒绝您的建议，或屏幕上播放您的歌曲后，您将可以再次推荐。",
@@ -563,7 +568,30 @@
 			"TITLE": "教程",
 			"NEXT": "下一步",
 			"BACK": "返回",
-			"END": "完成"
+			"END": "完成",
+			"WELCOME": "欢迎使用 OpenKTV。先掌握这几个操作，今晚点歌会顺很多。",
+			"PLAYLIST": "页面会显示两个歌单。点击 <2/> 可以把歌曲加入另一侧歌单。",
+			"TITLE_CLICK": "点击歌名可以查看歌手、作者和标签等详情 <1></1>。",
+			"PLAY_BUTTONS": "<1/> 会立即播放歌曲 <3>，<5/> 会把播放位置移到这首歌。</3>",
+			"CHECK_CASE": "勾选 <1/> 后可以一次处理多首歌 <3>。</3>",
+			"ADD_TO_OTHER_PLAYLIST": "<1/> 会把歌曲加入另一侧歌单。",
+			"WRENCH_BUTTON": "<1/> 可以打开这首歌的更多操作。",
+			"KARAOKE_PLAYED": "带有 <1><2/> 橙色</1> 标记的歌曲最近已经播放过。",
+			"KARAOKE_PLAYING": "<1>蓝色</1> 背景表示当前选中的播放歌曲。",
+			"CREATE_PLAYLIST_BUTTON": "通过操作菜单创建和编辑歌单。",
+			"SELECT_PLAYLIST_BUTTON": "歌单可以从选择器里切换：",
+			"LIBRARY": "曲库包含当前可点的全部歌曲。",
+			"PLAYLIST_ATTRIBUTES": "创建歌单时，可以把它设为 <1>当前播放</1> 或 <3>公开点歌</3>。",
+			"CURRENT_DESC": "<1>当前播放</1> 歌单会被播放器依次播放。",
+			"PUBLIC_DESC": "<1>公开点歌</1> 歌单用于接收用户点歌。",
+			"CURRENT_PUBLIC_DESC": "<1>当前播放</1> 和 <3>公开点歌</3> 可以是同一个歌单。",
+			"BLACKLIST_DESC": "黑名单会排除不希望被点到的歌曲。",
+			"PLAYER_BAR": "播放器控制集中在顶部栏。",
+			"PLAYER_CURRENT_HINT": "播放器会播放 <1>当前播放歌单</1> 中选中的歌曲。",
+			"PLAYER_GO_BACK": "回到开头按钮会把当前歌曲跳回 <1>起点</1>。",
+			"PLAYER_STOP": "停止按钮会在当前歌曲结束后停止播放；再次点击会 <1>立即停止</1>。",
+			"MESSAGE": "消息按钮可以把提示发送到用户设备或播放器画面。",
+			"K_MENU": "K 菜单可打开个人资料和其他卡拉 OK 设置。"
 		},
 		"STATS_MODAL": {
 			"TITLE": "允许使用我的收藏和点歌记录做统计",
@@ -574,7 +602,22 @@
 	},
 	"TOOLTIP_CLOSEPARENT": "关闭",
 	"KARA_DETAIL": {
-		"ADDED": "添加了 "
+		"ADDED": "添加了 ",
+		"REQUEST_STEP": {
+			"ADD_TITLE": "下一步：加入队列",
+			"ADD_BODY": "点下面的主按钮，把这首歌送到待播列表；播放器会按当前队列顺序播放。",
+			"ADD_BUTTON": "加入队列",
+			"QUEUED_TITLE": "已经加入待播",
+			"QUEUED_BODY": "不用重复添加。如果它已经轮到播放，会显示为当前歌曲，而不是出现在待播列表里。",
+			"WAITING_TITLE": "这首歌已经在队列里",
+			"WAITING_BODY": "它正在等待播放或主持人处理，可以打开当前队列查看。",
+			"VOTE_TITLE": "下一步：为这首歌投票",
+			"VOTE_BODY": "这首歌已经有人点过，投票可以支持同一首歌，不需要重复加入。",
+			"BROWSE_ONLY_TITLE": "当前只能浏览歌曲",
+			"BROWSE_ONLY_BODY": "公开点歌还没开放；如果要立刻播放，请在操作端把它加入当前播放列表。",
+			"MY_QUEUE_LINK": "我的待播歌曲",
+			"CURRENT_QUEUE_LINK": "当前队列"
+		}
 	},
 	"CONFIG": {
 		"PROPERTY": "设置项",
@@ -667,5 +710,11 @@
 			"LIVE_COMMENTS": "实时评论",
 			"LIVE_COMMENTS_TOOLTIP": "将 Twitch 聊天消息显示到播放器画面上。"
 		}
+	},
+	"PLAYLIST": {
+		"NO_SONG": "没有找到歌曲",
+		"NO_INCOMING_TITLE": "没有待播歌曲",
+		"NO_INCOMING_BODY": "这里只显示排在当前播放位置之后、由你点的歌曲。如果你刚点的歌已经轮到播放，它不会出现在这里。",
+		"CURRENT_QUEUE": "打开当前队列"
 	}
 }

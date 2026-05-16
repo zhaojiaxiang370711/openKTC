@@ -117,7 +117,7 @@ function PublicHeader(props: IProps) {
 				command: namecommand,
 			};
 		}
-		commandBackend(WS_CMD.SEND_PLAYER_COMMAND, data).catch(() => {});
+		return commandBackend(WS_CMD.SEND_PLAYER_COMMAND, data);
 	};
 
 	useEffect(() => {

@@ -1,5 +1,14 @@
 @use '../../styles/variables';
 
+@mixin tutorial-panel {
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 8px;
+	background: linear-gradient(145deg, #3d4146, #303337);
+	box-shadow:
+		16px 16px 32px rgba(0, 0, 0, 0.5),
+		-10px -10px 24px rgba(255, 255, 255, 0.065);
+}
+
 .tutorial {
 	position: fixed;
 	top: 0;
@@ -7,14 +16,18 @@
 	height: 100vh;
 	width: 100vw;
 	z-index: 100;
+	color: rgba(255, 255, 255, 0.92);
 
 	.dimmer {
-		background-color: black;
-		opacity: 0.5;
+		background:
+			radial-gradient(circle at 18% 12%, rgba(155, 197, 255, 0.16), transparent 34rem),
+			radial-gradient(circle at 86% 20%, rgba(244, 197, 106, 0.12), transparent 28rem),
+			rgba(15, 16, 18, 0.76);
+		backdrop-filter: blur(4px);
 		&.transparent {
-			background: linear-gradient(transparent 0%, transparent 165px, black 170px);
+			background: linear-gradient(transparent 0%, transparent 165px, rgba(15, 16, 18, 0.78) 170px);
 			&.player-bar {
-				background: linear-gradient(transparent 0%, transparent 95px, black 100px);
+				background: linear-gradient(transparent 0%, transparent 95px, rgba(15, 16, 18, 0.78) 100px);
 			}
 		}
 		width: 100%;
@@ -24,11 +37,16 @@
 
 	.title {
 		position: absolute;
-		left: 0.25em;
-		top: 0.25em;
-		font-size: 2em;
-		background-color: black;
-		padding: 0.5em;
+		left: 1rem;
+		top: 1rem;
+		font-size: clamp(1.4rem, 3vw, 2rem);
+		font-weight: 900;
+		background: #303337;
+		padding: 0.75rem 1rem;
+		border-radius: 8px;
+		box-shadow:
+			8px 8px 18px rgba(0, 0, 0, 0.42),
+			-5px -5px 14px rgba(255, 255, 255, 0.06);
 	}
 
 	.steps {
@@ -49,14 +67,28 @@
 
 	.step {
 		cursor: pointer;
-		color: unset;
+		color: rgba(255, 255, 255, 0.92);
 		text-decoration: none;
 		margin: 0.5em;
 		font-size: 1.5em;
 		text-align: center;
-		background-color: black;
+		background: linear-gradient(145deg, #3b3f44, #303337);
 		padding: 1em;
-		border: grey 2px solid;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 8px;
+		box-shadow:
+			9px 9px 18px rgba(0, 0, 0, 0.42),
+			-6px -6px 14px rgba(255, 255, 255, 0.06);
+		transition:
+			transform ease 160ms,
+			box-shadow ease 160ms;
+		&:hover,
+		&:focus {
+			transform: translateY(-1px);
+			box-shadow:
+				12px 12px 22px rgba(0, 0, 0, 0.48),
+				-7px -7px 16px rgba(255, 255, 255, 0.075);
+		}
 		@media screen and (max-height: variables.$mugen-height-small) {
 			margin: 0 10%;
 		}
@@ -72,7 +104,7 @@
 		width: 50%;
 		margin: 0 25%;
 		text-align: center;
-		background-color: black;
+		@include tutorial-panel;
 		padding: 1em;
 
 		@media screen and (max-width: variables.$mugen-breakpoint-xl) {
@@ -94,6 +126,13 @@
 				display: none;
 			}
 			position: relative;
+			img {
+				max-width: 100%;
+				border-radius: 8px;
+				box-shadow:
+					inset 4px 4px 10px rgba(0, 0, 0, 0.35),
+					inset -4px -4px 10px rgba(255, 255, 255, 0.05);
+			}
 			.caption-left {
 				text-align: left;
 				line-height: 1.5em;
@@ -117,7 +156,7 @@
 	.header-presentation,
 	.player-presentation {
 		position: absolute;
-		background-color: black;
+		@include tutorial-panel;
 		padding: 1em;
 		@media screen and (max-width: variables.$mugen-breakpoint-larger) {
 			width: 98.5%;
@@ -126,7 +165,12 @@
 			color: lightskyblue;
 		}
 		li {
-			margin: 0.25em 0;
+			margin: 0.45em 0;
+			line-height: 1.35;
+			> i {
+				width: 1.6em;
+				color: #9bc5ff;
+			}
 		}
 		.ul-l1 {
 			margin-left: 1.5em;
